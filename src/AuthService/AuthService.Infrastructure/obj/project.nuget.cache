@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "WuvzDet/DuE=",
+  "success": true,
+  "projectFilePath": "D:\\ModsenDevelop\\FriendsApplicationSystem\\src\\AuthService\\AuthService.Infrastructure\\AuthService.Infrastructure.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ekate\\.nuget\\packages\\microsoft.net.sdk.compilers.toolset\\9.0.200\\microsoft.net.sdk.compilers.toolset.9.0.200.nupkg.sha512"
+  ],
+  "logs": []
+}

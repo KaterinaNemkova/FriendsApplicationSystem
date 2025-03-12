@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "j8QwTnWOiEU=",
+  "success": true,
+  "projectFilePath": "D:\\ModsenDevelop\\FriendsApplicationSystem\\src\\EventsService\\EventsService.Domain\\EventsService.Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ekate\\.nuget\\packages\\microsoft.net.sdk.compilers.toolset\\9.0.200\\microsoft.net.sdk.compilers.toolset.9.0.200.nupkg.sha512"
+  ],
+  "logs": []
+}

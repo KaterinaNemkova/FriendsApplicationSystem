@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "mW3t8mlxtKU=",
+  "success": true,
+  "projectFilePath": "D:\\ModsenDevelop\\FriendsApplicationSystem\\src\\NotificationService\\NotificationService.Domain\\NotificationService.Domain.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ekate\\.nuget\\packages\\microsoft.net.sdk.compilers.toolset\\9.0.200\\microsoft.net.sdk.compilers.toolset.9.0.200.nupkg.sha512"
+  ],
+  "logs": []
+}
