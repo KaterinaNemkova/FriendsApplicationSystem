@@ -1,10 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "3QiVzR0gb2E=",
+  "dgSpecHash": "aJpeSywq4yI=",
   "success": true,
   "projectFilePath": "D:\\ModsenDevelop\\FriendsApplicationSystem\\src\\UserService\\UserService.Domain\\UserService.Domain.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\ekate\\.nuget\\packages\\microsoft.net.sdk.compilers.toolset\\9.0.200\\microsoft.net.sdk.compilers.toolset.9.0.200.nupkg.sha512"
-  ],
+  "expectedPackageFiles": [],
   "logs": []
 }
