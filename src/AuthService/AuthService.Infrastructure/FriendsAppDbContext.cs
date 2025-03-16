@@ -10,6 +10,12 @@ public class FriendsAppDbContext : IdentityDbContext<ApplicationUser>
     {
         
     }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        
+        builder.HasDefaultSchema("Identity");
+    }
     
-    public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 }

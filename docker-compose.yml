@@ -4,36 +4,39 @@ services:
       context: .
       dockerfile: ./src/AuthService/AuthService.Api/Dockerfile
     ports:
-      - "5001:5001"
-    container_name: authservice_container
+      - "7210:8080"
+    container_name: authservice_containerz
     depends_on:
       - postgre_db
+
   
   postgre_db:
     image: postgres:latest
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER : postgres
-      POSTGRES_PASSWORD : 1234
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: FriendsApp
     volumes:
       - db_data:/var/lib/postgresql/data
     container_name: postgresql_db_container
     
+
   pgadmin:
     image: elestio/pgadmin:latest
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@mail.com
       PGADMIN_DEFAULT_PASSWORD: 12345
-      PGADMIN_LISTEN_PORT: 8080
     container_name: pg_admin_container
     ports:
-      - "8080:8080"
+      - "5050:80"
     volumes:
         - ./servers.json:/pgadmin4/servers.json
     depends_on:
       - postgre_db
+          
 volumes:
   db_data:
   pgadmin-data:
