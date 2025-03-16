@@ -5,7 +5,9 @@ services:
       dockerfile: ./src/AuthService/AuthService.Api/Dockerfile
     ports:
       - "7210:8080"
-    container_name: authservice_containerz
+    container_name: authservice_container
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - postgre_db
 
