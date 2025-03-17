@@ -1,4 +1,15 @@
 services:
+  maildev:
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://127.0.0.1:1080 || exit 1"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    image: maildev/maildev
+    ports:
+      - "1025:1025"
+      - "1080:1080"
+  
   authservice_api:
     build:
       context: .
@@ -8,10 +19,13 @@ services:
     container_name: authservice_container
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - Smtp__Host=maildev
     depends_on:
-      - postgre_db
-
-  
+      maildev:
+        condition: service_healthy
+      postgre_db:
+        condition: service_started
+         
   postgre_db:
     image: postgres:latest
     ports:

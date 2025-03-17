@@ -1,7 +1,13 @@
 using AuthService.Domain.Entities;
+using AuthService.Infrastructure.Options;
+using AuthService.Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 
@@ -17,8 +23,8 @@ public static class Extensions
                 "Host=postgre_db;Database=FriendsApp;Username=postgres;Password=1234"
             );
         });
-        services.AddDataProtection(); // Добавление DataProtection
-        services.AddSingleton<TimeProvider>(TimeProvider.System); // Регистрация TimeProvider
+        services.AddDataProtection();
+        services.AddSingleton<TimeProvider>(TimeProvider.System);
         return services;
     }
     
@@ -32,6 +38,31 @@ public static class Extensions
             
             dbContext.Database.Migrate();
         }
+    }
+
+    public static IServiceCollection AddPresentation(this IServiceCollection services)
+    {
+        services.AddEndpointsApiExplorer();
+        
+        services.AddSwaggerGen();
+        
+        services.AddAuthorization();
+        
+        services.AddAuthentication();
+        
+        services.AddIdentityApiEndpoints<ApplicationUser>()
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<FriendsAppDbContext>();
+        
+        return services;
+
+    }
+
+    public static IServiceCollection AddEmailService(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddTransient<IEmailSender, EmailService>();
+        services.Configure<SmtpOptions>(configuration.GetSection(SmtpOptions.Smtp));
+        return services;
     }
 
 }
