@@ -1,12 +1,13 @@
 using AuthService.Domain.Entities;
 using AuthService.Infrastructure.Extensions;
+using AuthService.Infrastructure.MyIdentityApi;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddPresentation();
+builder.Services.AddPresentation(builder.Configuration);
 
-builder.Services.AddData();
+builder.Services.AddData(builder.Configuration);
 
 builder.Services.AddEmailService(builder.Configuration);
 
@@ -21,6 +22,6 @@ if (app.Environment.IsDevelopment())
     app.ApplyMigrations();
 }
 app.MapGet("/", () => Results.Redirect("/swagger"));
-app.MapIdentityApi<ApplicationUser>();
+app.MapMyIdentityApi<ApplicationUser>();
 
 app.Run();

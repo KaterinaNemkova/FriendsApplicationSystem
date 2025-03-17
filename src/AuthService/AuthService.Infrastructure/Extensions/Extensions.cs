@@ -15,32 +15,27 @@ namespace AuthService.Infrastructure.Extensions;
 
 public static class Extensions
 {
-    public static IServiceCollection AddData(this IServiceCollection services)
+    public static IServiceCollection AddData(this IServiceCollection services,IConfiguration configuration)
     {
         services.AddDbContext<FriendsAppDbContext>(options =>
         {
-            options.UseNpgsql(
-                "Host=postgre_db;Database=FriendsApp;Username=postgres;Password=1234"
-            );
+            options.UseNpgsql(configuration.GetConnectionString("Database"));
         });
-        services.AddDataProtection();
-        services.AddSingleton<TimeProvider>(TimeProvider.System);
+        // services.AddDataProtection();
+        // services.AddSingleton<TimeProvider>(TimeProvider.System);
         return services;
     }
     
     public static void ApplyMigrations(this IApplicationBuilder app)
     {
-        using (var scope = app.ApplicationServices.CreateScope())
-        {
-            var services = scope.ServiceProvider;
+        using IServiceScope scope = app.ApplicationServices.CreateScope();
 
-            var dbContext = services.GetRequiredService<FriendsAppDbContext>();
-            
-            dbContext.Database.Migrate();
-        }
+        using FriendsAppDbContext context = scope.ServiceProvider.GetRequiredService<FriendsAppDbContext>();
+
+        context.Database.Migrate();
     }
 
-    public static IServiceCollection AddPresentation(this IServiceCollection services)
+    public static IServiceCollection AddPresentation(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddEndpointsApiExplorer();
         
@@ -54,6 +49,14 @@ public static class Extensions
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<FriendsAppDbContext>();
         
+        //unique email, confirm email 
+        services.Configure<IdentityOptions>(options =>
+        {
+            options.User.RequireUniqueEmail = true;
+            //options.SignIn.RequireConfirmedEmail = true;
+            options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+        });
         return services;
 
     }
