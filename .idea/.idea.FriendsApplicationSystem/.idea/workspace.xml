@@ -19,16 +19,16 @@
     <list default="true" id="7abf086b-b810-48e9-9856-4deba4dcae3d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FriendsApplicationSystem/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FriendsApplicationSystem/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Api/Program.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Api/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Api/appsettings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Api/obj/Debug/net9.0/AuthService.Api.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Api/obj/Debug/net9.0/AuthService.Api.AssemblyInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Api/obj/Debug/net9.0/AuthService.Api.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Api/obj/Debug/net9.0/AuthService.Api.AssemblyInfoInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Api/obj/Debug/net9.0/AuthService.Api.csproj.AssemblyReference.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Api/obj/Debug/net9.0/AuthService.Api.csproj.AssemblyReference.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Application/obj/Debug/net9.0/AuthService.Application.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Application/obj/Debug/net9.0/AuthService.Application.AssemblyInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Application/obj/Debug/net9.0/AuthService.Application.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Application/obj/Debug/net9.0/AuthService.Application.AssemblyInfoInputs.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Domain/obj/Debug/net9.0/AuthService.Domain.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Domain/obj/Debug/net9.0/AuthService.Domain.AssemblyInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Domain/obj/Debug/net9.0/AuthService.Domain.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Domain/obj/Debug/net9.0/AuthService.Domain.AssemblyInfoInputs.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/Extensions/Extensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/Extensions/Extensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/Options/SmtpOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/Options/SmtpOptions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/Services/EmailService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/Services/EmailService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/obj/Debug/net9.0/AuthService.Infrastructure.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/obj/Debug/net9.0/AuthService.Infrastructure.AssemblyInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/obj/Debug/net9.0/AuthService.Infrastructure.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/obj/Debug/net9.0/AuthService.Infrastructure.AssemblyInfoInputs.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/EventsService/EventsService.Api/obj/Debug/net9.0/EventsService.Api.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/EventsService/EventsService.Api/obj/Debug/net9.0/EventsService.Api.AssemblyInfo.cs" afterDir="false" />
@@ -86,6 +86,8 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c7c259fdb1634b53ba08dbf4e00c7de121920/fa/8dd3a61f/EndpointMetadataApiExplorerServiceCollectionExtens.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/251361482a1fa2bee4c1279ae3327ec461c81eac80b589209b48dc04f9b/LoginRequest.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/737dd85514c83ed9df56dd92c8d63e66a1a3956b870a3362dd2437d7ec67069/IdentityServiceCollectionExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c1c4a1fc8b9711f4ddcd16f3c866a14fa9d147cfa9ebd7e28f72d0bddce5ba4/IEmailSenderOfT.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d16ba1ab3e3032d9a8d79f9fe8d3ea271d442d0ddcf61dc59513e8f98cebc62/MailService.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f035bb1f4dae1c481f8082def2188f696e7078386417e487cef2c776b652470/IdentityApiEndpointRouteBuilderExtensions.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="KubernetesApiPersistence">{}</component>
@@ -369,7 +371,11 @@
       <workItem from="1742202257848" duration="8038000" />
       <workItem from="1742216174748" duration="9409000" />
       <workItem from="1742227505200" duration="153000" />
-      <workItem from="1742227694064" duration="3151000" />
+      <workItem from="1742227694064" duration="3342000" />
+      <workItem from="1742283210756" duration="2146000" />
+      <workItem from="1742287489660" duration="2819000" />
+      <workItem from="1742308900732" duration="2531000" />
+      <workItem from="1742319827323" duration="8512000" />
     </task>
     <servers />
   </component>
