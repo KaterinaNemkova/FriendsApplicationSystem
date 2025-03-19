@@ -1,6 +1,4 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-
+using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -23,8 +21,10 @@ namespace AuthService.Infrastructure.MyIdentityApi;
 
 public static class IdentityApiEndpointRouteBuilderExtensions
 {
-    // Validate the email address using DataAnnotations like the UserValidator does when RequireUniqueEmail = true.
+   
     private static readonly EmailAddressAttribute _emailAddressAttribute = new();
+    private static readonly ConcurrentDictionary<string, TaskCompletionSource<bool>> _emailConfirmations = new();
+
 
     public static IEndpointConventionBuilder MapMyIdentityApi<TUser>(this IEndpointRouteBuilder endpoints)
         where TUser : class, new()
@@ -55,33 +55,44 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             var email = registration.Email;
             var userName = registration.UserName;
 
-            // Проверка валидности email
+            // Проверка email
             if (string.IsNullOrEmpty(email) || !_emailAddressAttribute.IsValid(email))
             {
                 return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)));
             }
 
-            // Проверка валидности userName
+            // Проверка userName
             if (string.IsNullOrEmpty(userName))
             {
                 return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidUserName(userName)));
             }
 
-            // Создание пользователя
+            // Создаём пользователя (изначально с неподтверждённым email)
             var user = new TUser();
-            await userStore.SetUserNameAsync(user, userName, CancellationToken.None); // Устанавливаем userName
-            await emailStore.SetEmailAsync(user, email, CancellationToken.None); // Устанавливаем email
+            await userStore.SetUserNameAsync(user, userName, CancellationToken.None);
+            await emailStore.SetEmailAsync(user, email, CancellationToken.None);
 
-            // Создание пользователя с паролем
             var result = await userManager.CreateAsync(user, registration.Password);
-
             if (!result.Succeeded)
             {
                 return CreateValidationProblem(result);
             }
 
-            // Отправка письма для подтверждения email
+            // Создаём TaskCompletionSource, чтобы ожидать подтверждения
+            var confirmationTask = new TaskCompletionSource<bool>();
+            _emailConfirmations[email] = confirmationTask;
+
             await SendConfirmationEmailAsync(user, userManager, context, email);
+
+            var isConfirmed = await Task.WhenAny(confirmationTask.Task, Task.Delay(TimeSpan.FromMinutes(15))) == confirmationTask.Task;
+
+            if (!isConfirmed)
+            {
+                await userManager.DeleteAsync(user);
+                _emailConfirmations.TryRemove(email, out _);
+                return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)));
+            }
+            
             return TypedResults.Ok();
         });
         
@@ -95,7 +106,6 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             var isPersistent = (useCookies == true) && (useSessionCookies != true);
             signInManager.AuthenticationScheme = useCookieScheme ? IdentityConstants.ApplicationScheme : IdentityConstants.BearerScheme;
 
-            // Находим пользователя по Email
             var user = await userManager.FindByEmailAsync(login.Email);
 
             if (user == null)
@@ -103,7 +113,6 @@ public static class IdentityApiEndpointRouteBuilderExtensions
                 return TypedResults.Problem("User not found.", statusCode: StatusCodes.Status401Unauthorized);
             }
 
-            // Выполняем вход по UserName и паролю
             var result = await signInManager.PasswordSignInAsync(user, login.Password, isPersistent, lockoutOnFailure: true);
 
             if (!result.Succeeded)
@@ -120,8 +129,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             var signInManager = sp.GetRequiredService<SignInManager<TUser>>();
             var refreshTokenProtector = bearerTokenOptions.Get(IdentityConstants.BearerScheme).RefreshTokenProtector;
             var refreshTicket = refreshTokenProtector.Unprotect(refreshRequest.RefreshToken);
-
-            // Reject the /refresh attempt with a 401 if the token expired or the security stamp validation fails
+            
             if (refreshTicket?.Properties?.ExpiresUtc is not { } expiresUtc ||
                 timeProvider.GetUtcNow() >= expiresUtc ||
                 await signInManager.ValidateSecurityStampAsync(refreshTicket.Principal) is not TUser user)
@@ -134,48 +142,52 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             return TypedResults.SignIn(newPrincipal, authenticationScheme: IdentityConstants.BearerScheme);
         });
 
-        routeGroup.MapGet("/confirmEmail", async Task<Results<ContentHttpResult, UnauthorizedHttpResult>>
-            ([FromQuery] string userId, [FromQuery] string code, [FromQuery] string? changedEmail, [FromServices] IServiceProvider sp) =>
-        {
-            var userManager = sp.GetRequiredService<UserManager<TUser>>();
-            if (await userManager.FindByIdAsync(userId) is not { } user)
+        routeGroup.MapGet("/confirmEmail", async Task<Results<Ok, UnauthorizedHttpResult>>
+                ([FromQuery] string email, [FromQuery] string code, [FromQuery] string? changedEmail, [FromServices] IServiceProvider sp) =>
             {
-                // We could respond with a 404 instead of a 401 like Identity UI, but that feels like unnecessary information.
-                return TypedResults.Unauthorized();
-            }
-
-            try
-            {
-                code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-            }
-            catch (FormatException)
-            {
-                return TypedResults.Unauthorized();
-            }
-
-            IdentityResult result;
-
-            if (string.IsNullOrEmpty(changedEmail))
-            {
-                result = await userManager.ConfirmEmailAsync(user, code);
-            }
-            else
-            {
-                result = await userManager.ChangeEmailAsync(user, changedEmail, code);
-
-                if (result.Succeeded)
+                var userManager = sp.GetRequiredService<UserManager<TUser>>();
+                var user = await userManager.FindByEmailAsync(email);
+                if (user is null)
                 {
-                    result = await userManager.SetUserNameAsync(user, changedEmail);
+                    return TypedResults.Unauthorized();
                 }
-            }
 
-            if (!result.Succeeded)
-            {
-                return TypedResults.Unauthorized();
-            }
+                try
+                {
+                    code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+                }
+                catch (FormatException)
+                {
+                    return TypedResults.Unauthorized();
+                }
 
-            return TypedResults.Text("Thank you for confirming your email.");
-        })
+                IdentityResult result;
+                if (string.IsNullOrEmpty(changedEmail))
+                {
+                    result = await userManager.ConfirmEmailAsync(user, code);
+                }
+                else
+                {
+                    result = await userManager.ChangeEmailAsync(user, changedEmail, code);
+                    if (result.Succeeded)
+                    {
+                        result = await userManager.SetUserNameAsync(user, changedEmail);
+                    }
+                }
+
+                if (!result.Succeeded)
+                {
+                    return TypedResults.Unauthorized();
+                }
+
+                if (_emailConfirmations.TryRemove(email, out var confirmationTask))
+                {
+                    confirmationTask.SetResult(true);
+                }
+
+                return TypedResults.Ok();
+                
+            })
         .Add(endpointBuilder =>
         {
             var finalPattern = ((RouteEndpointBuilder)endpointBuilder).RoutePattern.RawText;
@@ -300,7 +312,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             return TypedResults.Ok(await CreateInfoResponseAsync(user, userManager));
         });
 
-        async Task  SendConfirmationEmailAsync(TUser user, UserManager<TUser> userManager, HttpContext context, string email, bool isChange = false)
+        async Task SendConfirmationEmailAsync(TUser user, UserManager<TUser> userManager, HttpContext context, string email, bool isChange = false)
         {
             if (confirmEmailEndpointName is null)
             {
@@ -312,12 +324,12 @@ public static class IdentityApiEndpointRouteBuilderExtensions
                 : await userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
-            var userId = await userManager.GetUserIdAsync(user);
-            var routeValues = new RouteValueDictionary()
+            var routeValues = new RouteValueDictionary
             {
-                ["userId"] = userId,
-                ["code"] = code,
+                ["email"] = email,
+                ["code"] = code
             };
+
 
             if (isChange)
             {
@@ -325,10 +337,21 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             }
 
             var confirmEmailUrl = linkGenerator.GetUriByName(context, confirmEmailEndpointName, routeValues)
-                ?? throw new NotSupportedException($"Could not find endpoint named '{confirmEmailEndpointName}'.");
+                                  ?? throw new NotSupportedException($"Could not find endpoint named '{confirmEmailEndpointName}'.");
 
             await emailSender.SendConfirmationLinkAsync(user, email, HtmlEncoder.Default.Encode(confirmEmailUrl));
         }
+        
+        // async Task ConfirmEmailAsync(string email)
+        // {
+        //     if (_emailConfirmations.TryGetValue(email, out var tcs))
+        //     {
+        //         tcs.SetResult(true);
+        //         _emailConfirmations.TryRemove(email, out _);
+        //     }
+        // }
+        //
+
 
         return new IdentityEndpointsConventionBuilder(routeGroup);
     }

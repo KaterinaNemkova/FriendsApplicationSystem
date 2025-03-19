@@ -11,7 +11,7 @@ services:
     depends_on:
       postgre_db:
         condition: service_started
-         
+  
   postgre_db:
     image: postgres:latest
     ports:
@@ -37,10 +37,11 @@ services:
         - ./servers.json:/pgadmin4/servers.json
     depends_on:
       - postgre_db
-          
+
 volumes:
   db_data:
   pgadmin-data:
+
       
     
       
