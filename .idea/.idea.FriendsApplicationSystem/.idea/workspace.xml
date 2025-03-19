@@ -18,8 +18,6 @@
   <component name="ChangeListManager">
     <list default="true" id="7abf086b-b810-48e9-9856-4deba4dcae3d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FriendsApplicationSystem/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FriendsApplicationSystem/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Api/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Api/appsettings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Api/obj/Debug/net9.0/AuthService.Api.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Api/obj/Debug/net9.0/AuthService.Api.AssemblyInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Api/obj/Debug/net9.0/AuthService.Api.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Api/obj/Debug/net9.0/AuthService.Api.AssemblyInfoInputs.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Application/obj/Debug/net9.0/AuthService.Application.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Application/obj/Debug/net9.0/AuthService.Application.AssemblyInfo.cs" afterDir="false" />
@@ -27,7 +25,7 @@
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Domain/obj/Debug/net9.0/AuthService.Domain.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Domain/obj/Debug/net9.0/AuthService.Domain.AssemblyInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Domain/obj/Debug/net9.0/AuthService.Domain.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Domain/obj/Debug/net9.0/AuthService.Domain.AssemblyInfoInputs.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/Extensions/Extensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/Extensions/Extensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/Options/SmtpOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/Options/SmtpOptions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/MyIdentityApi/MyIdentityApi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/MyIdentityApi/MyIdentityApi.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/Services/EmailService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/Services/EmailService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/obj/Debug/net9.0/AuthService.Infrastructure.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/obj/Debug/net9.0/AuthService.Infrastructure.AssemblyInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/obj/Debug/net9.0/AuthService.Infrastructure.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/AuthService/AuthService.Infrastructure/obj/Debug/net9.0/AuthService.Infrastructure.AssemblyInfoInputs.cache" afterDir="false" />
@@ -375,7 +373,8 @@
       <workItem from="1742283210756" duration="2146000" />
       <workItem from="1742287489660" duration="2819000" />
       <workItem from="1742308900732" duration="2531000" />
-      <workItem from="1742319827323" duration="8512000" />
+      <workItem from="1742319827323" duration="8563000" />
+      <workItem from="1742367952908" duration="8629000" />
     </task>
     <servers />
   </component>

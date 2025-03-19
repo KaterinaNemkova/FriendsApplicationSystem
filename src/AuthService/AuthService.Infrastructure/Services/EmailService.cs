@@ -19,15 +19,15 @@ public class EmailService(IOptions<SmtpOptions> smtpOptions): IEmailSender
         
         using var message = new MimeMessage();
         
-        message.From.Add(new MailboxAddress("kateEmailService@gmail.com", _smtpOptions.UserName));
+        message.From.Add(new MailboxAddress("kateEmailService", _smtpOptions.UserName));
         message.To.Add(new MailboxAddress(null, email));
         message.Subject = subject;
         message.Body = body;
 
         using var client = new SmtpClient();
         
-        Console.Out.WriteLine($"Sending email to {_smtpOptions.UserName} ,{_smtpOptions.Password}");
         await client.ConnectAsync(_smtpOptions.Host, _smtpOptions.Port, true);
+        
         await client.AuthenticateAsync(_smtpOptions.UserName, _smtpOptions.Password);
         
         await client.SendAsync(message);
