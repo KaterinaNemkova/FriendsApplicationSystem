@@ -18,14 +18,11 @@ using Microsoft.Extensions.Options;
 
 namespace AuthService.Infrastructure.MyIdentityApi;
 
-
 public static class IdentityApiEndpointRouteBuilderExtensions
 {
-   
     private static readonly EmailAddressAttribute _emailAddressAttribute = new();
     private static readonly ConcurrentDictionary<string, TaskCompletionSource<bool>> _emailConfirmations = new();
-
-
+    
     public static IEndpointConventionBuilder MapMyIdentityApi<TUser>(this IEndpointRouteBuilder endpoints)
         where TUser : class, new()
     {
@@ -55,19 +52,16 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             var email = registration.Email;
             var userName = registration.UserName;
 
-            // Проверка email
             if (string.IsNullOrEmpty(email) || !_emailAddressAttribute.IsValid(email))
             {
                 return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)));
             }
 
-            // Проверка userName
             if (string.IsNullOrEmpty(userName))
             {
                 return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidUserName(userName)));
             }
 
-            // Создаём пользователя (изначально с неподтверждённым email)
             var user = new TUser();
             await userStore.SetUserNameAsync(user, userName, CancellationToken.None);
             await emailStore.SetEmailAsync(user, email, CancellationToken.None);
@@ -78,7 +72,6 @@ public static class IdentityApiEndpointRouteBuilderExtensions
                 return CreateValidationProblem(result);
             }
 
-            // Создаём TaskCompletionSource, чтобы ожидать подтверждения
             var confirmationTask = new TaskCompletionSource<bool>();
             _emailConfirmations[email] = confirmationTask;
 
@@ -342,16 +335,6 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             await emailSender.SendConfirmationLinkAsync(user, email, HtmlEncoder.Default.Encode(confirmEmailUrl));
         }
         
-        // async Task ConfirmEmailAsync(string email)
-        // {
-        //     if (_emailConfirmations.TryGetValue(email, out var tcs))
-        //     {
-        //         tcs.SetResult(true);
-        //         _emailConfirmations.TryRemove(email, out _);
-        //     }
-        // }
-        //
-
 
         return new IdentityEndpointsConventionBuilder(routeGroup);
     }
@@ -387,7 +370,6 @@ public static class IdentityApiEndpointRouteBuilderExtensions
         return TypedResults.ValidationProblem(errorDictionary);
     }
 
-    //можно ли вернуть все данные о user? для подтверждения email надо id 
     private static async Task<InfoResponse> CreateInfoResponseAsync<TUser>(TUser user, UserManager<TUser> userManager)
         where TUser : class
     {

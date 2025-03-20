@@ -18,7 +18,7 @@ public class EmailService(IOptions<SmtpOptions> smtpOptions): IEmailSender
         body.Text = htmlMessage;
         
         using var message = new MimeMessage();
-        
+
         message.From.Add(new MailboxAddress("kateEmailService", _smtpOptions.UserName));
         message.To.Add(new MailboxAddress(null, email));
         message.Subject = subject;
@@ -34,6 +34,4 @@ public class EmailService(IOptions<SmtpOptions> smtpOptions): IEmailSender
         
         await client.DisconnectAsync(true);
     }
-
-
 }

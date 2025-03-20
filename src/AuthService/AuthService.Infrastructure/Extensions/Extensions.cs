@@ -3,9 +3,7 @@ using AuthService.Infrastructure.Options;
 using AuthService.Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,14 +13,13 @@ namespace AuthService.Infrastructure.Extensions;
 
 public static class Extensions
 {
-    public static IServiceCollection AddData(this IServiceCollection services,IConfiguration configuration)
+    public static IServiceCollection AddData(this IServiceCollection services)
     {
+        var envConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
         services.AddDbContext<FriendsAppDbContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("Database"));
+            options.UseNpgsql(envConnectionString);
         });
-        // services.AddDataProtection();
-        // services.AddSingleton<TimeProvider>(TimeProvider.System);
         return services;
     }
     
@@ -40,16 +37,15 @@ public static class Extensions
         services.AddEndpointsApiExplorer();
         
         services.AddSwaggerGen();
+       
+        services.AddAuthentication();
         
         services.AddAuthorization();
-        
-        services.AddAuthentication();
         
         services.AddIdentityApiEndpoints<ApplicationUser>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<FriendsAppDbContext>();
         
-        //unique email, confirm email 
         services.Configure<IdentityOptions>(options =>
         {
             options.User.RequireUniqueEmail = true;
@@ -63,8 +59,16 @@ public static class Extensions
 
     public static IServiceCollection AddEmailService(this IServiceCollection services, IConfiguration configuration)
     {
+        services.Configure<SmtpOptions>(options=>
+        {
+            options.Host = Environment.GetEnvironmentVariable("SMTP_HOST");
+            options.Port = configuration.GetValue<int>("Smtp:Port");
+            options.UserName = Environment.GetEnvironmentVariable("SMTP_USERNAME");
+            options.Password = Environment.GetEnvironmentVariable("SMTP_PASSWORD");
+            options.Email = Environment.GetEnvironmentVariable("SMTP_EMAIL");
+        });
+
         services.AddTransient<IEmailSender, EmailService>();
-        services.Configure<SmtpOptions>(configuration.GetSection(SmtpOptions.Smtp));
         return services;
     }
 

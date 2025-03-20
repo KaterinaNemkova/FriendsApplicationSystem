@@ -5,9 +5,16 @@ using AuthService.Infrastructure.MyIdentityApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+
+if (File.Exists(envPath))
+{
+    DotNetEnv.Env.Load(envPath);
+}
+
 builder.Services.AddPresentation(builder.Configuration);
 
-builder.Services.AddData(builder.Configuration);
+builder.Services.AddData();
 
 builder.Services.AddEmailService(builder.Configuration);
 
