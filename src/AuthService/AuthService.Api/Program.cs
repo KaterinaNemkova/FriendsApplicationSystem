@@ -1,23 +1,34 @@
+using AuthService.Domain.Entities;
+using AuthService.Infrastructure.Extensions;
+using AuthService.Infrastructure.MyIdentityApi;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+if (File.Exists(envPath))
+{
+    DotNetEnv.Env.Load(envPath);
+}
+
+builder.Services.AddPresentation(builder.Configuration);
+
+builder.Services.AddData();
+
+builder.Services.AddEmailService(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
-app.MapControllers();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    app.ApplyMigrations();
+}
+app.MapGet("/", () => Results.Redirect("/swagger"));
+app.MapMyIdentityApi<ApplicationUser>();
 
 app.Run();

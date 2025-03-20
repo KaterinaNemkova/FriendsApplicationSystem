@@ -1,0 +1,50 @@
+services: 
+  authservice_api:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./src/AuthService/AuthService.Api/Dockerfile
+    ports:
+      - "7210:8080"
+    container_name: authservice_container
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DB_CONNECTION_STRING=${DB_CONNECTION_STRING}
+    depends_on:
+      postgre_db:
+        condition: service_started
+  
+  postgre_db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    container_name: postgresql_db_container
+    
+  pgadmin:
+    image: elestio/pgadmin:latest
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    container_name: pg_admin_container
+    ports:
+      - "5050:80"
+    volumes:
+        - ./servers.json:/pgadmin4/servers.json
+    depends_on:
+      - postgre_db
+
+volumes:
+  db_data:
+  pgadmin-data:
+
+      
+    
+      
