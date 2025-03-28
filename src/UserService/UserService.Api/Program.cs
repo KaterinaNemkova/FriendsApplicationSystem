@@ -1,28 +1,34 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
+using UserService.Application.UseCases.Profiles.Commands.UploadImage;
+using UserService.Infrastructure;
 using UserService.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();
-var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+DotNetEnv.Env.Load();
 
-if (File.Exists(envPath))
-{
-    DotNetEnv.Env.Load(envPath);
-}
+builder.Configuration.AddEnvironmentVariables();
 
 builder.Services.AddDb(builder.Configuration);
+
+builder.Services.AddCloudinary(builder.Configuration);
+
+builder.Services.AddRepresentation();
+
+builder.Services.AddDependencies();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
     app.UseSwaggerUI();
     app.UseSwagger();
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

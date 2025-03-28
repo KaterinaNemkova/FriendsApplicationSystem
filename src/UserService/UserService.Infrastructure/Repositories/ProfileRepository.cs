@@ -9,6 +9,11 @@ namespace UserService.Infrastructure.Repositories;
 public class ProfileRepository:IProfileRepository
 {
     private readonly IMongoCollection<Profile> _profilesCollection;
+    
+    public ProfileRepository(IMongoDatabase database)
+    {
+        _profilesCollection = database.GetCollection<Profile>("Profiles");
+    }
 
     public async Task CreateAsync(Profile profile, CancellationToken token)
     {
@@ -41,13 +46,30 @@ public class ProfileRepository:IProfileRepository
         var update = Builders<Profile>.Update.Set(p => p.ActivityStatus, status);
 
         await _profilesCollection.UpdateOneAsync(filter, update, cancellationToken: token);
+    }
+
+    public async Task UpdatePhotoAsync(Guid profileId, Photo photo, CancellationToken token)
+    {
+        var filter = Builders<Profile>.Filter.Eq(p => p.Id, profileId);
+        var update = Builders<Profile>.Update.Set(p => p.Photo, photo);
+
+        await _profilesCollection.UpdateOneAsync(filter, update);
+    }
+
+    public async Task DeletePhotoAsync(Guid profileId, CancellationToken token)
+    {
+        var filter = Builders<Profile>.Filter.Eq(p => p.Id, profileId);
+        var update = Builders<Profile>.Update.Unset(p => p.Photo);
+
+        await _profilesCollection.UpdateOneAsync(filter, update, cancellationToken: token);
+    }
+
+
+    public async Task AddFriendAsync(Guid profileId, Guid friendId, CancellationToken token)
+    {
+        var filter = Builders<Profile>.Filter.Eq(p => p.Id, profileId);
         
     }
 
-    // public async Task UploadImage(Guid Id, Stream stream, CancellationToken token)
-    // {
-    //     
-    // }
-    
 }
 

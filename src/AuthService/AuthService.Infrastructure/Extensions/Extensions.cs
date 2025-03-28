@@ -15,7 +15,7 @@ public static class Extensions
 {
     public static IServiceCollection AddData(this IServiceCollection services)
     {
-        var envConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+        var envConnectionString = Environment.GetEnvironmentVariable("POSTGRE_DB_CONNECTION_STRING");
         services.AddDbContext<FriendsAppDbContext>(options =>
         {
             options.UseNpgsql(envConnectionString);

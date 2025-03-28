@@ -12,4 +12,6 @@ public interface IProfileRepository
     Task UpdateAsync(Profile profile, CancellationToken token);
     Task DeleteAsync(Profile profile, CancellationToken token);
     Task EstablishStatus(Guid Id, ActivityStatus status, CancellationToken token);
+    Task UpdatePhotoAsync(Guid profileId, Photo photo, CancellationToken token);
+    Task DeletePhotoAsync(Guid profileId, CancellationToken token);
 }

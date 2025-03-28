@@ -11,18 +11,14 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="UseCases\Profiles\Commands\DeleteProfile\" />
+      <Folder Include="UseCases\Profiles\Queries\GetPhoto\" />
+    </ItemGroup>
+
+    <ItemGroup>
       <PackageReference Include="AutoMapper" Version="14.0.0" />
-      <PackageReference Include="DotEnv" Version="0.0.1.1" />
-      <PackageReference Include="MediatR" Version="12.4.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="UseCases\Profiles\Queries\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="DotNetEnv" Version="3.1.1" />
-      <PackageReference Include="MailKit" Version="4.11.0" />
+      <PackageReference Include="MediatR" Version="12.4.1" />
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.3" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.3">
@@ -34,8 +30,8 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
-      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
+      <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="8.0.0" />
     </ItemGroup>
 
 </Project>
