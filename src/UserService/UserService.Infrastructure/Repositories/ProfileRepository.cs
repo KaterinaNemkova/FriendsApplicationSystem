@@ -24,22 +24,24 @@ public class ProfileRepository:IProfileRepository
     {
         return await _profilesCollection.Find(p => p.Id == id).FirstOrDefaultAsync(token);
     }
-
-    public async Task<IEnumerable<Profile>> GetAllAsync(Expression<Func<Profile,bool>> filter, CancellationToken token)
+    
+    public async Task<Profile> GetByNameAsync(string name, CancellationToken token)
     {
-        return await _profilesCollection.Find(filter).ToListAsync(token);
+        return await _profilesCollection.Find(p => p.Name==name).FirstOrDefaultAsync(token);
     }
 
-    public async Task UpdateAsync(Profile profile, CancellationToken token)
+    public async Task<List<Profile>> GetAllAsync(CancellationToken token)
     {
-        await _profilesCollection.ReplaceOneAsync(p => p.Id == profile.Id, profile);
+        return await _profilesCollection
+            .Find(_ => true)
+            .ToListAsync(token);
     }
 
-    public async Task DeleteAsync(Profile profile, CancellationToken token)
+    public async Task<long> GetTotalCountAsync()
     {
-        await _profilesCollection.DeleteOneAsync(p => p.Id == profile.Id, token);
+        return await _profilesCollection.CountDocumentsAsync(_ => true);
     }
-
+    
     public async Task EstablishStatus(Guid Id, ActivityStatus status, CancellationToken token)
     {
         var filter = Builders<Profile>.Filter.Eq(p => p.Id, Id);
@@ -63,7 +65,6 @@ public class ProfileRepository:IProfileRepository
 
         await _profilesCollection.UpdateOneAsync(filter, update, cancellationToken: token);
     }
-
 
     public async Task AddFriendAsync(Guid profileId, Guid friendId, CancellationToken token)
     {

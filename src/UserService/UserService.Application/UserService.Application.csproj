@@ -12,7 +12,6 @@
 
     <ItemGroup>
       <Folder Include="UseCases\Profiles\Commands\DeleteProfile\" />
-      <Folder Include="UseCases\Profiles\Queries\GetPhoto\" />
     </ItemGroup>
 
     <ItemGroup>

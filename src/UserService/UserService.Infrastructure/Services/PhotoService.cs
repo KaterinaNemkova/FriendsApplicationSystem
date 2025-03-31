@@ -45,4 +45,11 @@ public class PhotoService: IPhotoService
         
         return result;
     }
+
+    public async Task<string> GetPhoto(string PublicId)
+    {
+        var photo= _cloudinary.GetResource(PublicId);
+        return photo.Url;
+    }
+    
 }

@@ -8,6 +8,7 @@ public class ProfileToProfileDto:Profile
 {
     public ProfileToProfileDto()
     {
-        CreateMap<Profile, ProfileDto>().ReverseMap();
+        CreateMap<Domain.Entities.Profile, ProfileDto>();
+
     }
 }

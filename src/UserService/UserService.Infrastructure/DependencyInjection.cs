@@ -1,5 +1,5 @@
-using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using UserService.Application.Mappers;
 using UserService.Application.UseCases.Profiles.Commands.UploadImage;
 using UserService.Domain.Contracts;
 using UserService.Infrastructure.Repositories;
@@ -13,7 +13,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IPhotoService, PhotoService>();
         services.AddScoped<IProfileRepository, ProfileRepository>();
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.AddAutoMapper(typeof(ProfileToProfileDto));
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(UploadImageHandler).Assembly)); 
         return services;
     }

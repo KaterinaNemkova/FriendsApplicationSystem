@@ -13,6 +13,6 @@ public class Profile
     
     [BsonRepresentation(BsonType.String)]
     public ActivityStatus ActivityStatus { get; set; } = ActivityStatus.Busy;
-    public ICollection<Friendship> Friends { get; set; }
+    public ICollection<Friendship>? Friends { get; set; }
 
 }
