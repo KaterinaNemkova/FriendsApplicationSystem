@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="UseCases\Friends\Queries\" />
       <Folder Include="UseCases\Profiles\Commands\DeleteProfile\" />
     </ItemGroup>
 

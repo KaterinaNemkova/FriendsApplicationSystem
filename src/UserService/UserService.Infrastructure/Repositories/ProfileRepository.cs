@@ -65,11 +65,7 @@ public class ProfileRepository:IProfileRepository
         await _profilesCollection.UpdateOneAsync(filter, update, cancellationToken: token);
     }
 
-    public async Task AddFriendAsync(Guid profileId, Guid friendId, CancellationToken token)
-    {
-        var filter = Builders<Profile>.Filter.Eq(p => p.Id, profileId);
-        
-    }
+   
 
 }
 

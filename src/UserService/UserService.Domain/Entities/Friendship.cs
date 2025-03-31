@@ -1,3 +1,7 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using UserService.Domain.Enums;
+
 namespace UserService.Domain.Entities;
 
 public class Friendship
@@ -11,4 +15,7 @@ public class Friendship
     public Profile FriendProfile { get; set; }
 
     public DateTime AddedAt { get; set; } = DateTime.UtcNow;
+    
+    [BsonRepresentation(BsonType.String)]
+    public RelationStatus RelationStatus { get; set; } = RelationStatus.Friend;
 }

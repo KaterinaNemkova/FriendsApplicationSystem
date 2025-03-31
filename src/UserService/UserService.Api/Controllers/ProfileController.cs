@@ -24,6 +24,7 @@ public class ProfileController: ControllerBase
         _mediator = mediator;
     }
     
+ 
     [HttpPost]
     public async Task<IActionResult> CreateProfile([FromBody] CreateProfileCommand command)
     {
@@ -32,7 +33,7 @@ public class ProfileController: ControllerBase
     }
 
     [HttpGet("get-profile/{id}")]
-
+    
     public async Task<IActionResult> GetProfileById([FromRoute] Guid id)
     {
         var profile = await _mediator.Send(new GetProfileByIdQuery(id));
@@ -46,9 +47,7 @@ public class ProfileController: ControllerBase
         return Ok(profile);
     }
     
-    
     [HttpGet("get-profiles-by-filter")]
-    
     public async Task<IActionResult> GetProfilesByFilter([FromQuery] GetAllByFilterQuery query)
     {
         var profiles = await _mediator.Send(query);

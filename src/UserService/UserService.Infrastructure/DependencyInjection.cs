@@ -13,6 +13,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IPhotoService, PhotoService>();
         services.AddScoped<IProfileRepository, ProfileRepository>();
+        services.AddScoped<IFriendshipRepository, FriendshipRepository>();
         services.AddAutoMapper(typeof(ProfileToProfileDto));
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(UploadImageHandler).Assembly)); 
         return services;
