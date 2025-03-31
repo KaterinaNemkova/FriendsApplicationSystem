@@ -15,6 +15,7 @@ public static class DependencyInjection
         services.AddScoped<IProfileRepository, ProfileRepository>();
         services.AddScoped<IFriendshipRepository, FriendshipRepository>();
         services.AddAutoMapper(typeof(ProfileToProfileDto));
+        services.AddAutoMapper(typeof(FriendshipToFriendshipDto));
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(UploadImageHandler).Assembly)); 
         return services;
     }

@@ -35,11 +35,6 @@ public class ProfileRepository:IProfileRepository
             .Find(_ => true)
             .ToListAsync(token);
     }
-
-    public async Task<long> GetTotalCountAsync()
-    {
-        return await _profilesCollection.CountDocumentsAsync(_ => true);
-    }
     
     public async Task EstablishStatus(Guid Id, ActivityStatus status, CancellationToken token)
     {

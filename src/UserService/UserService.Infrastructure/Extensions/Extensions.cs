@@ -44,8 +44,7 @@ public static class Extensions
         services.AddControllers();
         
         services.AddEndpointsApiExplorer();
-
-
+        
         BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
         services.AddSwaggerGen();
         services.AddSwaggerGen(c =>
