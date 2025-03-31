@@ -31,7 +31,7 @@ public class CreateProfileHandler : IRequestHandler<CreateProfileCommand, Profil
         };
 
         await _profileRepository.CreateAsync(profile, cancellationToken);
-        //на этом моменте ломмается, что-то не так с map
+        
         return _mapper.Map<ProfileDto>(profile);
     }
 }

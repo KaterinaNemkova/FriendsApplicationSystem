@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using MongoDB.Driver;
 using UserService.Domain.Contracts;
 using UserService.Domain.Entities;
