@@ -26,7 +26,7 @@ public class AddFriendHandler:IRequestHandler<AddFriendCommand,Friendship>
         var friend=await _profileRepository.GetByIdAsync(request.FriendId, token);
         
         if(profile==null || friend==null)
-            throw new InvalidOperationException("Wrong profileId or FrienfId");
+            throw new InvalidOperationException("Wrong profileId or FriendId");
         
         var friendship = new Friendship
         {
@@ -35,7 +35,7 @@ public class AddFriendHandler:IRequestHandler<AddFriendCommand,Friendship>
             Profile = profile,
             FriendProfileId = request.FriendId,
             FriendProfile = friend,
-            BeginningOfInterrelations = DateOnly.FromDateTime(DateTime.Now),
+            BeginningOfInterrelations = DateOnly.FromDateTime(DateTime.UtcNow),
             RelationStatus = RelationStatus.Friend
         };
         

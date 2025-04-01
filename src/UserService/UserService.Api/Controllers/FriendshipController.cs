@@ -20,7 +20,7 @@ public class FriendshipController(IMediator mediator) : ControllerBase
         return Ok(friendship);
     }
 
-    [HttpPost("establish-relation-status/{friendshipId}")]
+    [HttpPost("establish-relation-status/{friendshipId:guid}")]
     public async Task<IActionResult> EstablishRelationStatus([FromRoute] Guid friendshipId,[FromQuery] RelationStatus relationStatus)
     {
         var friendship=await mediator.Send(new EstablishRelationStatusCommand(friendshipId, relationStatus));
@@ -34,14 +34,14 @@ public class FriendshipController(IMediator mediator) : ControllerBase
         return Ok();
     }
 
-    [HttpPost("change-start-date/{friendshipId}")]
+    [HttpPost("change-start-date/{friendshipId:guid}")]
     public async Task<IActionResult> ChangeStartDate([FromRoute] Guid friendshipId,[FromBody] DateOnly startDate)
     {
         var friendship=await mediator.Send(new ChangeDateCommand(friendshipId, startDate));
         return Ok(friendship);
     }
 
-    [HttpGet("get-all-my-friends/{profileId}")]
+    [HttpGet("get-all-my-friends/{profileId:guid}")]
     public async Task<IActionResult> GetAllMyFriends([FromRoute] Guid profileId)
     {
         var friends = await mediator.Send(new GetAllFriendsQuery(profileId));

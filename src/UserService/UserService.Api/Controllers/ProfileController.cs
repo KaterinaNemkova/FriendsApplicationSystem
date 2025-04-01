@@ -24,15 +24,14 @@ public class ProfileController: ControllerBase
         _mediator = mediator;
     }
     
- 
-    [HttpPost]
+    [HttpPost("create-profile")]
     public async Task<IActionResult> CreateProfile([FromBody] CreateProfileCommand command)
     {
         var profile = await _mediator.Send(command);
         return Ok(profile);
     }
 
-    [HttpGet("get-profile/{id}")]
+    [HttpGet("get-profile/{id:guid}")]
     
     public async Task<IActionResult> GetProfileById([FromRoute] Guid id)
     {
@@ -54,14 +53,14 @@ public class ProfileController: ControllerBase
         return Ok(profiles);
     }
 
-    [HttpGet("get-photo/{id}")]
+    [HttpGet("get-photo/{id:guid}")]
     public async Task<IActionResult> GetProfilePhoto([FromRoute] Guid id)
     {
         var url = await _mediator.Send(new GetPhotoByIdQuery(id));
         return Ok(url);
     }
     
-    [HttpPost("upload-photo/{profileId}")]
+    [HttpPost("upload-photo/{profileId:guid}")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadProfilePhoto([FromRoute] Guid profileId, [FromForm] UploadImageRequest request)
     {
@@ -70,14 +69,14 @@ public class ProfileController: ControllerBase
     }
 
     
-    [HttpDelete("delete-photo/{profileId}")]
+    [HttpDelete("delete-photo/{profileId:guid}")]
     public async Task<IActionResult> DeletePhoto([FromRoute] Guid profileId)
     {
         var result = await _mediator.Send(new DeleteImageCommand(profileId));
         return Ok(result);
     }
 
-    [HttpPost("establish-status/{profileId}")]
+    [HttpPost("establish-status/{profileId:guid}")]
     public async Task<IActionResult> EstablishStatus([FromRoute] Guid profileId, [FromQuery]ActivityStatus activityStatus)
     {
         await _mediator.Send(new EstablishStatusCommand(profileId,activityStatus));
