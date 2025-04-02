@@ -10,8 +10,6 @@ public class Profile
     public Guid UserId { get; set; }
     public string Name { get; set; }    
     public Photo Photo { get; set; }
-    
-    [BsonRepresentation(BsonType.String)]
     public ActivityStatus ActivityStatus { get; set; } = ActivityStatus.Busy;
     public List<Guid>? FriendIds { get; set; } = [];
 

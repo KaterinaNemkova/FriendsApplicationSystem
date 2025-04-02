@@ -13,38 +13,39 @@ namespace UserService.Api.Controllers;
 [Route("api/controller")]
 public class FriendshipController(IMediator mediator) : ControllerBase
 {
-    [HttpPost("add-friend")]
-    public async Task<IActionResult> AddFriend([FromQuery] AddFriendCommand command)
+    [HttpPost("friend")]
+    public async Task<IActionResult> AddFriend([FromQuery] AddFriendCommand command,CancellationToken token)
     {
-        var friendship = await mediator.Send(command);
+        var friendship = await mediator.Send(command, token);
+        
         return Ok(friendship);
     }
 
-    [HttpPost("establish-relation-status/{friendshipId:guid}")]
-    public async Task<IActionResult> EstablishRelationStatus([FromRoute] Guid friendshipId,[FromQuery] RelationStatus relationStatus)
+    [HttpPost("{friendshipId:Guid}/status")]
+    public async Task<IActionResult> EstablishRelationStatus([FromRoute] Guid friendshipId,[FromQuery] RelationStatus relationStatus,CancellationToken token)
     {
-        var friendship=await mediator.Send(new EstablishRelationStatusCommand(friendshipId, relationStatus));
+        var friendship=await mediator.Send(new EstablishRelationStatusCommand(friendshipId, relationStatus),token);
         return Ok(friendship);
     }
 
-    [HttpDelete("delete-friend")]
-    public async Task<IActionResult> DeleteFriend([FromQuery] DeleteFriendCommand command)
+    [HttpDelete]
+    public async Task<IActionResult> DeleteFriend([FromQuery] DeleteFriendCommand command,CancellationToken token)
     {
-        await mediator.Send(command);
+        await mediator.Send(command, token);
         return Ok();
     }
 
-    [HttpPost("change-start-date/{friendshipId:guid}")]
-    public async Task<IActionResult> ChangeStartDate([FromRoute] Guid friendshipId,[FromBody] DateOnly startDate)
+    [HttpPost("{friendshipId:Guid}/start-date")]
+    public async Task<IActionResult> ChangeStartDate([FromRoute] Guid friendshipId,[FromBody] DateOnly startDate,CancellationToken token)
     {
-        var friendship=await mediator.Send(new ChangeDateCommand(friendshipId, startDate));
+        var friendship=await mediator.Send(new ChangeDateCommand(friendshipId, startDate),token);
         return Ok(friendship);
     }
 
-    [HttpGet("get-all-my-friends/{profileId:guid}")]
-    public async Task<IActionResult> GetAllMyFriends([FromRoute] Guid profileId)
+    [HttpGet("{profileId:Guid}")]
+    public async Task<IActionResult> GetAllMyFriends([FromRoute] Guid profileId,CancellationToken token)
     {
-        var friends = await mediator.Send(new GetAllFriendsQuery(profileId));
+        var friends = await mediator.Send(new GetAllFriendsQuery(profileId), token);
         return Ok(friends);
     }
     

@@ -24,62 +24,62 @@ public class ProfileController: ControllerBase
         _mediator = mediator;
     }
     
-    [HttpPost("create-profile")]
-    public async Task<IActionResult> CreateProfile([FromBody] CreateProfileCommand command)
+    [HttpPost("profile")]
+    public async Task<IActionResult> CreateProfile([FromBody] CreateProfileCommand command, CancellationToken token)
     {
-        var profile = await _mediator.Send(command);
+        var profile = await _mediator.Send(command, token);
         return Ok(profile);
     }
 
-    [HttpGet("get-profile/{id:guid}")]
+    [HttpGet("{id:guid}")]
     
-    public async Task<IActionResult> GetProfileById([FromRoute] Guid id)
+    public async Task<IActionResult> GetProfileById([FromRoute] Guid id, CancellationToken token)
     {
-        var profile = await _mediator.Send(new GetProfileByIdQuery(id));
+        var profile = await _mediator.Send(new GetProfileByIdQuery(id),token);
         return Ok(profile);
     }
     
-    [HttpGet("get-profile-by-name")]
-    public async Task<IActionResult> GetProfileById([FromQuery] string name)
+    [HttpGet("name")]
+    public async Task<IActionResult> GetProfileByName([FromQuery] string name, CancellationToken token)
     {
-        var profile = await _mediator.Send(new GetProfileByNameQuery(name));
+        var profile = await _mediator.Send(new GetProfileByNameQuery(name), token);
         return Ok(profile);
     }
     
-    [HttpGet("get-profiles-by-filter")]
-    public async Task<IActionResult> GetProfilesByFilter([FromQuery] GetAllByFilterQuery query)
+    [HttpGet]
+    public async Task<IActionResult> GetProfilesByFilter([FromQuery] GetAllByFilterQuery query, CancellationToken token)
     {
-        var profiles = await _mediator.Send(query);
+        var profiles = await _mediator.Send(query,token);
         return Ok(profiles);
     }
 
-    [HttpGet("get-photo/{id:guid}")]
-    public async Task<IActionResult> GetProfilePhoto([FromRoute] Guid id)
+    [HttpGet("{id:guid}/photo")]
+    public async Task<IActionResult> GetProfilePhoto([FromRoute] Guid id,CancellationToken token)
     {
-        var url = await _mediator.Send(new GetPhotoByIdQuery(id));
+        var url = await _mediator.Send(new GetPhotoByIdQuery(id),token);
         return Ok(url);
     }
     
-    [HttpPost("upload-photo/{profileId:guid}")]
+    [HttpPost("{profileId:guid}/photo")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> UploadProfilePhoto([FromRoute] Guid profileId, [FromForm] UploadImageRequest request)
+    public async Task<IActionResult> UploadProfilePhoto([FromRoute] Guid profileId, [FromForm] UploadImageRequest request,CancellationToken token)
     {
-        var result = await _mediator.Send(new UploadImageCommand(profileId, request.File));
+        var result = await _mediator.Send(new UploadImageCommand(profileId, request.File), token);
         return Ok(result);
     }
 
     
-    [HttpDelete("delete-photo/{profileId:guid}")]
-    public async Task<IActionResult> DeletePhoto([FromRoute] Guid profileId)
+    [HttpDelete("{profileId:guid}")]
+    public async Task<IActionResult> DeletePhoto([FromRoute] Guid profileId,CancellationToken token)
     {
-        var result = await _mediator.Send(new DeleteImageCommand(profileId));
+        var result = await _mediator.Send(new DeleteImageCommand(profileId), token);
         return Ok(result);
     }
 
-    [HttpPost("establish-status/{profileId:guid}")]
-    public async Task<IActionResult> EstablishStatus([FromRoute] Guid profileId, [FromQuery]ActivityStatus activityStatus)
+    [HttpPost("{profileId:guid}/status")]
+    public async Task<IActionResult> EstablishStatus([FromRoute] Guid profileId, [FromQuery]ActivityStatus activityStatus,CancellationToken token)
     {
-        await _mediator.Send(new EstablishStatusCommand(profileId,activityStatus));
+        await _mediator.Send(new EstablishStatusCommand(profileId,activityStatus), token);
         return Ok();
     }
 }

@@ -12,7 +12,5 @@ public class Friendship
     public Guid FriendProfileId { get; set; }
     public Profile FriendProfile { get; set; }
     public DateOnly BeginningOfInterrelations { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
-    
-    [BsonRepresentation(BsonType.String)]
     public RelationStatus RelationStatus { get; set; } = RelationStatus.Friend;
 }
