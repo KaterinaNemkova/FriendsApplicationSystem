@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using UserService.Application.Common.Exceptions;
 using UserService.Application.DTOs;
 using UserService.Domain.Contracts;
 
@@ -21,7 +22,7 @@ public class GetAllFriendsHandler:IRequestHandler<GetAllFriendsQuery,List<Profil
     {
         var profile=await _profileRepository.GetByIdAsync(request.ProfileId,token);
         if(profile==null)
-            throw new NullReferenceException("Profile not found");
+            throw new EntityNotFoundException(nameof(profile), request.ProfileId);
         
         var profiles=await _friendshipRepository.GetAllFriendsAsync(profile.Id, token);
         return _mapper.Map<List<ProfileDto>>(profiles);

@@ -8,7 +8,6 @@ public interface IProfileRepository
 {
     Task CreateAsync(Profile profile, CancellationToken token);
     Task<Profile> GetByIdAsync(Guid id, CancellationToken token);
-    Task<Profile> GetByNameAsync(string name, CancellationToken token);
     Task<List<Profile>> GetAllAsync(CancellationToken token);
     Task EstablishStatus(Guid Id, ActivityStatus status, CancellationToken token);
     Task UpdatePhotoAsync(Guid profileId, Photo photo, CancellationToken token);

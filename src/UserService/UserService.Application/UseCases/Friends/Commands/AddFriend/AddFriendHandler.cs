@@ -1,4 +1,5 @@
 using MediatR;
+using UserService.Application.Common.Exceptions;
 using UserService.Domain.Contracts;
 using UserService.Domain.Entities;
 using UserService.Domain.Enums;
@@ -25,8 +26,11 @@ public class AddFriendHandler:IRequestHandler<AddFriendCommand,Friendship>
         var profile=await _profileRepository.GetByIdAsync(request.ProfileId, token);
         var friend=await _profileRepository.GetByIdAsync(request.FriendId, token);
         
-        if(profile==null || friend==null)
-            throw new InvalidOperationException("Wrong profileId or FriendId");
+        if(profile==null)
+            throw new EntityNotFoundException(nameof(profile), request.ProfileId);
+        
+        if(friend==null)
+            throw new EntityNotFoundException(nameof(friend), request.FriendId);
         
         var friendship = new Friendship
         {

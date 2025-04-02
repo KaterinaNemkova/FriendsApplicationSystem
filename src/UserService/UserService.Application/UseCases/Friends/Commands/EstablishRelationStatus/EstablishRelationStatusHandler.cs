@@ -1,5 +1,6 @@
 using AutoMapper;
 using MediatR;
+using UserService.Application.Common.Exceptions;
 using UserService.Application.DTOs;
 using UserService.Domain.Contracts;
 
@@ -19,7 +20,7 @@ public class EstablishRelationStatusHandler:IRequestHandler<EstablishRelationSta
     {
         var friendship=await _friendshipRepository.GetFriendshipByIdAsync(request.FriendshipId, cancellationToken);
         if(friendship == null)
-            throw new KeyNotFoundException($"Friendship with id {request.FriendshipId} not found");
+            throw new EntityNotFoundException(nameof(friendship), request.FriendshipId);
         
         var newFriendship=await _friendshipRepository.EstablishRelationStatusAsync(friendship, request.Status, cancellationToken);
         return _mapper.Map<FriendshipDto>(newFriendship);

@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using MongoDB.Driver;
 using UserService.Domain.Contracts;
 using UserService.Domain.Entities;
@@ -24,11 +25,6 @@ public class ProfileRepository:IProfileRepository
         return await _profilesCollection.Find(p => p.Id == id).FirstOrDefaultAsync(token);
     }
     
-    public async Task<Profile> GetByNameAsync(string name, CancellationToken token)
-    {
-        return await _profilesCollection.Find(p => p.Name==name).FirstOrDefaultAsync(token);
-    }
-
     public async Task<List<Profile>> GetAllAsync(CancellationToken token)
     {
         return await _profilesCollection

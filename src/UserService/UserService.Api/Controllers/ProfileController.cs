@@ -8,7 +8,6 @@ using UserService.Application.UseCases.Profiles.Commands.UploadImage;
 using UserService.Application.UseCases.Profiles.Queries.GetAllByFilter;
 using UserService.Application.UseCases.Profiles.Queries.GetPhoto;
 using UserService.Application.UseCases.Profiles.Queries.GetProfileById;
-using UserService.Application.UseCases.Profiles.Queries.GetProfileByName;
 using UserService.Domain.Enums;
 
 namespace UserService.Api.Controllers;
@@ -36,13 +35,6 @@ public class ProfileController: ControllerBase
     public async Task<IActionResult> GetProfileById([FromRoute] Guid id, CancellationToken token)
     {
         var profile = await _mediator.Send(new GetProfileByIdQuery(id),token);
-        return Ok(profile);
-    }
-    
-    [HttpGet("name")]
-    public async Task<IActionResult> GetProfileByName([FromQuery] string name, CancellationToken token)
-    {
-        var profile = await _mediator.Send(new GetProfileByNameQuery(name), token);
         return Ok(profile);
     }
     
