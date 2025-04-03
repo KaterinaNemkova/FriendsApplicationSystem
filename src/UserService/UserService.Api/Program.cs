@@ -1,21 +1,34 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
+using UserService.Application.UseCases.Profiles.Commands.UploadImage;
+using UserService.Infrastructure;
+using UserService.Infrastructure.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+DotNetEnv.Env.Load();
 
-builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Configuration.AddEnvironmentVariables();
+
+builder.Services.AddDb(builder.Configuration);
+
+builder.Services.AddCloudinary(builder.Configuration);
+
+builder.Services.AddRepresentation();
+
+builder.Services.AddDependencies();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwaggerUI();
+    app.UseSwagger();
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
