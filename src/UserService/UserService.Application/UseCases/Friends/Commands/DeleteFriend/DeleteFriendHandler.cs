@@ -13,9 +13,9 @@ public class DeleteFriendHandler:IRequestHandler<DeleteFriendCommand>
     }
     public async Task Handle(DeleteFriendCommand request, CancellationToken token)
     {
-        var friendship=await _friendshipRepository.FriendshipExistsByIdsAsync(request.ProfileId,request.FriendId,token);
+        var friendship = await _friendshipRepository.FriendshipExistsByIdsAsync(request.ProfileId,request.FriendId,token);
         
-        if(friendship==null)
+        if(friendship == null)
             throw new NullReferenceException("You are not friends");
         
         await _friendshipRepository.DeleteFriendAsync(friendship, token);

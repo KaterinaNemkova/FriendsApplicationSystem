@@ -18,11 +18,12 @@ public class ChangeDateHandler:IRequestHandler<ChangeDateCommand,FriendshipDto>
     }
     public async Task<FriendshipDto> Handle(ChangeDateCommand request, CancellationToken cancellationToken)
     {
-        var friendship=await _friendshipRepository.GetFriendshipByIdAsync(request.FriendshipId, cancellationToken);
+        var friendship = await _friendshipRepository.GetFriendshipByIdAsync(request.FriendshipId, cancellationToken);
         if(friendship == null)
             throw new EntityNotFoundException(nameof(friendship), request.FriendshipId);
         
-        var newFriendship=await _friendshipRepository.ChangeDataOfInterrelations(friendship, request.Date, cancellationToken);
+        var newFriendship = await _friendshipRepository.ChangeDataOfInterrelations(friendship, request.Date, cancellationToken);
+        
         return _mapper.Map<FriendshipDto>(newFriendship);
     }
 }

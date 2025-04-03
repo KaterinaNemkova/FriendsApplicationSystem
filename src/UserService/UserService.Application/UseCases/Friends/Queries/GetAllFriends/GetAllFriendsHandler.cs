@@ -20,11 +20,12 @@ public class GetAllFriendsHandler:IRequestHandler<GetAllFriendsQuery,List<Profil
     }
     public async Task<List<ProfileDto>> Handle(GetAllFriendsQuery request, CancellationToken token)
     {
-        var profile=await _profileRepository.GetByIdAsync(request.ProfileId,token);
-        if(profile==null)
+        var profile = await _profileRepository.GetByIdAsync(request.ProfileId,token);
+        if(profile == null)
             throw new EntityNotFoundException(nameof(profile), request.ProfileId);
         
-        var profiles=await _friendshipRepository.GetAllFriendsAsync(profile.Id, token);
+        var profiles = await _friendshipRepository.GetAllFriendsAsync(profile.Id, token);
+        
         return _mapper.Map<List<ProfileDto>>(profiles);
     }
 }

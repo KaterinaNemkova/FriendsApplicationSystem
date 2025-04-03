@@ -11,10 +11,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="UseCases\Profiles\Commands\DeleteProfile\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="AutoMapper" Version="14.0.0" />
       <PackageReference Include="DotNetEnv" Version="3.1.1" />
       <PackageReference Include="MediatR" Version="12.4.1" />

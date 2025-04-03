@@ -18,7 +18,6 @@ public class FriendshipRepository:IFriendshipRepository
 
     public async Task AddFriendAsync(Friendship friendship, CancellationToken token)
     {
-        
         await _friendshipCollection.InsertOneAsync(friendship, token);
         
         var profileFilter = Builders<Profile>.Filter.Eq(p => p.Id, friendship.ProfileId);
@@ -53,7 +52,6 @@ public class FriendshipRepository:IFriendshipRepository
         return await _friendshipCollection.Find(filter).FirstOrDefaultAsync(cancellationToken);
     }
     
-
     public async Task DeleteFriendAsync(Friendship friendship, CancellationToken token)
     {
         var friendshipFilter = Builders<Friendship>.Filter.And(
@@ -71,7 +69,6 @@ public class FriendshipRepository:IFriendshipRepository
         var friendUpdate = Builders<Profile>.Update.Pull(p => p.FriendIds, friendship.ProfileId);
         await _profilesCollection.UpdateOneAsync(friendFilter, friendUpdate, cancellationToken: token);
     }
-    
     
     public async Task<Friendship> EstablishRelationStatusAsync(Friendship friendship, RelationStatus status, CancellationToken token)
     {

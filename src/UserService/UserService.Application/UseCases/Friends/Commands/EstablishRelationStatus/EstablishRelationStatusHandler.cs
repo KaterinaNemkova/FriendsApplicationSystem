@@ -18,11 +18,12 @@ public class EstablishRelationStatusHandler:IRequestHandler<EstablishRelationSta
     }
     public async Task<FriendshipDto> Handle(EstablishRelationStatusCommand request, CancellationToken cancellationToken)
     {
-        var friendship=await _friendshipRepository.GetFriendshipByIdAsync(request.FriendshipId, cancellationToken);
+        var friendship = await _friendshipRepository.GetFriendshipByIdAsync(request.FriendshipId, cancellationToken);
         if(friendship == null)
             throw new EntityNotFoundException(nameof(friendship), request.FriendshipId);
         
         var newFriendship=await _friendshipRepository.EstablishRelationStatusAsync(friendship, request.Status, cancellationToken);
+        
         return _mapper.Map<FriendshipDto>(newFriendship);
         
     }

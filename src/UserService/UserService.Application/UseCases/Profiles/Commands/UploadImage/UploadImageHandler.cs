@@ -17,14 +17,11 @@ public class UploadImageHandler:IRequestHandler<UploadImageCommand, ImageUploadR
     }
     public async Task<ImageUploadResult> Handle(UploadImageCommand request, CancellationToken cancellationToken)
     {
-
-        var profile=await _profileRepository.GetByIdAsync(request.ProfileId, cancellationToken);
+        var profile = await _profileRepository.GetByIdAsync(request.ProfileId, cancellationToken);
         var result = await _photoService.UploadPhoto(request.File);
         
         if (result.Error != null)
-        {
             throw new Exception("Ошибка загрузки фото: " + result.Error.Message);
-        }
 
         var photo = new Photo
         {
@@ -32,10 +29,10 @@ public class UploadImageHandler:IRequestHandler<UploadImageCommand, ImageUploadR
             Url = result.SecureUrl.AbsoluteUri,
             PublicId = result.PublicId,
             ProfileId = profile.Id,
-
         };
         
         await _profileRepository.UpdatePhotoAsync(request.ProfileId, photo, cancellationToken);
+        
         return result;
 
     }

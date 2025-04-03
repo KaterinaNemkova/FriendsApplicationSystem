@@ -19,17 +19,17 @@ public class AddFriendHandler:IRequestHandler<AddFriendCommand,Friendship>
         
     public async Task<Friendship> Handle(AddFriendCommand request, CancellationToken token)
     {
-        var exist= await _friendshipRepository.FriendshipExistsByIdsAsync(request.ProfileId, request.FriendId, token);
-        if(exist!=null)
+        var exist = await _friendshipRepository.FriendshipExistsByIdsAsync(request.ProfileId, request.FriendId, token);
+        if(exist != null)
             throw new InvalidOperationException("You are already friends");
         
-        var profile=await _profileRepository.GetByIdAsync(request.ProfileId, token);
+        var profile = await _profileRepository.GetByIdAsync(request.ProfileId, token);
         var friend=await _profileRepository.GetByIdAsync(request.FriendId, token);
         
-        if(profile==null)
+        if(profile == null)
             throw new EntityNotFoundException(nameof(profile), request.ProfileId);
         
-        if(friend==null)
+        if(friend == null)
             throw new EntityNotFoundException(nameof(friend), request.FriendId);
         
         var friendship = new Friendship
