@@ -67,12 +67,8 @@ public static class Extensions
 
     public static IServiceCollection AddRepresentation(this IServiceCollection services)
     {
-        services.AddControllers();
-        
         services.AddEndpointsApiExplorer();
         
-        //BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
-        services.AddSwaggerGen();
         services.AddSwaggerGen(c =>
         {
             c.EnableAnnotations(); 

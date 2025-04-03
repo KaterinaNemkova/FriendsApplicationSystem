@@ -20,7 +20,19 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
+      <PackageReference Include="MongoDB.Driver" Version="3.3.0" />
+      <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
+      <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="8.1.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="8.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EventsService.Application\EventsService.Application.csproj" />
+      <ProjectReference Include="..\EventsService.Domain\EventsService.Domain.csproj" />
     </ItemGroup>
 
 </Project>

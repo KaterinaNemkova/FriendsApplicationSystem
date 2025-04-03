@@ -9,7 +9,7 @@ namespace UserService.Infrastructure.Repositories;
 public class ProfileRepository:IProfileRepository
 {
     private readonly IMongoCollection<Profile> _profilesCollection;
-    
+
     public ProfileRepository(IMongoDatabase database)
     {
         _profilesCollection = database.GetCollection<Profile>("Profiles");
@@ -24,14 +24,14 @@ public class ProfileRepository:IProfileRepository
     {
         return await _profilesCollection.Find(p => p.Id == id).FirstOrDefaultAsync(token);
     }
-    
+
     public async Task<List<Profile>> GetAllAsync(CancellationToken token)
     {
         return await _profilesCollection
             .Find(_ => true)
             .ToListAsync(token);
     }
-    
+
     public async Task EstablishStatus(Guid Id, ActivityStatus status, CancellationToken token)
     {
         var filter = Builders<Profile>.Filter.Eq(p => p.Id, Id);
@@ -55,8 +55,5 @@ public class ProfileRepository:IProfileRepository
 
         await _profilesCollection.UpdateOneAsync(filter, update, cancellationToken: token);
     }
-
-   
-
 }
 
