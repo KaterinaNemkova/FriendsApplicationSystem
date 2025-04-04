@@ -2,6 +2,8 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using EventsService.Application.UseCases.Dates.CreateDate;
+
 namespace EventsService.Infrastructure;
 
 using EventsService.Application.Mappers;
@@ -17,6 +19,7 @@ public static class DependencyInjection
         services.AddScoped<IDateRepository, DateRepository>();
         services.AddScoped<IGoalRepository, GoalRepository>();
         services.AddAutoMapper(typeof(DateToDateDto));
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateDateHandler).Assembly));
         return services;
     }
 }

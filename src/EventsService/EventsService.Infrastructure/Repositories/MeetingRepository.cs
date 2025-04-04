@@ -28,7 +28,7 @@ public class MeetingRepository : IMeetingRepository
     {
         var filter = Builders<Meeting>.Filter.Where(predicate);
         var options = new FindOptions<Meeting, Meeting>();
-        var cursor= await _meetingsCollection.FindAsync(filter, options, cancellationToken);
+        var cursor = await _meetingsCollection.FindAsync(filter, options, cancellationToken);
         return await cursor.ToListAsync(cancellationToken);
     }
 
@@ -36,7 +36,7 @@ public class MeetingRepository : IMeetingRepository
     {
         var filter = Builders<Meeting>.Filter.Where(predicate);
         var options = new FindOptions<Meeting, Meeting>();
-        var cursor= await _meetingsCollection.FindAsync(filter, options, cancellationToken);
+        var cursor = await this._meetingsCollection.FindAsync(filter, options, cancellationToken);
         return await cursor.ToListAsync(cancellationToken);
     }
 

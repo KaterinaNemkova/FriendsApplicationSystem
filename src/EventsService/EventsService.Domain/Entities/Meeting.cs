@@ -7,4 +7,5 @@ public class Meeting : Event
     public Guid Author { get; set; } // ProfileId from UserService(who invite)
 
     public TimeOnly TimeOfMeet { get; set; }
+    
 }

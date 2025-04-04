@@ -30,6 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="UseCases\Dates\UpdateDate\" />
       <Folder Include="UseCases\Goals\" />
       <Folder Include="UseCases\Meetings\" />
     </ItemGroup>
