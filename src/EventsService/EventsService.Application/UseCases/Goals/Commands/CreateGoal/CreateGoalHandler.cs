@@ -4,20 +4,24 @@
 
 namespace EventsService.Application.UseCases.Goals.Commands.CreateGoal;
 
+using AutoMapper;
+using EventsService.Application.DTOs.Goals;
 using EventsService.Domain.Contracts;
 using EventsService.Domain.Entities;
 using MediatR;
 
-public class CreateGoalHandler : IRequestHandler<CreateGoalCommand, Goal>
+public class CreateGoalHandler : IRequestHandler<CreateGoalCommand, GoalDto>
 {
     private readonly IGoalRepository _goalRepository;
+    private readonly IMapper _mapper;
 
-    public CreateGoalHandler(IGoalRepository goalRepository)
+    public CreateGoalHandler(IGoalRepository goalRepository, IMapper mapper)
     {
         this._goalRepository = goalRepository;
+        this._mapper = mapper;
     }
 
-    public async Task<Goal> Handle(CreateGoalCommand request, CancellationToken cancellationToken)
+    public async Task<GoalDto> Handle(CreateGoalCommand request, CancellationToken cancellationToken)
     {
         var goal = new Goal
         {
@@ -30,6 +34,6 @@ public class CreateGoalHandler : IRequestHandler<CreateGoalCommand, Goal>
         };
 
         await this._goalRepository.CreateAsync(goal, cancellationToken);
-        return goal;
+        return this._mapper.Map<GoalDto>(goal);
     }
 }

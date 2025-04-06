@@ -20,6 +20,7 @@ public static class DependencyInjection
         services.AddScoped<IGoalRepository, GoalRepository>();
         services.AddAutoMapper(typeof(DateToDateDto));
         services.AddAutoMapper(typeof(UpdateDateDtoToDate));
+        services.AddAutoMapper(typeof(GoalToGoalDto));
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateDateHandler).Assembly));
         return services;
     }

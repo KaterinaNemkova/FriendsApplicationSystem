@@ -1,11 +1,6 @@
-// <copyright file="DateController.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
-using EventsService.Application.DTOs;
-
 namespace EventsService.Api.Controllers;
 
+using EventsService.Application.DTOs;
 using EventsService.Application.UseCases.Dates.Commands.CreateDate;
 using EventsService.Application.UseCases.Dates.Commands.DeleteDate;
 using EventsService.Application.UseCases.Dates.Commands.UpdateDate;

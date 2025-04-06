@@ -2,11 +2,9 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using MediatR;
-
 namespace EventsService.Application.UseCases.Goals.Commands.UpdateGoal;
 
-public record UpdateGoalCommand() : IRequest
-{
-    
-}
+using EventsService.Application.DTOs.Goals;
+using MediatR;
+
+public record UpdateGoalCommand(Guid Id, UpdateGoalDto GoalDto) : IRequest<GoalDto>;

@@ -2,12 +2,12 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-using AutoMapper;
-using EventsService.Domain.Contracts;
-
 namespace EventsService.Application.UseCases.Dates.Queries.GetAllDates;
 
+using AutoMapper;
+using EventsService.Application.Common.Extensions;
 using EventsService.Application.DTOs;
+using EventsService.Domain.Contracts;
 using MediatR;
 
 public class GetAllDatesHandler : IRequestHandler<GetAllDatesQuery, List<DateDto>>
@@ -26,7 +26,7 @@ public class GetAllDatesHandler : IRequestHandler<GetAllDatesQuery, List<DateDto
         var dates = await this._dateRepository.GetAllAsync(cancellationToken);
         if (dates is null)
         {
-            throw new NullReferenceException("No dates found");
+            throw new EntitiesNotFoundException();
         }
 
         return this._mapper.Map<List<DateDto>>(dates);

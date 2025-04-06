@@ -31,7 +31,6 @@
 
     <ItemGroup>
       <Folder Include="UseCases\Dates\Commands\" />
-      <Folder Include="UseCases\Meetings\" />
     </ItemGroup>
 
     <ItemGroup>
