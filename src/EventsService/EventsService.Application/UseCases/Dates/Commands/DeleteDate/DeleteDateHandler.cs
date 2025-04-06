@@ -6,7 +6,7 @@ using EventsService.Application.Common.Extensions;
 using EventsService.Domain.Contracts;
 using MediatR;
 
-namespace EventsService.Application.UseCases.Dates.DeleteDate;
+namespace EventsService.Application.UseCases.Dates.Commands.DeleteDate;
 
 public class DeleteDateHandler:IRequestHandler<DeleteDateCommand>
 {
@@ -14,7 +14,7 @@ public class DeleteDateHandler:IRequestHandler<DeleteDateCommand>
 
     public DeleteDateHandler(IDateRepository dateRepository)
     {
-        _dateRepository = dateRepository;
+        this._dateRepository = dateRepository;
     }
 
     public async Task Handle(DeleteDateCommand request, CancellationToken cancellationToken)

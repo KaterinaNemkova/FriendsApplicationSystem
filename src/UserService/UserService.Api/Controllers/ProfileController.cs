@@ -17,12 +17,12 @@ namespace UserService.Api.Controllers;
 public class ProfileController: ControllerBase
 {
     private readonly IMediator _mediator;
-    
+
     public ProfileController(IMediator mediator)
     {
         _mediator = mediator;
     }
-    
+
     [HttpPost("profile")]
     public async Task<IActionResult> CreateProfile([FromBody] CreateProfileCommand command, CancellationToken token)
     {
@@ -31,27 +31,27 @@ public class ProfileController: ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    
+
     public async Task<IActionResult> GetProfileById([FromRoute] Guid id, CancellationToken token)
     {
-        var profile = await _mediator.Send(new GetProfileByIdQuery(id),token);
+        var profile = await _mediator.Send(new GetProfileByIdQuery(id), token);
         return Ok(profile);
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> GetProfilesByFilter([FromQuery] GetAllByFilterQuery query, CancellationToken token)
     {
-        var profiles = await _mediator.Send(query,token);
+        var profiles = await _mediator.Send(query, token);
         return Ok(profiles);
     }
 
     [HttpGet("{id:guid}/photo")]
-    public async Task<IActionResult> GetProfilePhoto([FromRoute] Guid id,CancellationToken token)
+    public async Task<IActionResult> GetProfilePhoto([FromRoute] Guid id, CancellationToken token)
     {
-        var url = await _mediator.Send(new GetPhotoByIdQuery(id),token);
+        var url = await _mediator.Send(new GetPhotoByIdQuery(id), token);
         return Ok(url);
     }
-    
+
     [HttpPost("{profileId:guid}/photo")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadProfilePhoto([FromRoute] Guid profileId, [FromForm] UploadImageRequest request,CancellationToken token)
@@ -62,16 +62,16 @@ public class ProfileController: ControllerBase
 
     
     [HttpDelete("{profileId:guid}")]
-    public async Task<IActionResult> DeletePhoto([FromRoute] Guid profileId,CancellationToken token)
+    public async Task<IActionResult> DeletePhoto([FromRoute] Guid profileId, CancellationToken token)
     {
         var result = await _mediator.Send(new DeleteImageCommand(profileId), token);
         return Ok(result);
     }
 
     [HttpPost("{profileId:guid}/status")]
-    public async Task<IActionResult> EstablishStatus([FromRoute] Guid profileId, [FromQuery]ActivityStatus activityStatus,CancellationToken token)
+    public async Task<IActionResult> EstablishStatus([FromRoute] Guid profileId, [FromQuery] ActivityStatus activityStatus,CancellationToken token)
     {
-        await _mediator.Send(new EstablishStatusCommand(profileId,activityStatus), token);
+        await _mediator.Send(new EstablishStatusCommand(profileId, activityStatus), token);
         return Ok();
     }
 }

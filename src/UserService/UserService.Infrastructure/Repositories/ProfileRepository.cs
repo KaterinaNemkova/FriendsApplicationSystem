@@ -12,12 +12,12 @@ public class ProfileRepository:IProfileRepository
 
     public ProfileRepository(IMongoDatabase database)
     {
-        _profilesCollection = database.GetCollection<Profile>("Profiles");
+        this._profilesCollection = database.GetCollection<Profile>("Profiles");
     }
 
     public async Task CreateAsync(Profile profile, CancellationToken token)
     {
-        await _profilesCollection.InsertOneAsync(profile, token);
+        await this._profilesCollection.InsertOneAsync(profile, token);
     }
 
     public async Task<Profile> GetByIdAsync(Guid id, CancellationToken token)

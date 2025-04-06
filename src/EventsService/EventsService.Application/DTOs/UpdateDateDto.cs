@@ -1,9 +1,11 @@
+// <copyright file="UpdateDateDto.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
 namespace EventsService.Application.DTOs;
 
-public class DateDto
+public class UpdateDateDto
 {
-    public Guid Id { get; set; }
-
     public DateOnly ImportantDate { get; set; }
 
     public string Title { get; set; }

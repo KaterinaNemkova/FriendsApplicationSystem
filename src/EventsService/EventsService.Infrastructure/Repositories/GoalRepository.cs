@@ -8,17 +8,9 @@ using EventsService.Domain.Contracts;
 using EventsService.Domain.Entities;
 using MongoDB.Driver;
 
-public class GoalRepository : IGoalRepository
+public class GoalRepository : Repository<Goal>, IGoalRepository
 {
-    private readonly IMongoCollection<Goal> _goalsCollection;
-
-    public GoalRepository(IMongoDatabase database)
+    public GoalRepository(IMongoCollection<Goal> collection) : base(collection)
     {
-        _goalsCollection = database.GetCollection<Goal>("Goals");
-    }
-
-    public async Task CreateAsync(Goal goal, CancellationToken cancellationToken)
-    {
-        await _goalsCollection.InsertOneAsync(goal, cancellationToken: cancellationToken);
     }
 }

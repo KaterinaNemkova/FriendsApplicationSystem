@@ -1,4 +1,4 @@
-namespace EventsService.Application.UseCases.Dates.CreateDate;
+namespace EventsService.Application.UseCases.Dates.Commands.CreateDate;
 
 using AutoMapper;
 using EventsService.Application.DTOs;
@@ -25,7 +25,7 @@ public class CreateDateHandler : IRequestHandler<CreateDateCommand, DateDto>
             ImportantDate = request.ImportantDate,
             Title = request.Title,
             Description = request.Description,
-            ProfilesIds = request.ParticipantIds,
+            ParticipantIds = request.ParticipantIds,
         };
 
         await this._dateRepository.CreateAsync(date, cancellationToken);

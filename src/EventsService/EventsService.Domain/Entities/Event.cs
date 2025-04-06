@@ -1,10 +1,8 @@
 namespace EventsService.Domain.Entities;
 
-public abstract class Event
+public abstract class Event : Entity
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
-
-    public List<Guid> ProfilesIds { get; set; } = []; // from UserService
+    public List<Guid> ParticipantIds { get; set; } = []; // from UserService
 
     public string Title { get; set; } = string.Empty;
 

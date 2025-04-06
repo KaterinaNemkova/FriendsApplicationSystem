@@ -6,7 +6,4 @@ namespace EventsService.Domain.Contracts;
 
 using EventsService.Domain.Entities;
 
-public interface IGoalRepository
-{
-    Task CreateAsync(Goal goal, CancellationToken cancellationToken);
-}
+public interface IGoalRepository : IRepository<Goal>;

@@ -19,7 +19,7 @@ public static class Extensions
             {
                 cm.MapIdMember(c => c.Id)
                     .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
-                cm.MapMember(c => c.ProfilesIds)
+                cm.MapMember(c => c.ParticipantIds)
                     .SetSerializer(
                         new EnumerableInterfaceImplementerSerializer<List<Guid>>(
                         new GuidSerializer(GuidRepresentation.Standard)));

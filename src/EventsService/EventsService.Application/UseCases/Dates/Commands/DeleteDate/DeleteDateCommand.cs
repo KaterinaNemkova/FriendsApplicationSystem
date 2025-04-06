@@ -2,7 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace EventsService.Application.UseCases.Dates.DeleteDate;
+namespace EventsService.Application.UseCases.Dates.Commands.DeleteDate;
 
 using MediatR;
 

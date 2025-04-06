@@ -27,11 +27,10 @@ public class CreateProfileHandler : IRequestHandler<CreateProfileCommand, Profil
             UserId = request.UserId,
             Name = request.Name,
             ActivityStatus = ActivityStatus.Busy,
-
         };
 
         await _profileRepository.CreateAsync(profile, cancellationToken);
-        
+
         return _mapper.Map<ProfileDto>(profile);
     }
 }

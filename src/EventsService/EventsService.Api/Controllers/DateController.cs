@@ -2,10 +2,15 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+using EventsService.Application.DTOs;
+
 namespace EventsService.Api.Controllers;
 
-using EventsService.Application.UseCases.Dates.CreateDate;
-using EventsService.Application.UseCases.Dates.DeleteDate;
+using EventsService.Application.UseCases.Dates.Commands.CreateDate;
+using EventsService.Application.UseCases.Dates.Commands.DeleteDate;
+using EventsService.Application.UseCases.Dates.Commands.UpdateDate;
+using EventsService.Application.UseCases.Dates.Queries.GetAllDates;
+using EventsService.Application.UseCases.Dates.UpdateDate;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,6 +41,23 @@ public class DateController : ControllerBase
         await this._mediator.Send(new DeleteDateCommand(id), cancellationToken);
 
         return this.Ok();
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateDate(
+        [FromRoute] Guid id,
+        [FromBody] UpdateDateDto updateDateDto,
+        CancellationToken cancellationToken)
+    {
+        var date = await this._mediator.Send(new UpdateDateCommand(id, updateDateDto), cancellationToken);
+        return this.Ok(date);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAllDates(CancellationToken cancellationToken)
+    {
+        var dates = await this._mediator.Send(new GetAllDatesQuery(), cancellationToken);
+        return this.Ok(dates);
     }
 
 }
