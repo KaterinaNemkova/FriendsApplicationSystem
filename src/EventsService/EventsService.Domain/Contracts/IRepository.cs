@@ -18,4 +18,6 @@ public interface IRepository<T> where T : Entity
 
     Task<List<T>> GetAllAsync(CancellationToken cancellationToken);
 
+    Task<List<T>> GetAllMyAsync(Guid id, CancellationToken cancellationToken);
+
 }

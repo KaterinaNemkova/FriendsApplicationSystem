@@ -3,4 +3,4 @@ namespace EventsService.Application.UseCases.Meetings.Queries.GetAllFutureMeetin
 using EventsService.Application.DTOs.Meetings;
 using MediatR;
 
-public record GetAllFutureMeetingsQuery() : IRequest<List<MeetingDto>>;
+public record GetAllFutureMeetingsQuery(Guid Id) : IRequest<List<MeetingDto>>;

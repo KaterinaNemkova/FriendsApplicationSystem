@@ -43,4 +43,9 @@ public class Repository<T> : IRepository<T> where T : Entity
         return await this._collection.Find(_ => true).ToListAsync(cancellationToken);
     }
 
+    public async Task<List<T>> GetAllMyAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var filter = Builders<T>.Filter.AnyEq("ParticipantIds", id);
+        return await this._collection.Find(filter).ToListAsync(cancellationToken);
+    }
 }

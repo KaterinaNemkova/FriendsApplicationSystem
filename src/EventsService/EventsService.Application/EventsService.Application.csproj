@@ -31,6 +31,9 @@
 
     <ItemGroup>
       <Folder Include="UseCases\Dates\Commands\" />
+      <Folder Include="UseCases\Dates\Queries\GetAllMyDates\" />
+      <Folder Include="UseCases\Goals\Queries\GetAllMyGoals\" />
+      <Folder Include="Validators\" />
     </ItemGroup>
 
     <ItemGroup>

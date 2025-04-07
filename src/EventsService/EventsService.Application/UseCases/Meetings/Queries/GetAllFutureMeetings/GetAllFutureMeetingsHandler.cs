@@ -19,7 +19,7 @@ public class GetAllFutureMeetingsHandler : IRequestHandler<GetAllFutureMeetingsQ
 
     public async Task<List<MeetingDto>> Handle(GetAllFutureMeetingsQuery request, CancellationToken cancellationToken)
     {
-        var meetings = await this._meetingRepository.GetAllAsync(cancellationToken);
+        var meetings = await this._meetingRepository.GetAllMyAsync(request.Id, cancellationToken);
         if (meetings == null)
         {
             throw new EntitiesNotFoundException();

@@ -1,3 +1,5 @@
+using EventsService.Application.UseCases.Meetings.Queries.GetAllMyMeetings;
+
 namespace EventsService.Api.Controllers;
 
 using EventsService.Application.DTOs.Meetings;
@@ -57,17 +59,24 @@ public class MeetingController : ControllerBase
         return this.Ok(result);
     }
 
-    [HttpGet("future")]
-    public async Task<IActionResult> GetFutureMeetings(CancellationToken cancellationToken)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetAllMyMeetings([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var result = await this._mediator.Send(new GetAllFutureMeetingsQuery(), cancellationToken);
+        var result = await this._mediator.Send(new GetAllMyMeetingsQuery(id), cancellationToken);
         return this.Ok(result);
     }
 
-    [HttpGet("past")]
-    public async Task<IActionResult> GetPastMeetings(CancellationToken cancellationToken)
+    [HttpGet("future/{id:guid}")]
+    public async Task<IActionResult> GetFutureMeetings([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var result = await this._mediator.Send(new GetAllPastMeetingsQuery(), cancellationToken);
+        var result = await this._mediator.Send(new GetAllFutureMeetingsQuery(id), cancellationToken);
+        return this.Ok(result);
+    }
+
+    [HttpGet("past/{id:guid}")]
+    public async Task<IActionResult> GetPastMeetings([FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        var result = await this._mediator.Send(new GetAllPastMeetingsQuery(id), cancellationToken);
         return this.Ok(result);
     }
 }
