@@ -12,20 +12,40 @@ public static class Extensions
 {
     private static void RegisterMappings()
     {
-        if (!BsonClassMap.IsClassMapRegistered(typeof(Event)))
+        if (!BsonClassMap.IsClassMapRegistered(typeof(Entity)))
         {
-            BsonClassMap.RegisterClassMap<Event>(
+            BsonClassMap.RegisterClassMap<Entity>(
                 cm =>
             {
                 cm.MapIdMember(c => c.Id)
                     .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
-                cm.MapMember(c => c.ParticipantIds)
-                    .SetSerializer(
-                        new EnumerableInterfaceImplementerSerializer<List<Guid>>(
-                        new GuidSerializer(GuidRepresentation.Standard)));
-                cm.MapMember(c => c.Title);
-                cm.MapMember(c => c.Description);
             });
+        }
+
+        if (!BsonClassMap.IsClassMapRegistered(typeof(Event)))
+        {
+            BsonClassMap.RegisterClassMap<Event>(
+                cm =>
+                {
+                    cm.MapMember(c => c.ParticipantIds)
+                        .SetSerializer(
+                            new EnumerableInterfaceImplementerSerializer<List<Guid>>(
+                                new GuidSerializer(GuidRepresentation.Standard)));
+                    cm.MapMember(c => c.Title);
+                    cm.MapMember(c => c.Description);
+                });
+        }
+
+        if (!BsonClassMap.IsClassMapRegistered(typeof(Meeting)))
+        {
+            BsonClassMap.RegisterClassMap<Meeting>(
+                cm =>
+                {
+                    cm.AutoMap();
+
+                    cm.MapMember(c => c.Author)
+                        .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
+                });
         }
     }
 
@@ -40,6 +60,17 @@ public static class Extensions
             var client = sp.GetRequiredService<IMongoClient>();
             return client.GetDatabase("EventsDatabase");
         });
+        services.AddScoped(
+            sp =>
+            sp.GetRequiredService<IMongoDatabase>().GetCollection<Date>("Dates"));
+
+        services.AddScoped(
+            sp =>
+            sp.GetRequiredService<IMongoDatabase>().GetCollection<Meeting>("Meetings"));
+
+        services.AddScoped(
+            sp =>
+            sp.GetRequiredService<IMongoDatabase>().GetCollection<Goal>("Goals"));
         RegisterMappings();
         return services;
     }

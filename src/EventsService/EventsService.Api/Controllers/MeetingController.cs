@@ -4,7 +4,9 @@ using EventsService.Application.DTOs.Meetings;
 using EventsService.Application.UseCases.Meetings.Commands.CreateMeeting;
 using EventsService.Application.UseCases.Meetings.Commands.DeleteMeeting;
 using EventsService.Application.UseCases.Meetings.Commands.UpdateMeeting;
+using EventsService.Application.UseCases.Meetings.Queries.GetAllFutureMeetings;
 using EventsService.Application.UseCases.Meetings.Queries.GetAllMeetings;
+using EventsService.Application.UseCases.Meetings.Queries.GetAllPastMeetings;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -52,6 +54,20 @@ public class MeetingController : ControllerBase
     public async Task<IActionResult> GetAllMeetings(CancellationToken cancellationToken)
     {
         var result = await this._mediator.Send(new GetAllMeetingsQuery(), cancellationToken);
+        return this.Ok(result);
+    }
+
+    [HttpGet("future")]
+    public async Task<IActionResult> GetFutureMeetings(CancellationToken cancellationToken)
+    {
+        var result = await this._mediator.Send(new GetAllFutureMeetingsQuery(), cancellationToken);
+        return this.Ok(result);
+    }
+
+    [HttpGet("past")]
+    public async Task<IActionResult> GetPastMeetings(CancellationToken cancellationToken)
+    {
+        var result = await this._mediator.Send(new GetAllPastMeetingsQuery(), cancellationToken);
         return this.Ok(result);
     }
 }

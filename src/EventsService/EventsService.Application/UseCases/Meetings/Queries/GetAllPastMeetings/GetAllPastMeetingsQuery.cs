@@ -1,6 +1,6 @@
 namespace EventsService.Application.UseCases.Meetings.Queries.GetAllPastMeetings;
 
-public class GetAllPastMeetingsQuery
-{
-    
-}
+using EventsService.Application.DTOs.Meetings;
+using MediatR;
+
+public record GetAllPastMeetingsQuery : IRequest<List<MeetingDto>>;

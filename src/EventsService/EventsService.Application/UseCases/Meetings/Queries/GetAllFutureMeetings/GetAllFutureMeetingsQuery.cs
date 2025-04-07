@@ -1,6 +1,6 @@
 namespace EventsService.Application.UseCases.Meetings.Queries.GetAllFutureMeetings;
 
-public class GetAllFutureMeetingsQuery
-{
-    
-}
+using EventsService.Application.DTOs.Meetings;
+using MediatR;
+
+public record GetAllFutureMeetingsQuery() : IRequest<List<MeetingDto>>;

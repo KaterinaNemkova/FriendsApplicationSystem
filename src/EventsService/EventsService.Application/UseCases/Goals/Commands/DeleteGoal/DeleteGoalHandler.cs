@@ -1,7 +1,3 @@
-// <copyright file="DeleteGoalHandler.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
 namespace EventsService.Application.UseCases.Goals.Commands.DeleteGoal;
 
 using EventsService.Application.Common.Extensions;
@@ -11,6 +7,11 @@ using MediatR;
 public class DeleteGoalHandler : IRequestHandler<DeleteGoalCommand>
 {
     private readonly IGoalRepository _goalRepository;
+
+    public DeleteGoalHandler(IGoalRepository goalRepository)
+    {
+        this._goalRepository = goalRepository;
+    }
 
     public async Task Handle(DeleteGoalCommand request, CancellationToken cancellationToken)
     {
