@@ -8,10 +8,11 @@ using AutoMapper;
 using EventsService.Application.DTOs.Meetings;
 using EventsService.Domain.Entities;
 
-public class MeetingToMeetingDto : Profile
+public class MeetingMapper : Profile
 {
-    public MeetingToMeetingDto()
+    public MeetingMapper()
     {
         this.CreateMap<Meeting, MeetingDto>().ReverseMap();
+        this.CreateMap<Meeting, MeetingRequestDto>().ReverseMap();
     }
 }

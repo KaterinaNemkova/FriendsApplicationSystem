@@ -8,10 +8,11 @@ using AutoMapper;
 using EventsService.Application.DTOs;
 using EventsService.Domain.Entities;
 
-public class DateToDateDto : Profile
+public class DateMapper : Profile
 {
-    public DateToDateDto()
+    public DateMapper()
     {
         this.CreateMap<Date, DateDto>().ReverseMap();
+        this.CreateMap<Date, DateRequestDto>().ReverseMap();
     }
 }

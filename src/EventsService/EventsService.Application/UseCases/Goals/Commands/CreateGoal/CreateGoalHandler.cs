@@ -1,7 +1,3 @@
-// <copyright file="CreateGoalHandler.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
 namespace EventsService.Application.UseCases.Goals.Commands.CreateGoal;
 
 using AutoMapper;
@@ -23,17 +19,12 @@ public class CreateGoalHandler : IRequestHandler<CreateGoalCommand, GoalDto>
 
     public async Task<GoalDto> Handle(CreateGoalCommand request, CancellationToken cancellationToken)
     {
-        var goal = new Goal
-        {
-            Id = Guid.NewGuid(),
-            Description = request.Description,
-            Title = request.Title,
-            ParticipantIds = request.ParticipantIds,
-            TargetDate = request.TargetDate,
-            Actions = request.Actions,
-        };
+        var goal = this._mapper.Map<Goal>(request.Dto);
+
+        goal.Id = Guid.NewGuid();
 
         await this._goalRepository.CreateAsync(goal, cancellationToken);
+
         return this._mapper.Map<GoalDto>(goal);
     }
 }

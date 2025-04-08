@@ -1,12 +1,8 @@
-// <copyright file="DeleteDateHandler.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
+namespace EventsService.Application.UseCases.Dates.Commands.DeleteDate;
 
 using EventsService.Application.Common.Extensions;
 using EventsService.Domain.Contracts;
 using MediatR;
-
-namespace EventsService.Application.UseCases.Dates.Commands.DeleteDate;
 
 public class DeleteDateHandler:IRequestHandler<DeleteDateCommand>
 {

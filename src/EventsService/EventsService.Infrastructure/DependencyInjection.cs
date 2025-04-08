@@ -1,6 +1,6 @@
-// <copyright file="DependencyInjection.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
+using System.Reflection;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 namespace EventsService.Infrastructure;
 
@@ -21,11 +21,12 @@ public static class DependencyInjection
         services.AddScoped<IMeetingRepository, MeetingRepository>();
         services.AddScoped<IDateRepository, DateRepository>();
         services.AddScoped<IGoalRepository, GoalRepository>();
-        services.AddAutoMapper(typeof(DateToDateDto));
-        services.AddAutoMapper(typeof(UpdateDateDtoToDate));
-        services.AddAutoMapper(typeof(GoalToGoalDto));
-        services.AddAutoMapper(typeof(MeetingToMeetingDto));
+        services.AddAutoMapper(typeof(DateMapper));
+        services.AddAutoMapper(typeof(GoalMapper));
+        services.AddAutoMapper(typeof(MeetingMapper));
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateDateHandler).Assembly));
+        services.AddFluentValidationAutoValidation();
+        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         return services;
     }
 }

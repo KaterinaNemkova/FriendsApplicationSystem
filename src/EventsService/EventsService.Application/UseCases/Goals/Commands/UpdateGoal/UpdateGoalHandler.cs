@@ -1,7 +1,3 @@
-// <copyright file="UpdateGoalHandler.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
 namespace EventsService.Application.UseCases.Goals.Commands.UpdateGoal;
 
 using AutoMapper;
@@ -30,16 +26,11 @@ public class UpdateGoalHandler : IRequestHandler<UpdateGoalCommand, GoalDto>
            throw new EntityNotFoundException(nameof(goal), request.Id);
        }
 
-       var newGoal = new Goal
-       {
-           Id = request.Id,
-           Title = request.GoalDto.Title,
-           Description = request.GoalDto.Description,
-           ParticipantIds = request.GoalDto.ParticipantIds,
-           TargetDate = request.GoalDto.TargetDate,
-           Actions = request.GoalDto.Actions,
-       };
+       var newGoal = this._mapper.Map<Goal>(request.Dto);
+       newGoal.Id = request.Id;
+
        await this._goalRepository.UpdateAsync(newGoal, cancellationToken);
+
        return this._mapper.Map<GoalDto>(newGoal);
     }
 }

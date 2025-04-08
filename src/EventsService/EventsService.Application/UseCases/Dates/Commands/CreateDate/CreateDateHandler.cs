@@ -19,14 +19,8 @@ public class CreateDateHandler : IRequestHandler<CreateDateCommand, DateDto>
 
     public async Task<DateDto> Handle(CreateDateCommand request, CancellationToken cancellationToken)
     {
-        Date date = new Date
-        {
-            Id = Guid.NewGuid(),
-            ImportantDate = request.ImportantDate,
-            Title = request.Title,
-            Description = request.Description,
-            ParticipantIds = request.ParticipantIds,
-        };
+        var date = this._mapper.Map<Date>(request.Dto);
+        date.Id = Guid.NewGuid();
 
         await this._dateRepository.CreateAsync(date, cancellationToken);
 

@@ -1,6 +1,6 @@
 namespace EventsService.Application.DTOs.Meetings;
 
-public class UpdateMeetingDto
+public class MeetingRequestDto
 {
     public string Title { get; set; }
 

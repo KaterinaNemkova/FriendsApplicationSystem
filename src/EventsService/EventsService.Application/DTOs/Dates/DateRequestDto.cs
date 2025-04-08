@@ -4,7 +4,7 @@
 
 namespace EventsService.Application.DTOs;
 
-public class UpdateDateDto
+public class DateRequestDto
 {
     public DateOnly ImportantDate { get; set; }
 

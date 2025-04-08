@@ -1,17 +1,14 @@
-// <copyright file="GoalToGoalDto.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
 namespace EventsService.Application.Mappers;
 
 using AutoMapper;
 using EventsService.Application.DTOs.Goals;
 using EventsService.Domain.Entities;
 
-public class GoalToGoalDto : Profile
+public class GoalMapper : Profile
 {
-    public GoalToGoalDto()
+    public GoalMapper()
     {
         this.CreateMap<Goal, GoalDto>().ReverseMap();
+        this.CreateMap<Goal, GoalRequestDto>().ReverseMap();
     }
 }

@@ -5,11 +5,12 @@ using EventsService.Application.UseCases.Goals.Commands.CreateGoal;
 using EventsService.Application.UseCases.Goals.Commands.DeleteGoal;
 using EventsService.Application.UseCases.Goals.Commands.UpdateGoal;
 using EventsService.Application.UseCases.Goals.Queries.GetAllGoals;
+using EventsService.Application.UseCases.Goals.Queries.GetAllMyGoals;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/goals")]
 
 public class GoalController : ControllerBase
 {
@@ -41,10 +42,10 @@ public class GoalController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateGoal(
         [FromRoute] Guid id,
-        [FromBody] UpdateGoalDto updateDateDto,
+        [FromBody] GoalRequestDto dateRequestDto,
         CancellationToken cancellationToken)
     {
-        var result = await this._mediator.Send(new UpdateGoalCommand(id, updateDateDto), cancellationToken);
+        var result = await this._mediator.Send(new UpdateGoalCommand(id, dateRequestDto), cancellationToken);
         return this.Ok(result);
     }
 
@@ -52,6 +53,13 @@ public class GoalController : ControllerBase
     public async Task<IActionResult> GetAllGoals(CancellationToken cancellationToken)
     {
         var result = await this._mediator.Send(new GetAllGoalsQuery(), cancellationToken);
+        return this.Ok(result);
+    }
+
+    [HttpGet("my/{id}")]
+    public async Task<IActionResult> GetMyGoals([FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        var result = await this._mediator.Send(new GetAllMyGoalsQuery(id), cancellationToken);
         return this.Ok(result);
     }
 }

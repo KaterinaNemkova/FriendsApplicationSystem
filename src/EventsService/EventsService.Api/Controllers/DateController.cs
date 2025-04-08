@@ -5,12 +5,13 @@ using EventsService.Application.UseCases.Dates.Commands.CreateDate;
 using EventsService.Application.UseCases.Dates.Commands.DeleteDate;
 using EventsService.Application.UseCases.Dates.Commands.UpdateDate;
 using EventsService.Application.UseCases.Dates.Queries.GetAllDates;
+using EventsService.Application.UseCases.Dates.Queries.GetAllMyDates;
 using EventsService.Application.UseCases.Dates.UpdateDate;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("api/controller")]
+[Route("api/dates")]
 public class DateController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -38,13 +39,13 @@ public class DateController : ControllerBase
         return this.Ok();
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateDate(
         [FromRoute] Guid id,
-        [FromBody] UpdateDateDto updateDateDto,
+        [FromBody] DateRequestDto dateRequestDto,
         CancellationToken cancellationToken)
     {
-        var date = await this._mediator.Send(new UpdateDateCommand(id, updateDateDto), cancellationToken);
+        var date = await this._mediator.Send(new UpdateDateCommand(id, dateRequestDto), cancellationToken);
         return this.Ok(date);
     }
 
@@ -52,6 +53,13 @@ public class DateController : ControllerBase
     public async Task<IActionResult> GetAllDates(CancellationToken cancellationToken)
     {
         var dates = await this._mediator.Send(new GetAllDatesQuery(), cancellationToken);
+        return this.Ok(dates);
+    }
+
+    [HttpGet("my/{id:guid}")]
+    public async Task<IActionResult> GetAllMyDates([FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        var dates = await this._mediator.Send(new GetAllMyDatesQuery(id), cancellationToken);
         return this.Ok(dates);
     }
 

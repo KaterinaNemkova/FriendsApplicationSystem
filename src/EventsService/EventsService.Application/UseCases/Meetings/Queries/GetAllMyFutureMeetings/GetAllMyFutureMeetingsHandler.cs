@@ -6,18 +6,18 @@ using EventsService.Application.DTOs.Meetings;
 using EventsService.Domain.Contracts;
 using MediatR;
 
-public class GetAllFutureMeetingsHandler : IRequestHandler<GetAllFutureMeetingsQuery, List<MeetingDto>>
+public class GetAllMyFutureMeetingsHandler : IRequestHandler<GetAllMyFutureMeetingsQuery, List<MeetingDto>>
 {
     private readonly IMeetingRepository _meetingRepository;
     private readonly IMapper _mapper;
 
-    public GetAllFutureMeetingsHandler(IMeetingRepository meetingRepository, IMapper mapper)
+    public GetAllMyFutureMeetingsHandler(IMeetingRepository meetingRepository, IMapper mapper)
     {
         this._meetingRepository = meetingRepository;
         this._mapper = mapper;
     }
 
-    public async Task<List<MeetingDto>> Handle(GetAllFutureMeetingsQuery request, CancellationToken cancellationToken)
+    public async Task<List<MeetingDto>> Handle(GetAllMyFutureMeetingsQuery request, CancellationToken cancellationToken)
     {
         var meetings = await this._meetingRepository.GetAllMyAsync(request.Id, cancellationToken);
         if (meetings == null)
