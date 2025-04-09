@@ -20,11 +20,8 @@ public class UpdateGoalHandler : IRequestHandler<UpdateGoalCommand, GoalDto>
 
     public async Task<GoalDto> Handle(UpdateGoalCommand request, CancellationToken cancellationToken)
     {
-       var goal = await this._goalRepository.GetByIdAsync(request.Id, cancellationToken);
-       if (goal == null)
-       {
-           throw new EntityNotFoundException(nameof(goal), request.Id);
-       }
+       var goal = await this._goalRepository.GetByIdAsync(request.Id, cancellationToken)
+           ?? throw new EntityNotFoundException(nameof(Goal), request.Id);
 
        var newGoal = this._mapper.Map<Goal>(request.Dto);
        newGoal.Id = request.Id;

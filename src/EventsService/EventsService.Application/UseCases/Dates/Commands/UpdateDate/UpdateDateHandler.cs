@@ -20,11 +20,8 @@ public class UpdateDateHandler : IRequestHandler<UpdateDateCommand, DateDto>
 
     public async Task<DateDto> Handle(UpdateDateCommand request, CancellationToken cancellationToken)
     {
-        var date = await this._dateRepository.GetByIdAsync(request.Id, cancellationToken);
-        if (date == null)
-        {
-            throw new EntityNotFoundException(nameof(Date), request.Id);
-        }
+        var date = await this._dateRepository.GetByIdAsync(request.Id, cancellationToken)
+            ?? throw new EntityNotFoundException(nameof(Date), request.Id);
 
         var newDate = this._mapper.Map<Date>(request.Dto);
         newDate.Id = request.Id;

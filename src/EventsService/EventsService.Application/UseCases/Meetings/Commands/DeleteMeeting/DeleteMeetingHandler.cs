@@ -2,6 +2,7 @@ namespace EventsService.Application.UseCases.Meetings.Commands.DeleteMeeting;
 
 using EventsService.Application.Common.Extensions;
 using EventsService.Domain.Contracts;
+using EventsService.Domain.Entities;
 using MediatR;
 
 public class DeleteMeetingHandler : IRequestHandler<DeleteMeetingCommand>
@@ -15,11 +16,8 @@ public class DeleteMeetingHandler : IRequestHandler<DeleteMeetingCommand>
 
     public async Task Handle(DeleteMeetingCommand request, CancellationToken cancellationToken)
     {
-        var meeting = await this._meetingRepository.GetByIdAsync(request.Id, cancellationToken);
-        if (meeting == null)
-        {
-            throw new EntityNotFoundException(nameof(meeting), request.Id);
-        }
+        var meeting = await this._meetingRepository.GetByIdAsync(request.Id, cancellationToken)
+        ?? throw new EntityNotFoundException(nameof(Meeting), request.Id);
 
         await this._meetingRepository.DeleteAsync(request.Id, cancellationToken);
     }

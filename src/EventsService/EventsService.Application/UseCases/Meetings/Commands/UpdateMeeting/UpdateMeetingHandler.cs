@@ -20,11 +20,8 @@ public class UpdateMeetingHandler : IRequestHandler<UpdateMeetingCommand, Meetin
 
     public async Task<MeetingDto> Handle(UpdateMeetingCommand request, CancellationToken cancellationToken)
     {
-        var meeting = await this._meetingRepository.GetByIdAsync(request.Id, cancellationToken);
-        if (meeting == null)
-        {
-            throw new EntityNotFoundException(nameof(meeting), request.Id);
-        }
+        var meeting = await this._meetingRepository.GetByIdAsync(request.Id, cancellationToken)
+            ?? throw new EntityNotFoundException(nameof(Meeting), request.Id);
 
         var newMeeting = this._mapper.Map<Meeting>(request.Dto);
         newMeeting.Id = request.Id;

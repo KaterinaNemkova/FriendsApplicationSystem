@@ -2,6 +2,7 @@ namespace EventsService.Application.UseCases.Goals.Commands.DeleteGoal;
 
 using EventsService.Application.Common.Extensions;
 using EventsService.Domain.Contracts;
+using EventsService.Domain.Entities;
 using MediatR;
 
 public class DeleteGoalHandler : IRequestHandler<DeleteGoalCommand>
@@ -15,11 +16,8 @@ public class DeleteGoalHandler : IRequestHandler<DeleteGoalCommand>
 
     public async Task Handle(DeleteGoalCommand request, CancellationToken cancellationToken)
     {
-       var goal = await this._goalRepository.GetByIdAsync(request.Id, cancellationToken);
-       if (goal == null)
-       {
-           throw new EntityNotFoundException(nameof(goal), request.Id);
-       }
+       var goal = await this._goalRepository.GetByIdAsync(request.Id, cancellationToken)
+           ?? throw new EntityNotFoundException(nameof(Goal), request.Id);
 
        await this._goalRepository.DeleteAsync(request.Id, cancellationToken);
     }

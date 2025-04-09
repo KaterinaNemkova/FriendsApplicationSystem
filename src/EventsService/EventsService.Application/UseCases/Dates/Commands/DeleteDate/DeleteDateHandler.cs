@@ -2,6 +2,7 @@ namespace EventsService.Application.UseCases.Dates.Commands.DeleteDate;
 
 using EventsService.Application.Common.Extensions;
 using EventsService.Domain.Contracts;
+using EventsService.Domain.Entities;
 using MediatR;
 
 public class DeleteDateHandler : IRequestHandler<DeleteDateCommand>
@@ -15,11 +16,8 @@ public class DeleteDateHandler : IRequestHandler<DeleteDateCommand>
 
     public async Task Handle(DeleteDateCommand request, CancellationToken cancellationToken)
     {
-        var date = await this._dateRepository.GetByIdAsync(request.Id, cancellationToken);
-        if (date == null)
-        {
-            throw new EntityNotFoundException(nameof(date), request.Id);
-        }
+        var date = await this._dateRepository.GetByIdAsync(request.Id, cancellationToken)
+                   ?? throw new EntityNotFoundException(nameof(Date), request.Id);
 
         await this._dateRepository.DeleteAsync(date.Id, cancellationToken);
     }
