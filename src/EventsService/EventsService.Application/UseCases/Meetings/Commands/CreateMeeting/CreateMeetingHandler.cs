@@ -19,7 +19,7 @@ public class CreateMeetingHandler : IRequestHandler<CreateMeetingCommand, Meetin
 
     public async Task<MeetingDto> Handle(CreateMeetingCommand request, CancellationToken cancellationToken)
     {
-        var meeting = this._mapper.Map<Meeting>(request.dto);
+        var meeting = this._mapper.Map<Meeting>(request.Dto);
         meeting.Id = Guid.NewGuid();
 
         await this._meetingRepository.CreateAsync(meeting, cancellationToken);

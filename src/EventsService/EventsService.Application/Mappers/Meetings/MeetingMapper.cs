@@ -1,8 +1,4 @@
-// <copyright file="MeetingToMeetingDto.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
-namespace EventsService.Application.Mappers;
+namespace EventsService.Application.Mappers.Meetings;
 
 using AutoMapper;
 using EventsService.Application.DTOs.Meetings;

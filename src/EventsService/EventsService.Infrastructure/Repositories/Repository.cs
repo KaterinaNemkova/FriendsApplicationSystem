@@ -1,20 +1,17 @@
-// <copyright file="Repository.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
 namespace EventsService.Infrastructure.Repositories;
 
 using EventsService.Domain.Contracts;
 using EventsService.Domain.Entities;
 using MongoDB.Driver;
 
-public class Repository<T> : IRepository<T> where T : Entity
+public class Repository<T> : IRepository<T>
+    where T : Entity
 {
     protected readonly IMongoCollection<T> _collection;
 
     public Repository(IMongoCollection<T> collection)
     {
-        _collection = collection;
+        this._collection = collection;
     }
 
     public async Task CreateAsync(T entity, CancellationToken cancellationToken)

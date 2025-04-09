@@ -1,7 +1,3 @@
-// <copyright file="DeleteMeetingHandler.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
 namespace EventsService.Application.UseCases.Meetings.Commands.DeleteMeeting;
 
 using EventsService.Application.Common.Extensions;
@@ -25,6 +21,6 @@ public class DeleteMeetingHandler : IRequestHandler<DeleteMeetingCommand>
             throw new EntityNotFoundException(nameof(meeting), request.Id);
         }
 
-        await _meetingRepository.DeleteAsync(request.Id, cancellationToken);
+        await this._meetingRepository.DeleteAsync(request.Id, cancellationToken);
     }
 }

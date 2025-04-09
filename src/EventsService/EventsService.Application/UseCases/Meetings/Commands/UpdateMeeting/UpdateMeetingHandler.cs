@@ -26,9 +26,10 @@ public class UpdateMeetingHandler : IRequestHandler<UpdateMeetingCommand, Meetin
             throw new EntityNotFoundException(nameof(meeting), request.Id);
         }
 
-        var newMeeting = this._mapper.Map<Meeting>(request.dto);
+        var newMeeting = this._mapper.Map<Meeting>(request.Dto);
         newMeeting.Id = request.Id;
         await this._meetingRepository.UpdateAsync(newMeeting, cancellationToken);
+
         return this._mapper.Map<MeetingDto>(newMeeting);
     }
 }

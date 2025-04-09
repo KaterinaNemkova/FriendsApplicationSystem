@@ -1,4 +1,4 @@
-namespace EventsService.Application.Mappers;
+namespace EventsService.Application.Mappers.Goals;
 
 using AutoMapper;
 using EventsService.Application.DTOs.Goals;

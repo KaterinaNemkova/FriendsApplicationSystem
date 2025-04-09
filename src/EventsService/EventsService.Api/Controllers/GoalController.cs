@@ -23,10 +23,10 @@ public class GoalController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> CreateGoal(
-        [FromBody] CreateGoalCommand createGoalCommand,
+        [FromBody] GoalRequestDto dto,
         CancellationToken cancellationToken)
     {
-        var result = await this._mediator.Send(createGoalCommand, cancellationToken);
+        var result = await this._mediator.Send(new CreateGoalCommand(dto), cancellationToken);
 
         return this.Ok(result);
     }
@@ -46,6 +46,7 @@ public class GoalController : ControllerBase
         CancellationToken cancellationToken)
     {
         var result = await this._mediator.Send(new UpdateGoalCommand(id, dateRequestDto), cancellationToken);
+
         return this.Ok(result);
     }
 
@@ -53,6 +54,7 @@ public class GoalController : ControllerBase
     public async Task<IActionResult> GetAllGoals(CancellationToken cancellationToken)
     {
         var result = await this._mediator.Send(new GetAllGoalsQuery(), cancellationToken);
+
         return this.Ok(result);
     }
 
@@ -60,6 +62,7 @@ public class GoalController : ControllerBase
     public async Task<IActionResult> GetMyGoals([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var result = await this._mediator.Send(new GetAllMyGoalsQuery(id), cancellationToken);
+
         return this.Ok(result);
     }
 }

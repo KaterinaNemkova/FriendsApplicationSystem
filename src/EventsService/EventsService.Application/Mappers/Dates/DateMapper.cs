@@ -1,8 +1,4 @@
-// <copyright file="DateToDateDto.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
-namespace EventsService.Application.Mappers;
+namespace EventsService.Application.Mappers.Dates;
 
 using AutoMapper;
 using EventsService.Application.DTOs;

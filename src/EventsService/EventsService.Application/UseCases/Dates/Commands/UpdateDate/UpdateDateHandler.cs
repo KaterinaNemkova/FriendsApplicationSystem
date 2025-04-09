@@ -1,9 +1,8 @@
-namespace EventsService.Application.UseCases.Dates.UpdateDate;
+namespace EventsService.Application.UseCases.Dates.Commands.UpdateDate;
 
 using AutoMapper;
 using EventsService.Application.Common.Extensions;
 using EventsService.Application.DTOs;
-using EventsService.Application.UseCases.Dates.Commands.UpdateDate;
 using EventsService.Domain.Contracts;
 using EventsService.Domain.Entities;
 using MediatR;

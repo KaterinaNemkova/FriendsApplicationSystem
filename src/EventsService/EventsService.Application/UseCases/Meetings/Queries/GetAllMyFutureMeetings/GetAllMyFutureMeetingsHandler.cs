@@ -1,4 +1,4 @@
-namespace EventsService.Application.UseCases.Meetings.Queries.GetAllFutureMeetings;
+namespace EventsService.Application.UseCases.Meetings.Queries.GetAllMyFutureMeetings;
 
 using AutoMapper;
 using EventsService.Application.Common.Extensions;

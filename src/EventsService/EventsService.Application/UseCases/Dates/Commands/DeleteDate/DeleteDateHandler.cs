@@ -4,7 +4,7 @@ using EventsService.Application.Common.Extensions;
 using EventsService.Domain.Contracts;
 using MediatR;
 
-public class DeleteDateHandler:IRequestHandler<DeleteDateCommand>
+public class DeleteDateHandler : IRequestHandler<DeleteDateCommand>
 {
     private readonly IDateRepository _dateRepository;
 

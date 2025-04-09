@@ -1,10 +1,10 @@
+namespace EventsService.Application.UseCases.Meetings.Queries.GetAllMyMeetings;
+
 using AutoMapper;
 using EventsService.Application.Common.Extensions;
 using EventsService.Application.DTOs.Meetings;
 using EventsService.Domain.Contracts;
 using MediatR;
-
-namespace EventsService.Application.UseCases.Meetings.Queries.GetAllMyMeetings;
 
 public class GetAllMyMeetingsHandler : IRequestHandler<GetAllMyMeetingsQuery, List<MeetingDto>>
 {

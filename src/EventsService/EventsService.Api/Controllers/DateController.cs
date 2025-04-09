@@ -6,7 +6,6 @@ using EventsService.Application.UseCases.Dates.Commands.DeleteDate;
 using EventsService.Application.UseCases.Dates.Commands.UpdateDate;
 using EventsService.Application.UseCases.Dates.Queries.GetAllDates;
 using EventsService.Application.UseCases.Dates.Queries.GetAllMyDates;
-using EventsService.Application.UseCases.Dates.UpdateDate;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,10 +22,10 @@ public class DateController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> CreateDate(
-        [FromBody] CreateDateCommand createDateCommand,
+        [FromBody] DateRequestDto dto,
         CancellationToken cancellationToken)
     {
-        var result = await this._mediator.Send(createDateCommand, cancellationToken);
+        var result = await this._mediator.Send(new CreateDateCommand(dto), cancellationToken);
 
         return this.Ok(result);
     }
