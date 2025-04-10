@@ -1,7 +1,6 @@
-using EventsService.Application.Common.Constants;
-
 namespace EventsService.Application.Validators;
 
+using EventsService.Application.Common.Constants;
 using EventsService.Application.DTOs.Meetings;
 using FluentValidation;
 
