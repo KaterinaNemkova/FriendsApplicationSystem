@@ -1,11 +1,11 @@
+namespace UserService.Infrastructure;
+
 using Microsoft.Extensions.DependencyInjection;
 using UserService.Application.Mappers;
 using UserService.Application.UseCases.Profiles.Commands.UploadImage;
 using UserService.Domain.Contracts;
 using UserService.Infrastructure.Repositories;
 using UserService.Infrastructure.Services;
-
-namespace UserService.Infrastructure;
 
 public static class DependencyInjection
 {
@@ -16,7 +16,7 @@ public static class DependencyInjection
         services.AddScoped<IFriendshipRepository, FriendshipRepository>();
         services.AddAutoMapper(typeof(ProfileToProfileDto));
         services.AddAutoMapper(typeof(FriendshipToFriendshipDto));
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(UploadImageHandler).Assembly)); 
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(UploadImageHandler).Assembly));
         return services;
     }
 }

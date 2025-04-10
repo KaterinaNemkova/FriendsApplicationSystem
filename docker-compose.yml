@@ -33,6 +33,22 @@ services:
     depends_on:
       mongo_db:
         condition: service_started
+        
+  eventsservice_api:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./src/EventsService/EventsService.Api/Dockerfile
+    ports:
+      - "5076:8080"
+    container_name: eventsservice_container
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DB_CONNECTION_STRING=${MONGO_DB2_CONNECTION_STRING}
+    depends_on:
+      mongo_db:
+        condition: service_started
   
   mongo_db:
     image: mongo:latest
