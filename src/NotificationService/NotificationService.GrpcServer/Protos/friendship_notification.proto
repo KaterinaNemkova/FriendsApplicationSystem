@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option csharp_namespace = "NotificationService.GrpcServer";
+
+service NotificationService {
+  rpc SendFriendshipNotification (FriendshipNotificationRequest) returns (FriendshipNotificationResponse);
+}
+
+message FriendshipNotificationRequest {
+  string profileId = 1;
+  string friendProfileId = 2;
+  string userId = 3;
+  string friendUserId = 4;
+}
+
+message FriendshipNotificationResponse {
+  bool success = 1;
+}

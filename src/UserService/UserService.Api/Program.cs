@@ -1,7 +1,4 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Serializers;
-using UserService.Application.UseCases.Profiles.Commands.UploadImage;
+using UserService.Application;
 using UserService.Infrastructure;
 using UserService.Infrastructure.Extensions;
 
@@ -18,6 +15,8 @@ builder.Services.AddCloudinary(builder.Configuration);
 builder.Services.AddRepresentation();
 
 builder.Services.AddDependencies();
+
+builder.Services.ConfigureNotificationGrpcClient(builder.Configuration);
 
 var app = builder.Build();
 

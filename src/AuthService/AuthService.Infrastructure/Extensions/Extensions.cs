@@ -1,3 +1,5 @@
+namespace AuthService.Infrastructure.Extensions;
+
 using AuthService.Domain.Entities;
 using AuthService.Infrastructure.Options;
 using AuthService.Infrastructure.Services;
@@ -8,21 +10,21 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-
-namespace AuthService.Infrastructure.Extensions;
-
 public static class Extensions
 {
-    public static IServiceCollection AddData(this IServiceCollection services)
+    public static IServiceCollection AddData(
+        this IServiceCollection services,
+        ConfigurationManager builderConfiguration)
     {
-        var envConnectionString = Environment.GetEnvironmentVariable("POSTGRE_DB_CONNECTION_STRING");
-        services.AddDbContext<FriendsAppDbContext>(options =>
+        var envConnectionString = Environment.GetEnvironmentVariable("POSTGRES_DB_CONNECTION_STRING");
+        services.AddDbContext<FriendsAppDbContext>(
+            options =>
         {
             options.UseNpgsql(envConnectionString);
         });
         return services;
     }
-    
+
     public static void ApplyMigrations(this IApplicationBuilder app)
     {
         using IServiceScope scope = app.ApplicationServices.CreateScope();
@@ -35,18 +37,19 @@ public static class Extensions
     public static IServiceCollection AddPresentation(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddEndpointsApiExplorer();
-        
+
         services.AddSwaggerGen();
-       
+
         services.AddAuthentication();
-        
+
         services.AddAuthorization();
-        
+
         services.AddIdentityApiEndpoints<ApplicationUser>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<FriendsAppDbContext>();
-        
-        services.Configure<IdentityOptions>(options =>
+
+        services.Configure<IdentityOptions>(
+            options =>
         {
             options.User.RequireUniqueEmail = true;
             options.SignIn.RequireConfirmedEmail = true;
@@ -54,12 +57,12 @@ public static class Extensions
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
         });
         return services;
-
     }
 
     public static IServiceCollection AddEmailService(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<SmtpOptions>(options=>
+        services.Configure<SmtpOptions>(
+            options =>
         {
             options.Host = Environment.GetEnvironmentVariable("SMTP_HOST");
             options.Port = configuration.GetValue<int>("Smtp:Port");

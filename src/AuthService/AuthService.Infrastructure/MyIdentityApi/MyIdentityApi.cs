@@ -22,7 +22,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
 {
     private static readonly EmailAddressAttribute _emailAddressAttribute = new();
     private static readonly ConcurrentDictionary<string, TaskCompletionSource<bool>> _emailConfirmations = new();
-    
+
     public static IEndpointConventionBuilder MapMyIdentityApi<TUser>(this IEndpointRouteBuilder endpoints)
         where TUser : class, new()
     {
@@ -32,13 +32,14 @@ public static class IdentityApiEndpointRouteBuilderExtensions
         var bearerTokenOptions = endpoints.ServiceProvider.GetRequiredService<IOptionsMonitor<BearerTokenOptions>>();
         var emailSender = endpoints.ServiceProvider.GetRequiredService<IEmailSender<TUser>>();
         var linkGenerator = endpoints.ServiceProvider.GetRequiredService<LinkGenerator>();
-        
+
         string? confirmEmailEndpointName = null;
 
-        var routeGroup = endpoints.MapGroup("");
+        var routeGroup = endpoints.MapGroup(string.Empty);
 
-        routeGroup.MapPost("/register", async Task<Results<Ok, ValidationProblem>>
-            ([FromBody] MyRegisterRequest registration, HttpContext context, [FromServices] IServiceProvider sp) =>
+        routeGroup.MapPost(
+            "/register",
+            async Task<Results<ContentHttpResult, ValidationProblem>> ([FromBody] MyRegisterRequest registration, HttpContext context, [FromServices] IServiceProvider sp) =>
         {
             var userManager = sp.GetRequiredService<UserManager<TUser>>();
 
@@ -72,6 +73,10 @@ public static class IdentityApiEndpointRouteBuilderExtensions
                 return CreateValidationProblem(result);
             }
 
+            var userId = await userManager.GetUserIdAsync(user);
+            var botUsername = "FriendsNotificationBot";
+            var telegramLink = $"https://t.me/{botUsername}?start={userId}";
+
             var confirmationTask = new TaskCompletionSource<bool>();
             _emailConfirmations[email] = confirmationTask;
 
@@ -85,12 +90,13 @@ public static class IdentityApiEndpointRouteBuilderExtensions
                 _emailConfirmations.TryRemove(email, out _);
                 return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)));
             }
-            
-            return TypedResults.Ok();
+
+            return TypedResults.Content(telegramLink);
         });
-        
-        routeGroup.MapPost("/login", async Task<Results<Ok<AccessTokenResponse>, EmptyHttpResult, ProblemHttpResult>>
-            ([FromBody] MyLoginRequest login, [FromQuery] bool? useCookies, [FromQuery] bool? useSessionCookies, [FromServices] IServiceProvider sp) =>
+
+        routeGroup.MapPost(
+            "/login",
+            async Task<Results<Ok<AccessTokenResponse>, EmptyHttpResult, ProblemHttpResult>> ([FromBody] MyLoginRequest login, [FromQuery] bool? useCookies, [FromQuery] bool? useSessionCookies, [FromServices] IServiceProvider sp) =>
         {
             var signInManager = sp.GetRequiredService<SignInManager<TUser>>();
             var userManager = sp.GetRequiredService<UserManager<TUser>>();
@@ -116,13 +122,14 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             return TypedResults.Empty;
         });
 
-        routeGroup.MapPost("/refresh", async Task<Results<Ok<AccessTokenResponse>, UnauthorizedHttpResult, SignInHttpResult, ChallengeHttpResult>>
-            ([FromBody] RefreshRequest refreshRequest, [FromServices] IServiceProvider sp) =>
+        routeGroup.MapPost(
+            "/refresh",
+            async Task<Results<Ok<AccessTokenResponse>, UnauthorizedHttpResult, SignInHttpResult, ChallengeHttpResult>> ([FromBody] RefreshRequest refreshRequest, [FromServices] IServiceProvider sp) =>
         {
             var signInManager = sp.GetRequiredService<SignInManager<TUser>>();
             var refreshTokenProtector = bearerTokenOptions.Get(IdentityConstants.BearerScheme).RefreshTokenProtector;
             var refreshTicket = refreshTokenProtector.Unprotect(refreshRequest.RefreshToken);
-            
+
             if (refreshTicket?.Properties?.ExpiresUtc is not { } expiresUtc ||
                 timeProvider.GetUtcNow() >= expiresUtc ||
                 await signInManager.ValidateSecurityStampAsync(refreshTicket.Principal) is not TUser user)
@@ -135,8 +142,9 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             return TypedResults.SignIn(newPrincipal, authenticationScheme: IdentityConstants.BearerScheme);
         });
 
-        routeGroup.MapGet("/confirmEmail", async Task<Results<Ok, UnauthorizedHttpResult>>
-                ([FromQuery] string email, [FromQuery] string code, [FromQuery] string? changedEmail, [FromServices] IServiceProvider sp) =>
+        routeGroup.MapGet(
+                "/confirmEmail",
+                async Task<Results<Ok, UnauthorizedHttpResult>> ([FromQuery] string email, [FromQuery] string code, [FromQuery] string? changedEmail, [FromServices] IServiceProvider sp) =>
             {
                 var userManager = sp.GetRequiredService<UserManager<TUser>>();
                 var user = await userManager.FindByEmailAsync(email);
