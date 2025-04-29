@@ -1,6 +1,7 @@
 using CloudinaryDotNet.Actions;
 using MediatR;
-using UserService.Domain.Contracts;
+using UserService.Application.Contracts;
+
 
 namespace UserService.Application.UseCases.Profiles.Commands.DeleteImage;
 

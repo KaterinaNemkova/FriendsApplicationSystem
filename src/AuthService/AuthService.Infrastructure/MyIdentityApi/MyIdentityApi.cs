@@ -1,3 +1,6 @@
+
+namespace AuthService.Infrastructure.MyIdentityApi;
+
 using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
@@ -16,12 +19,11 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace AuthService.Infrastructure.MyIdentityApi;
-
 public static class IdentityApiEndpointRouteBuilderExtensions
 {
     private static readonly EmailAddressAttribute _emailAddressAttribute = new();
     private static readonly ConcurrentDictionary<string, TaskCompletionSource<bool>> _emailConfirmations = new();
+    //private static readonly UserService.GrpcServer.UserProfileService.UserProfileServiceClient _userProfileClient;
 
     public static IEndpointConventionBuilder MapMyIdentityApi<TUser>(this IEndpointRouteBuilder endpoints)
         where TUser : class, new()
@@ -38,89 +40,71 @@ public static class IdentityApiEndpointRouteBuilderExtensions
         var routeGroup = endpoints.MapGroup(string.Empty);
 
         routeGroup.MapPost(
-            "/register",
-            async Task<Results<ContentHttpResult, ValidationProblem>> ([FromBody] MyRegisterRequest registration, HttpContext context, [FromServices] IServiceProvider sp) =>
-        {
-            var userManager = sp.GetRequiredService<UserManager<TUser>>();
+    "/register",
+    async Task<Results<ContentHttpResult, ValidationProblem>> (
+        [FromBody] MyRegisterRequest registration,
+        HttpContext context,
+        [FromServices] UserManager<TUser> userManager,
+        [FromServices] IUserStore<TUser> userStore,
+        [FromServices] UserService.GrpcServer.UserProfileService.UserProfileServiceClient userProfileClient) =>
+{
+    if (!userManager.SupportsUserEmail)
+    {
+        throw new NotSupportedException($"{nameof(MapMyIdentityApi)} requires a user store with email support.");
+    }
 
-            if (!userManager.SupportsUserEmail)
-            {
-                throw new NotSupportedException($"{nameof(MapMyIdentityApi)} requires a user store with email support.");
-            }
+    var emailStore = (IUserEmailStore<TUser>)userStore;
+    var email = registration.Email;
+    var userName = registration.UserName;
 
-            var userStore = sp.GetRequiredService<IUserStore<TUser>>();
-            var emailStore = (IUserEmailStore<TUser>)userStore;
-            var email = registration.Email;
-            var userName = registration.UserName;
+    if (string.IsNullOrEmpty(email) || !_emailAddressAttribute.IsValid(email))
+    {
+        return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)));
+    }
 
-            if (string.IsNullOrEmpty(email) || !_emailAddressAttribute.IsValid(email))
-            {
-                return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)));
-            }
+    if (string.IsNullOrEmpty(userName))
+    {
+        return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidUserName(userName)));
+    }
 
-            if (string.IsNullOrEmpty(userName))
-            {
-                return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidUserName(userName)));
-            }
+    var user = new TUser();
+    await userStore.SetUserNameAsync(user, userName, CancellationToken.None);
+    await emailStore.SetEmailAsync(user, email, CancellationToken.None);
 
-            var user = new TUser();
-            await userStore.SetUserNameAsync(user, userName, CancellationToken.None);
-            await emailStore.SetEmailAsync(user, email, CancellationToken.None);
+    var result = await userManager.CreateAsync(user, registration.Password);
+    if (!result.Succeeded)
+    {
+        return CreateValidationProblem(result);
+    }
 
-            var result = await userManager.CreateAsync(user, registration.Password);
-            if (!result.Succeeded)
-            {
-                return CreateValidationProblem(result);
-            }
+    var userId = await userManager.GetUserIdAsync(user);
+    var botUsername = "FriendsNotificationBot";
+    var telegramLink = $"https://t.me/{botUsername}?start={userId}";
 
-            var userId = await userManager.GetUserIdAsync(user);
-            var botUsername = "FriendsNotificationBot";
-            var telegramLink = $"https://t.me/{botUsername}?start={userId}";
+    var confirmationTask = new TaskCompletionSource<bool>();
+    _emailConfirmations[email] = confirmationTask;
 
-            var confirmationTask = new TaskCompletionSource<bool>();
-            _emailConfirmations[email] = confirmationTask;
+    await SendConfirmationEmailAsync(user, userManager, context, email);
 
-            await SendConfirmationEmailAsync(user, userManager, context, email);
+    var isConfirmed = await Task.WhenAny(confirmationTask.Task, Task.Delay(TimeSpan.FromMinutes(15))) == confirmationTask.Task;
 
-            var isConfirmed = await Task.WhenAny(confirmationTask.Task, Task.Delay(TimeSpan.FromMinutes(15))) == confirmationTask.Task;
+    if (!isConfirmed)
+    {
+        await userManager.DeleteAsync(user);
+        _emailConfirmations.TryRemove(email, out _);
+        return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)));
+    }
 
-            if (!isConfirmed)
-            {
-                await userManager.DeleteAsync(user);
-                _emailConfirmations.TryRemove(email, out _);
-                return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)));
-            }
+    var request = new UserService.GrpcServer.CreateProfileRequest
+    {
+        UserId = userId,
+        UserName = userName,
+    };
 
-            return TypedResults.Content(telegramLink);
-        });
+    var response = await userProfileClient.CreateProfileAsync(request);
+    return TypedResults.Content(telegramLink);
+});
 
-        routeGroup.MapPost(
-            "/login",
-            async Task<Results<Ok<AccessTokenResponse>, EmptyHttpResult, ProblemHttpResult>> ([FromBody] MyLoginRequest login, [FromQuery] bool? useCookies, [FromQuery] bool? useSessionCookies, [FromServices] IServiceProvider sp) =>
-        {
-            var signInManager = sp.GetRequiredService<SignInManager<TUser>>();
-            var userManager = sp.GetRequiredService<UserManager<TUser>>();
-
-            var useCookieScheme = (useCookies == true) || (useSessionCookies == true);
-            var isPersistent = (useCookies == true) && (useSessionCookies != true);
-            signInManager.AuthenticationScheme = useCookieScheme ? IdentityConstants.ApplicationScheme : IdentityConstants.BearerScheme;
-
-            var user = await userManager.FindByEmailAsync(login.Email);
-
-            if (user == null)
-            {
-                return TypedResults.Problem("User not found.", statusCode: StatusCodes.Status401Unauthorized);
-            }
-
-            var result = await signInManager.PasswordSignInAsync(user, login.Password, isPersistent, lockoutOnFailure: true);
-
-            if (!result.Succeeded)
-            {
-                return TypedResults.Problem(result.ToString(), statusCode: StatusCodes.Status401Unauthorized);
-            }
-
-            return TypedResults.Empty;
-        });
 
         routeGroup.MapPost(
             "/refresh",
@@ -132,8 +116,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
 
             if (refreshTicket?.Properties?.ExpiresUtc is not { } expiresUtc ||
                 timeProvider.GetUtcNow() >= expiresUtc ||
-                await signInManager.ValidateSecurityStampAsync(refreshTicket.Principal) is not TUser user)
-
+                await signInManager.ValidateSecurityStampAsync(refreshTicket.Principal) is not { } user)
             {
                 return TypedResults.Challenge();
             }
@@ -187,7 +170,6 @@ public static class IdentityApiEndpointRouteBuilderExtensions
                 }
 
                 return TypedResults.Ok();
-                
             })
         .Add(endpointBuilder =>
         {

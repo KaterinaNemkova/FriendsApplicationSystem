@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\NotificationService\NotificationService.GrpcServer\NotificationService.GrpcServer.csproj" />
       <ProjectReference Include="..\UserService.Domain\UserService.Domain.csproj" />
     </ItemGroup>
 
@@ -36,10 +35,6 @@
       </PackageReference>
       <PackageReference Include="Swashbuckle.AspNetCore" Version="7.3.1" />
       <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="8.0.0" />
-    </ItemGroup>
-
-     <ItemGroup>
-        <Protobuf Include="Protos\friendship_notification.proto" GrpcServices="Client"/>
     </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 namespace UserService.Infrastructure.Repositories;
 
 using MongoDB.Driver;
-using UserService.Domain.Contracts;
+using UserService.Application.Contracts;
 using UserService.Domain.Entities;
 using UserService.Domain.Enums;
 

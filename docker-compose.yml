@@ -11,28 +11,29 @@ services:
       environment:
         - ASPNETCORE_ENVIRONMENT=Development
         - DB_CONNECTION_STRING=${POSTGRES_DB_CONNECTION_STRING}
+        - USER_GRPC_URL=${USER_GRPC_URL}
       depends_on:
         postgre_db:
           condition: service_started
           
-#  userservice_api:
-#    env_file:
-#      - .env
-#    build:
-#      context: .
-#      dockerfile: ./src/UserService/UserService.Api/Dockerfile   
-#    ports:
-#      - "5185:8080"
-#    container_name: userservice_container  
-#    environment:
-#      - ASPNETCORE_ENVIRONMENT=Development  
-#      - CLOUD_NAME=${CLOUD_NAME}
-#      - CLOUD_API_KEY=${CLOUD_API_KEY}
-#      - CLOUD_SECRET_API_KEY=${CLOUD_SECRET_API_KEY}
-#      - DB_CONNECTION_STRING=${MONGO_DB_CONNECTION_STRING}
-#    depends_on:
-#      mongo_db:
-#        condition: service_started
+  userservice_api:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./src/UserService/UserService.Api/Dockerfile   
+    ports:
+      - "5185:8080"
+    container_name: userservice_container  
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development  
+      - CLOUD_NAME=${CLOUD_NAME}
+      - CLOUD_API_KEY=${CLOUD_API_KEY}
+      - CLOUD_SECRET_API_KEY=${CLOUD_SECRET_API_KEY}
+      - DB_CONNECTION_STRING=${MONGO_DB_CONNECTION_STRING}
+    depends_on:
+      mongo_db:
+        condition: service_started
         
 #  eventsservice_api:
 #    env_file:
@@ -66,6 +67,8 @@ services:
     depends_on:
       mongo_db:
         condition: service_started
+      rabbitmq:
+        condition: service_started
   
   authservice_grpc:
     env_file:
@@ -81,20 +84,21 @@ services:
       - DB_CONNECTION_STRING=${POSTGRES_DB_CONNECTION_STRING}
     depends_on:
       - postgre_db
-
-#
-#  notificationservice_grpc:
-#    build:
-#      context: .
-#      dockerfile: ./src/NotificationService/NotificationService.GrpcServer/Dockerfile
-#    container_name: notificationservice_grpc
-#    ports:
-#      - "50052:50052" 
-#    environment:
-#      - ASPNETCORE_ENVIRONMENT=Development
-#      - AUTH_GRPC_URL=http://authservice_grpc:50051  # Здесь указываем URL для подключения к AuthService
-#    depends_on:
-#      - mongo_db  # Зависит от MongoDB
+      
+  userservice_grpc:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./src/UserService/UserService.GrpcServer/Dockerfile
+    container_name: userservice_grpc
+    ports:
+      - "50052:50052"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DB_CONNECTION_STRING=${MONGO_DB_CONNECTION_STRING}
+    depends_on:
+      - mongo_db
         
   mongo_db:
     image: mongo:latest
@@ -145,12 +149,31 @@ services:
       - ./servers.json:/pgadmin4/servers.json
     depends_on:
       - postgre_db
+    
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: 
+      rabbitmq
+    env_file:
+      - .env
+    restart: always
+    ports:
+        - "5672:5672"    
+        - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - rabbitmq_logs:/var/log/rabbitmq
 
 
 volumes:
   mongo_data:
   db_data:
   pgadmin-data:
+  rabbitmq_data:
+  rabbitmq_logs:
 
       
     

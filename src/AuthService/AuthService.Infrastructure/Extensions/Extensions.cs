@@ -75,4 +75,27 @@ public static class Extensions
         return services;
     }
 
+    public static IServiceCollection ConfigureUserGrpcClient(this IServiceCollection services, IConfiguration configuration)
+    {
+        configuration["UserGrpcUrl:GrpcUrl"] = Environment.GetEnvironmentVariable("USER_GRPC_URL");
+
+        var address = configuration["UserGrpcUrl:GrpcUrl"]
+                      ?? throw new InvalidOperationException("UserGrpcUrl:GrpcUrl is not configured!");
+
+        AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
+        services.AddGrpcClient<UserService.GrpcServer.UserProfileService.UserProfileServiceClient>(
+                options =>
+                {
+                    options.Address = new Uri(address);
+                })
+            .ConfigurePrimaryHttpMessageHandler(
+                () => new SocketsHttpHandler
+                {
+                    AllowAutoRedirect = true,
+                });
+
+        return services;
+    }
+
 }

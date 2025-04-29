@@ -1,18 +1,23 @@
 namespace NotificationService.Infrastructure.Services;
 
+using MongoDB.Driver;
+using NotificationService.Application.DTOs;
 using Telegram.Bot;
 
 public class TelegramBotService
 {
     private readonly ITelegramBotClient _botClient;
     private readonly AuthService.GrpcServer.AuthService.AuthServiceClient _authServiceClient;
+    private readonly IMongoCollection<ProfileCreatedNotification> _profileNotificationsCollection;
 
     public TelegramBotService(
         ITelegramBotClient botClient,
-        AuthService.GrpcServer.AuthService.AuthServiceClient authServiceClient)
+        AuthService.GrpcServer.AuthService.AuthServiceClient authServiceClient,
+        IMongoDatabase database)
     {
         this._botClient = botClient;
         this._authServiceClient = authServiceClient;
+        this._profileNotificationsCollection = database.GetCollection<ProfileCreatedNotification>("ProfileCreatedNotifications");
     }
 
     public void Start()
@@ -26,19 +31,24 @@ public class TelegramBotService
                 {
                     var message = update.Message;
                     if (message?.Text == null)
+                    {
                         return;
+                    }
 
                     var telegramId = message.Chat.Id;
                     var messageParts = message.Text.Split(" ");
 
                     if (messageParts[0] != "/start")
+                    {
                         return;
+                    }
 
                     if (messageParts.Length <= 1)
                     {
                         await bot.SendTextMessageAsync(
                             chatId: telegramId,
-                            text: "Привет! Пожалуйста, используйте ссылку с UserID для регистрации.");
+                            text: "Привет! Пожалуйста, используйте ссылку с UserID для регистрации.",
+                            cancellationToken: token);
                         Console.WriteLine("No UserId found in the /start command.");
                         return;
                     }
@@ -66,7 +76,8 @@ public class TelegramBotService
 
                         await bot.SendTextMessageAsync(
                             chatId: telegramId,
-                            text: $"Спасибо! Ваш Telegram ID сохранён для пользователя {userIdFromLink}.");
+                            text: $"Спасибо! Ваш Telegram ID сохранён для пользователя {userIdFromLink}.",
+                            cancellationToken: token);
 
                         Console.WriteLine($"Saved Telegram ID {telegramId} for user {userIdFromLink}");
                     }
@@ -74,9 +85,24 @@ public class TelegramBotService
                     {
                         await bot.SendTextMessageAsync(
                             chatId: telegramId,
-                            text: "Ваш Telegram ID уже был сохранён ранее!");
+                            text: "Ваш Telegram ID уже был сохранён ранее!",
+                            cancellationToken: token);
 
                         Console.WriteLine($"Telegram ID уже существует для пользователя {userIdFromLink}");
+                    }
+
+                    var pendingNotifications = await this._profileNotificationsCollection
+                        .Find(n => n.UserId == Guid.Parse(userIdFromLink))
+                        .ToListAsync();
+
+                    foreach (var notification in pendingNotifications)
+                    {
+                        await _botClient.SendTextMessageAsync(
+                            chatId: telegramId,
+                            text: notification.Message,
+                            cancellationToken: token);
+
+                        await this._profileNotificationsCollection.DeleteOneAsync(n => n.UserId == notification.UserId);
                     }
                 }
                 catch (Exception ex)

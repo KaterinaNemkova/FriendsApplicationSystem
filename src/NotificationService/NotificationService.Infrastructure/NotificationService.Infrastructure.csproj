@@ -28,6 +28,7 @@
       </PackageReference>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.3" />
       <PackageReference Include="MongoDB.Driver" Version="3.2.1" />
+      <PackageReference Include="RabbitMQ.Client" Version="7.1.2" />
       <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -37,11 +38,13 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\NotificationService.Application\NotificationService.Application.csproj" />
       <ProjectReference Include="..\NotificationService.Domain\NotificationService.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="Protos\auth.proto" GrpcServices="Client"/>
+      <Protobuf Include="Protos\auth.proto" GrpcServices="Client"/>
     </ItemGroup>
+
 
 </Project>

@@ -11,14 +11,13 @@ if (File.Exists(envPath))
 }
 
 builder.Services.AddDb(builder.Configuration);
-
 builder.Services.AddControllers();
 
 builder.Services.ConfigureAuthGrpcClient(builder.Configuration);
 
-builder.Services.AddDependencies(builder.Configuration);
+builder.Services.ConfigureTelegramBot(builder.Configuration);
 
-builder.Services.AddSingleton<TelegramBotService>();
+builder.Services.ConfigureRabbitMQ(builder.Configuration);
 
 var app = builder.Build();
 

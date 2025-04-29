@@ -1,12 +1,14 @@
-using UserService.Application;
 using UserService.Infrastructure;
 using UserService.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-DotNetEnv.Env.Load();
+var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
 
-builder.Configuration.AddEnvironmentVariables();
+if (File.Exists(envPath))
+{
+    DotNetEnv.Env.Load(envPath);
+}
 
 builder.Services.AddDb(builder.Configuration);
 
@@ -16,7 +18,7 @@ builder.Services.AddRepresentation();
 
 builder.Services.AddDependencies();
 
-builder.Services.ConfigureNotificationGrpcClient(builder.Configuration);
+builder.Services.ConfigureRabbitMQ(builder.Configuration);
 
 var app = builder.Build();
 

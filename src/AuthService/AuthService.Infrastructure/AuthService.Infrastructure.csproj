@@ -34,4 +34,8 @@
       <ProjectReference Include="..\AuthService.Domain\AuthService.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Protobuf Include="Protos\profile.proto" GrpcServices="Client"/>
+    </ItemGroup>
+
 </Project>

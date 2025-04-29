@@ -1,10 +1,9 @@
 namespace UserService.Infrastructure;
 
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using UserService.Application.Contracts;
 using UserService.Application.Mappers;
 using UserService.Application.UseCases.Profiles.Commands.UploadImage;
-using UserService.Domain.Contracts;
 using UserService.Infrastructure.Repositories;
 using UserService.Infrastructure.Services;
 

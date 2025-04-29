@@ -18,7 +18,7 @@ builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddPresentation(builder.Configuration);
 
 builder.Services.AddEmailService(builder.Configuration);
-
+builder.Services.ConfigureUserGrpcClient(builder.Configuration);
 var app = builder.Build();
 app.ApplyMigrations();
 app.UseHttpsRedirection();

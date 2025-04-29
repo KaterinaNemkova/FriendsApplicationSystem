@@ -1,7 +1,7 @@
 namespace UserService.Application.UseCases.Friends.Commands.DeleteFriend;
 
 using MediatR;
-using UserService.Domain.Contracts;
+using UserService.Application.Contracts;
 
 public class DeleteFriendHandler:IRequestHandler<DeleteFriendCommand>
 {
