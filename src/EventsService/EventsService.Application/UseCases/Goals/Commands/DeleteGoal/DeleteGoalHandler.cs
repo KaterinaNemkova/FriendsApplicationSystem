@@ -1,7 +1,7 @@
 namespace EventsService.Application.UseCases.Goals.Commands.DeleteGoal;
 
 using EventsService.Application.Common.Extensions;
-using EventsService.Domain.Contracts;
+using EventsService.Application.Contracts;
 using EventsService.Domain.Entities;
 using MediatR;
 

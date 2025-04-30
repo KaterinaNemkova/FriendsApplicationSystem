@@ -1,7 +1,3 @@
-// <copyright file="MeetingDto.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
 namespace EventsService.Application.DTOs.Meetings;
 
 public class MeetingDto

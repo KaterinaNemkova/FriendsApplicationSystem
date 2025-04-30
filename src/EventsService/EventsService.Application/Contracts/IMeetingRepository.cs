@@ -1,4 +1,4 @@
-namespace EventsService.Domain.Contracts;
+namespace EventsService.Application.Contracts;
 
 using System.Linq.Expressions;
 using EventsService.Domain.Entities;

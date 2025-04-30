@@ -40,4 +40,14 @@ public class UserProfileServiceImpl : UserProfileService.UserProfileServiceBase
         return new CreateProfileResponse();
 
     }
+
+    public override async Task<GetUserIdResponse> GetUserId(GetUserIdRequest request, ServerCallContext context)
+    {
+        var profile = await _profileRepository.GetByIdAsync(Guid.Parse(request.ProfileId), context.CancellationToken);
+        return new GetUserIdResponse
+        {
+            UserId = profile.UserId.ToString()
+        };
+    }
+    
 }

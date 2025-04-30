@@ -14,6 +14,7 @@ builder.Services.AddDb(builder.Configuration);
 builder.Services.AddControllers();
 
 builder.Services.ConfigureAuthGrpcClient(builder.Configuration);
+builder.Services.ConfigureUserGrpcClient(builder.Configuration);
 
 builder.Services.ConfigureTelegramBot(builder.Configuration);
 

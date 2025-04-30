@@ -1,8 +1,8 @@
 namespace EventsService.Application.UseCases.Dates.Commands.CreateDate;
 
 using AutoMapper;
+using EventsService.Application.Contracts;
 using EventsService.Application.DTOs;
-using EventsService.Domain.Contracts;
 using EventsService.Domain.Entities;
 using MediatR;
 

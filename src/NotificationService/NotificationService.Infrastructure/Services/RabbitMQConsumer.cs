@@ -67,6 +67,9 @@ public class RabbitMQConsumer : IMessageConsumer, IAsyncDisposable
             case "ProfileCreated":
                 queueName = this._options.Queues.ProfileCreated;
                 break;
+            case "MeetingRequest":
+                queueName = this._options.Queues.MeetingRequest;
+                break;
             default:
                 this._logger.LogError($"Queue key '{queueKey}' is not supported");
                 return;

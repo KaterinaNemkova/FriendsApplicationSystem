@@ -2,8 +2,8 @@ namespace EventsService.Application.UseCases.Meetings.Queries.GetAllMyPastMeetin
 
 using AutoMapper;
 using EventsService.Application.Common.Extensions;
+using EventsService.Application.Contracts;
 using EventsService.Application.DTOs.Meetings;
-using EventsService.Domain.Contracts;
 using MediatR;
 
 public class GetAllMyPastMeetingsHandler : IRequestHandler<GetAllMyPastMeetingsQuery, List<MeetingDto>>

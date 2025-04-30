@@ -1,6 +1,9 @@
 namespace EventsService.Infrastructure.Extensions;
 
+using EventsService.Application.Contracts;
 using EventsService.Domain.Entities;
+using EventsService.Infrastructure.Options;
+using EventsService.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
@@ -88,5 +91,27 @@ public static class Extensions
         });
 
         return services;
+    }
+
+    public static void ConfigureRabbitMQ(this IServiceCollection services, IConfiguration configuration)
+    {
+        var messageBrokerSection = configuration.GetSection("MessageBroker");
+
+        messageBrokerSection["HostName"] =
+            Environment.GetEnvironmentVariable("RABBITMQ_HOSTNAME") ?? messageBrokerSection["HostName"];
+        messageBrokerSection["Username"] =
+            Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER") ?? messageBrokerSection["Username"];
+        messageBrokerSection["Password"] =
+            Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS") ?? messageBrokerSection["Password"];
+        messageBrokerSection["Port"] =
+            Environment.GetEnvironmentVariable("RABBITMQ_PORT") ?? messageBrokerSection["Port"];
+
+        services.AddOptions<RabbitMQOptions>()
+            .Bind(messageBrokerSection)
+            .ValidateDataAnnotations()
+            .Validate(config => true, "Queues section is required")
+            .ValidateOnStart();
+
+        services.AddSingleton<IMessageService, RabbitMQService>();
     }
 }

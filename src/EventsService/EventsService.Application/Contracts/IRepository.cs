@@ -1,10 +1,6 @@
-// <copyright file="IRepository.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
+namespace EventsService.Application.Contracts;
 
 using EventsService.Domain.Entities;
-
-namespace EventsService.Domain.Contracts;
 
 public interface IRepository<T> where T : Entity
 {

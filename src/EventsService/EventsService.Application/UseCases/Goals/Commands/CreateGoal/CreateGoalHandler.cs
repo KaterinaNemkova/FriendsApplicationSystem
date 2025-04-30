@@ -1,8 +1,8 @@
 namespace EventsService.Application.UseCases.Goals.Commands.CreateGoal;
 
 using AutoMapper;
+using EventsService.Application.Contracts;
 using EventsService.Application.DTOs.Goals;
-using EventsService.Domain.Contracts;
 using EventsService.Domain.Entities;
 using MediatR;
 

@@ -1,4 +1,4 @@
-namespace NotificationService.Infrastructure.Options;
+namespace EventsService.Infrastructure.Options;
 
 public class RabbitMQOptions
 {
@@ -15,10 +15,6 @@ public class RabbitMQOptions
 
 public class RabbitMQQueues
 {
-    public string FriendRequest { get; set; }
-
-    public string ProfileCreated { get; set; }
-
     public string MeetingRequest { get; set; }
 
     public string DateRequest { get; set; }

@@ -9,6 +9,7 @@ builder.Services.AddDependencies();
 
 builder.Services.AddRepresentation();
 
+builder.Services.ConfigureRabbitMQ(builder.Configuration);
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

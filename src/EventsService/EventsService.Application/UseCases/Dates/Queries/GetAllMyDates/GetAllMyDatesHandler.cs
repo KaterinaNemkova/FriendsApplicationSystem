@@ -2,8 +2,8 @@ namespace EventsService.Application.UseCases.Dates.Queries.GetAllMyDates;
 
 using AutoMapper;
 using EventsService.Application.Common.Extensions;
+using EventsService.Application.Contracts;
 using EventsService.Application.DTOs;
-using EventsService.Domain.Contracts;
 using MediatR;
 
 public class GetAllMyDatesHandler : IRequestHandler<GetAllMyDatesQuery, List<DateDto>>

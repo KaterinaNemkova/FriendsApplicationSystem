@@ -35,21 +35,21 @@ services:
       mongo_db:
         condition: service_started
         
-#  eventsservice_api:
-#    env_file:
-#      - .env
-#    build:
-#      context: .
-#      dockerfile: ./src/EventsService/EventsService.Api/Dockerfile
-#    ports:
-#      - "5076:8080"
-#    container_name: eventsservice_container
-#    environment:
-#      - ASPNETCORE_ENVIRONMENT=Development
-#      - DB_CONNECTION_STRING=${MONGO_DB2_CONNECTION_STRING}
-#    depends_on:
-#      mongo_db:
-#        condition: service_started
+  eventsservice_api:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./src/EventsService/EventsService.Api/Dockerfile
+    ports:
+      - "5076:8080"
+    container_name: eventsservice_container
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DB_CONNECTION_STRING=${MONGO_DB2_CONNECTION_STRING}
+    depends_on:
+      mongo_db:
+        condition: service_started
         
   notificationservice_api:
     env_file:
@@ -64,6 +64,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - DB_CONNECTION_STRING=${MONGO_DB3_CONNECTION_STRING}
       - AUTH_GRPC_URL=${AUTH_GRPC_URL}
+      - USER_GRPC_URL=${USER_GRPC_URL}
     depends_on:
       mongo_db:
         condition: service_started
