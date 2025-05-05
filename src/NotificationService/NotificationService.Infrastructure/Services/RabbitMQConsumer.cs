@@ -33,7 +33,7 @@ public class RabbitMQConsumer : IMessageConsumer, IAsyncDisposable
 
     public async Task InitializeAsync()
     {
-        int maxRetries = 15;
+        int maxRetries = 20;
         for (int i = 1; i <= maxRetries; i++)
         {
             try
@@ -69,6 +69,9 @@ public class RabbitMQConsumer : IMessageConsumer, IAsyncDisposable
                 break;
             case "MeetingRequest":
                 queueName = this._options.Queues.MeetingRequest;
+                break;
+            case "GoalRequest":
+                queueName = this._options.Queues.GoalRequest;
                 break;
             default:
                 this._logger.LogError($"Queue key '{queueKey}' is not supported");

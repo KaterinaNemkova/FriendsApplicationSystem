@@ -4,5 +4,7 @@ using EventsService.Application.DTOs.Notifications;
 
 public interface IMessageService
 {
-    Task PublishMeetingRequestAsync(MeetingRequestNotification notification);
+    Task PublishMeetingRequest(MeetingRequestNotification notification);
+
+    Task PublishGoalRequest(GoalRequestNotification notification);
 }

@@ -105,19 +105,24 @@ public static class Extensions
     {
         var messageBrokerSection = configuration.GetSection("MessageBroker");
 
-        messageBrokerSection["HostName"] =
+        messageBrokerSection["HostName"] = 
             Environment.GetEnvironmentVariable("RABBITMQ_HOSTNAME") ?? messageBrokerSection["HostName"];
-        messageBrokerSection["Username"] =
+        messageBrokerSection["Username"] = 
             Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER") ?? messageBrokerSection["Username"];
-        messageBrokerSection["Password"] =
+        messageBrokerSection["Password"] = 
             Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS") ?? messageBrokerSection["Password"];
-        messageBrokerSection["Port"] =
+        messageBrokerSection["Port"] = 
             Environment.GetEnvironmentVariable("RABBITMQ_PORT") ?? messageBrokerSection["Port"];
 
         services.AddOptions<RabbitMQOptions>()
             .Bind(messageBrokerSection)
             .ValidateDataAnnotations()
-            .Validate(config => true, "Queues section is required")
+            .Validate(
+                config => 
+                    config.Queues != null && 
+                    !string.IsNullOrEmpty(config.Queues.ProfileCreated) &&
+                    !string.IsNullOrEmpty(config.Queues.FriendRequest),
+                "Both 'ProfileCreated' and 'FriendRequest' queue names must be configured in RabbitMQ options.")
             .ValidateOnStart();
 
         services.AddSingleton<IMessageService, RabbitMQService>();

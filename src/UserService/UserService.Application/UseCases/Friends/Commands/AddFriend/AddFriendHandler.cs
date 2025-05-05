@@ -74,7 +74,7 @@ public class AddFriendHandler : IRequestHandler<AddFriendCommand, FriendshipDto>
             Message = $"{friend.Name}, you have a new friend request, look at application",
         };
 
-        await this._messageService.PublishFriendRequestAsync(notificationDto);
+        await this._messageService.PublishFriendRequest(notificationDto);
 
         return this._mapper.Map<FriendshipDto>(friendship);
     }

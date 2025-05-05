@@ -7,7 +7,7 @@ using NotificationService.Application.Contracts;
 using NotificationService.Application.DTOs;
 using Telegram.Bot;
 
-public class MeetingRequestService : BackgroundService
+public class GoalRequestService : BackgroundService
 {
     private readonly IMessageConsumer _consumer;
     private readonly ITelegramBotClient _botClient;
@@ -15,7 +15,7 @@ public class MeetingRequestService : BackgroundService
     private readonly UserService.GrpcServer.UserProfileService.UserProfileServiceClient _userProfileServiceClient;
     private readonly ILogger<MeetingRequestService> _logger;
 
-    public MeetingRequestService(
+    public GoalRequestService(
         IMessageConsumer consumer,
         AuthService.GrpcServer.AuthService.AuthServiceClient authServiceClient,
         UserService.GrpcServer.UserProfileService.UserProfileServiceClient userProfileServiceClient,
@@ -32,10 +32,10 @@ public class MeetingRequestService : BackgroundService
         await this._consumer.InitializeAsync();
 
         await this._consumer.StartConsumingAsync(
-            queueKey: "MeetingRequest",
+            queueKey: "GoalRequest",
             handleMessage: async (json) =>
             {
-                var notification = JsonSerializer.Deserialize<MeetingRequestNotification>(json);
+                var notification = JsonSerializer.Deserialize<GoalRequestNotification>(json);
 
                 if (notification != null)
                 {
@@ -59,7 +59,7 @@ public class MeetingRequestService : BackgroundService
 
                     if (response.TelegramId == null)
                     {
-                        _logger.LogWarning("User not found for profile {ProfileId}", notification.ReceiverId);
+                        this._logger.LogWarning("User not found for profile {ProfileId}", notification.ReceiverId);
                         return;
                     }
 

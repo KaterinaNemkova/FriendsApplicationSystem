@@ -1,14 +1,14 @@
-using EventsService.Application.UseCases.Meetings.Queries.GetAllMyFutureMeetings;
-using EventsService.Application.UseCases.Meetings.Queries.GetAllMyPastMeetings;
-
 namespace EventsService.Api.Controllers;
 
 using EventsService.Application.DTOs.Meetings;
 using EventsService.Application.UseCases.Meetings.Commands.CreateMeeting;
 using EventsService.Application.UseCases.Meetings.Commands.DeleteMeeting;
+using EventsService.Application.UseCases.Meetings.Commands.RejectMeeting;
 using EventsService.Application.UseCases.Meetings.Commands.UpdateMeeting;
 using EventsService.Application.UseCases.Meetings.Queries.GetAllMeetings;
+using EventsService.Application.UseCases.Meetings.Queries.GetAllMyFutureMeetings;
 using EventsService.Application.UseCases.Meetings.Queries.GetAllMyMeetings;
+using EventsService.Application.UseCases.Meetings.Queries.GetAllMyPastMeetings;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -82,5 +82,17 @@ public class MeetingController : ControllerBase
         var result = await this._mediator.Send(new GetAllMyPastMeetingsQuery(id), cancellationToken);
 
         return this.Ok(result);
+    }
+
+    [HttpPost("reject/{meetingId:guid}/{profileId:guid}")]
+
+    public async Task<IActionResult> RejectMeeting(
+        [FromRoute] Guid meetingId,
+        [FromRoute] Guid profileId,
+        CancellationToken cancellationToken)
+    {
+        await this._mediator.Send(new RejectMeetingCommand(meetingId, profileId), cancellationToken);
+
+        return this.Ok();
     }
 }

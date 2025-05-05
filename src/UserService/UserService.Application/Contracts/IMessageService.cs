@@ -4,7 +4,7 @@ using UserService.Application.DTOs.Notifications;
 
 public interface IMessageService
 {
-    Task PublishFriendRequestAsync(FriendRequestNotification notification);
+    Task PublishFriendRequest(FriendRequestNotification notification);
 
-    Task PublishProfileCreatedAsync(ProfileCreatedNotification notification);
+    Task PublishProfileCreated(ProfileCreatedNotification notification);
 }

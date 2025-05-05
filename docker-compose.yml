@@ -6,7 +6,7 @@ services:
           context: .
           dockerfile: ./src/AuthService/AuthService.Api/Dockerfile
       ports:
-        - "7210:8080"
+        - "5001:8080"
       container_name: authservice_container
       environment:
         - ASPNETCORE_ENVIRONMENT=Development

@@ -50,6 +50,18 @@ public static class Extensions
                         .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
                 });
         }
+
+        if (!BsonClassMap.IsClassMapRegistered(typeof(Goal)))
+        {
+            BsonClassMap.RegisterClassMap<Goal>(
+                cm =>
+                {
+                    cm.AutoMap();
+
+                    cm.MapMember(c => c.Author)
+                        .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
+                });
+        }
     }
 
     public static IServiceCollection AddDb(this IServiceCollection services, IConfiguration configuration)
@@ -109,7 +121,11 @@ public static class Extensions
         services.AddOptions<RabbitMQOptions>()
             .Bind(messageBrokerSection)
             .ValidateDataAnnotations()
-            .Validate(config => true, "Queues section is required")
+            .Validate(
+                config =>
+                    config.Queues != null &&
+                    !string.IsNullOrEmpty(config.Queues.MeetingRequest),
+                "Queue names must be configured in RabbitMQ options.")
             .ValidateOnStart();
 
         services.AddSingleton<IMessageService, RabbitMQService>();

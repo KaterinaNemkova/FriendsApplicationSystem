@@ -76,7 +76,7 @@ public class TelegramBotService
 
                         await bot.SendTextMessageAsync(
                             chatId: telegramId,
-                            text: $"Спасибо! Ваш Telegram ID сохранён для пользователя {userIdFromLink}.",
+                            text: $"Спасибо! Ваш Telegram ID сохранён.",
                             cancellationToken: token);
 
                         Console.WriteLine($"Saved Telegram ID {telegramId} for user {userIdFromLink}");
@@ -88,7 +88,7 @@ public class TelegramBotService
                             text: "Ваш Telegram ID уже был сохранён ранее!",
                             cancellationToken: token);
 
-                        Console.WriteLine($"Telegram ID уже существует для пользователя {userIdFromLink}");
+                        Console.WriteLine($"Telegram ID уже существует для пользователя");
                     }
 
                     var pendingNotifications = await this._profileNotificationsCollection

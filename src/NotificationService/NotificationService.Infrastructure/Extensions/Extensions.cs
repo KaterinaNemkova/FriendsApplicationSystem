@@ -91,6 +91,8 @@ public static class Extensions
         services.AddSingleton<IMessageConsumer, RabbitMQConsumer>();
         services.AddHostedService<FriendRequestService>();
         services.AddHostedService<ProfileCreatedService>();
+        services.AddHostedService<MeetingRequestService>();
+        services.AddHostedService<GoalRequestService>();
     }
 
     public static IServiceCollection ConfigureTelegramBot(this IServiceCollection services, IConfiguration configuration)

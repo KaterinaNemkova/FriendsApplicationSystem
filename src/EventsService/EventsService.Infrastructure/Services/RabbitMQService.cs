@@ -11,49 +11,79 @@ using RabbitMQ.Client;
 
 public class RabbitMQService : IMessageService, IAsyncDisposable
 {
-    private readonly ConnectionFactory _factory;
     private readonly IConnection _connection;
-    private readonly IChannel _channel;
+    private readonly IModel _channel;
     private readonly ILogger<RabbitMQService> _logger;
     private readonly RabbitMQOptions _options;
 
     public RabbitMQService(IOptions<RabbitMQOptions> options, ILogger<RabbitMQService> logger)
     {
         this._options = options.Value;
-        this._factory = new ConnectionFactory
+        var factory = new ConnectionFactory()
         {
             HostName = this._options.HostName,
             Port = this._options.Port,
             UserName = this._options.UserName,
             Password = this._options.Password,
         };
-        this._connection = this._factory.CreateConnectionAsync().Result;
-        this._channel = this._connection.CreateChannelAsync().Result;
         this._logger = logger;
+        this._logger.LogInformation("RabbitMQ Options: Host={Host}, Port={Port}, User={User}", _options.HostName, _options.Port, _options.UserName);
+
+        this._connection = factory.CreateConnection();
+        this._channel = this._connection.CreateModel();
     }
 
-    public async Task PublishMeetingRequestAsync(MeetingRequestNotification notification)
+    public Task PublishMeetingRequest(MeetingRequestNotification notification)
     {
         var queueName = this._options.Queues.MeetingRequest;
         var json = JsonSerializer.Serialize(notification);
         var body = Encoding.UTF8.GetBytes(json);
 
-        await this._channel.QueueDeclareAsync(
+        this._channel.QueueDeclare(
             queue: queueName,
             durable: true,
             exclusive: false,
             autoDelete: false);
 
-        await _channel.BasicPublishAsync(
+        this._channel.BasicPublish(
             exchange: string.Empty,
             routingKey: queueName,
             body: body);
 
         this._logger.LogInformation($"[RabbitMQ] Message sent to queue '{queueName}': {json}");
+        return Task.CompletedTask;
+    }
+
+    public Task PublishGoalRequest(GoalRequestNotification notification)
+    {
+        var queueName = this._options.Queues.GoalRequest;
+        var json = JsonSerializer.Serialize(notification);
+        var body = Encoding.UTF8.GetBytes(json);
+
+        this._channel.QueueDeclare(
+            queue: queueName,
+            durable: true,
+            exclusive: false,
+            autoDelete: false);
+
+        this._channel.BasicPublish(
+            exchange: string.Empty,
+            routingKey: queueName,
+            body: body);
+
+        this._logger.LogInformation($"[RabbitMQ] Message sent to queue '{queueName}': {json}");
+        return Task.CompletedTask;
     }
 
     public ValueTask DisposeAsync()
     {
-        throw new NotImplementedException();
+        if (this._connection is { IsOpen: true })
+        {
+            this._connection.Close();
+            this._connection.Dispose();
+            GC.SuppressFinalize(this);
+        }
+
+        return default;
     }
 }

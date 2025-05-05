@@ -32,8 +32,6 @@
 
     <ItemGroup>
       <Folder Include="UseCases\Dates\Commands\" />
-      <Folder Include="UseCases\Meetings\Commands\AcceptMeeting\" />
-      <Folder Include="UseCases\Meetings\Commands\RejectMeeting\" />
     </ItemGroup>
 
     <ItemGroup>

@@ -11,7 +11,11 @@ public class MeetingRepository : Repository<Meeting>, IMeetingRepository
         : base(collection)
     {
     }
-    //ToDo: if reject on meeting => delete ProfileId from list of participants, if accept - it's ok, stay all like was
-    //public async Task<Meeting?> AcceptMeetingAsync()
-    //public async Task<Meeting> RejectMeetingAsync()
+
+    public async Task RejectMeetingAsync(Guid meetingId, Guid profileId, CancellationToken token)
+    {
+        var filter = Builders<Meeting>.Filter.Eq(p => p.Id, meetingId);
+        var update = Builders<Meeting>.Update.Pull(p => p.ParticipantIds, profileId);
+        await this._collection.UpdateOneAsync(filter, update, cancellationToken: token);
+    }
 }

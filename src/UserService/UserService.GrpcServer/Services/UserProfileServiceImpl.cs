@@ -35,7 +35,7 @@ public class UserProfileServiceImpl : UserProfileService.UserProfileServiceBase
             Message = $"{profile.Name}, your profile with ProfileId: {profile.Id} created"
 
         };
-        await _messageService.PublishProfileCreatedAsync(profileNotification);
+        await _messageService.PublishProfileCreated(profileNotification);
         
         return new CreateProfileResponse();
 
