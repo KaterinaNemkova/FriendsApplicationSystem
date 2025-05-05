@@ -33,27 +33,9 @@ public class RabbitMQConsumer : IMessageConsumer, IAsyncDisposable
 
     public async Task InitializeAsync()
     {
-        int maxRetries = 20;
-        for (int i = 1; i <= maxRetries; i++)
-        {
-            try
-            {
-                this._connection = await this._factory.CreateConnectionAsync();
-                this._channel = await this._connection.CreateChannelAsync();
-                Console.WriteLine("Connected to RabbitMQ");
-                break;
-            }
-            catch (BrokerUnreachableException ex)
-            {
-                Console.WriteLine($"Attempt {i} failed: {ex.Message}");
-                if (i == maxRetries)
-                {
-                    throw;
-                }
-
-                await Task.Delay(3000);
-            }
-        }
+        this._connection = await this._factory.CreateConnectionAsync();
+        this._channel = await this._connection.CreateChannelAsync();
+        Console.WriteLine("Connected to RabbitMQ");
     }
 
     public async Task StartConsumingAsync(string queueKey, Func<string, Task> handleMessage, CancellationToken cancellationToken)

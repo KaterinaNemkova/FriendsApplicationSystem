@@ -33,7 +33,7 @@ services:
       - DB_CONNECTION_STRING=${MONGO_DB_CONNECTION_STRING}
     depends_on:
       mongo_db:
-        condition: service_started
+        condition: service_healthy
         
   eventsservice_api:
     env_file:
@@ -49,7 +49,7 @@ services:
       - DB_CONNECTION_STRING=${MONGO_DB2_CONNECTION_STRING}
     depends_on:
       mongo_db:
-        condition: service_started
+        condition: service_healthy
         
   notificationservice_api:
     env_file:
@@ -67,9 +67,9 @@ services:
       - USER_GRPC_URL=${USER_GRPC_URL}
     depends_on:
       mongo_db:
-        condition: service_started
+        condition: service_healthy
       rabbitmq:
-        condition: service_started
+        condition: service_healthy
   
   authservice_grpc:
     env_file:
@@ -99,7 +99,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - DB_CONNECTION_STRING=${MONGO_DB_CONNECTION_STRING}
     depends_on:
-      - mongo_db
+      mongo_db:
+        condition: service_healthy
         
   mongo_db:
     image: mongo:latest
@@ -112,6 +113,11 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    healthcheck:
+      test: mongosh --eval "db.adminCommand('ping')" || exit 1
+      interval: 5s
+      timeout: 30s
+      retries: 10
 
   mongo-express:
     image: mongo-express:latest
@@ -123,7 +129,8 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${ME_CONFIG_MONGODB_ADMINPASSWORD}
       ME_CONFIG_MONGODB_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/?authSource=admin
     depends_on:
-      - mongo_db
+      mongo_db:
+        condition: service_healthy
     
   postgre_db:
     image: postgres:latest
@@ -167,6 +174,13 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
       - rabbitmq_logs:/var/log/rabbitmq
+    healthcheck:
+      test: [ "CMD", "rabbitmqctl", "status" ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
 
 
 volumes:
