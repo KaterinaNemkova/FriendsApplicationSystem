@@ -1,4 +1,3 @@
-
 namespace AuthService.Infrastructure.MyIdentityApi;
 
 using System.Collections.Concurrent;
@@ -23,7 +22,6 @@ public static class IdentityApiEndpointRouteBuilderExtensions
 {
     private static readonly EmailAddressAttribute _emailAddressAttribute = new();
     private static readonly ConcurrentDictionary<string, TaskCompletionSource<bool>> _emailConfirmations = new();
-    //private static readonly UserService.GrpcServer.UserProfileService.UserProfileServiceClient _userProfileClient;
 
     public static IEndpointConventionBuilder MapMyIdentityApi<TUser>(this IEndpointRouteBuilder endpoints)
         where TUser : class, new()

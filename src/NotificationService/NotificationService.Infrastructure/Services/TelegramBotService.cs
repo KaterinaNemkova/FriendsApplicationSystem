@@ -1,5 +1,6 @@
 namespace NotificationService.Infrastructure.Services;
 
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using NotificationService.Application.DTOs;
 using Telegram.Bot;
@@ -9,20 +10,23 @@ public class TelegramBotService
     private readonly ITelegramBotClient _botClient;
     private readonly AuthService.GrpcServer.AuthService.AuthServiceClient _authServiceClient;
     private readonly IMongoCollection<ProfileCreatedNotification> _profileNotificationsCollection;
+    private readonly ILogger<TelegramBotService> _logger;
 
     public TelegramBotService(
         ITelegramBotClient botClient,
         AuthService.GrpcServer.AuthService.AuthServiceClient authServiceClient,
-        IMongoDatabase database)
+        IMongoDatabase database,
+        ILogger<TelegramBotService> logger)
     {
         this._botClient = botClient;
         this._authServiceClient = authServiceClient;
         this._profileNotificationsCollection = database.GetCollection<ProfileCreatedNotification>("ProfileCreatedNotifications");
+        this._logger = logger;
     }
 
     public void Start()
     {
-        Console.WriteLine("Telegram bot is starting to listen...");
+        this._logger.LogInformation("Telegram bot is starting to listen...");
 
         this._botClient.StartReceiving(
             async (bot, update, token) =>
@@ -47,9 +51,9 @@ public class TelegramBotService
                     {
                         await bot.SendTextMessageAsync(
                             chatId: telegramId,
-                            text: "Привет! Пожалуйста, используйте ссылку с UserID для регистрации.",
+                            text: "Hello! Please use the UserID link to register.",
                             cancellationToken: token);
-                        Console.WriteLine("No UserId found in the /start command.");
+                        this._logger.LogWarning("No UserId found in the /start command.");
                         return;
                     }
 
@@ -70,25 +74,25 @@ public class TelegramBotService
                             TelegramId = telegramId,
                         };
 
-                        Console.WriteLine($"Sending request to AuthService: UserId={userIdFromLink}, TelegramId={telegramId}");
+                        this._logger.LogWarning($"Sending request to AuthService: UserId={userIdFromLink}, TelegramId={telegramId}");
 
                         await this._authServiceClient.SaveTelegramIdAsync(saveTelegramIdRequest);
 
                         await bot.SendTextMessageAsync(
                             chatId: telegramId,
-                            text: $"Спасибо! Ваш Telegram ID сохранён.",
+                            text: $"Thank you! Your Telegram ID is saved.",
                             cancellationToken: token);
 
-                        Console.WriteLine($"Saved Telegram ID {telegramId} for user {userIdFromLink}");
+                        this._logger.LogWarning($"Saved Telegram ID {telegramId} for user {userIdFromLink}");
                     }
                     else
                     {
                         await bot.SendTextMessageAsync(
                             chatId: telegramId,
-                            text: "Ваш Telegram ID уже был сохранён ранее!",
+                            text: "Your Telegram ID has already been saved!",
                             cancellationToken: token);
 
-                        Console.WriteLine($"Telegram ID уже существует для пользователя");
+                        this._logger.LogWarning($"Telegram ID already exists for user");
                     }
 
                     var pendingNotifications = await this._profileNotificationsCollection
@@ -107,12 +111,12 @@ public class TelegramBotService
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error while processing update: {ex.Message}");
+                    this._logger.LogWarning($"Error while processing update: {ex.Message}");
                 }
             },
             (_, exception, _) =>
             {
-                Console.WriteLine($"Error occurred: {exception.Message}");
+                this._logger.LogWarning($"Error occurred: {exception.Message}");
                 return Task.CompletedTask;
             });
     }
