@@ -103,6 +103,32 @@ public static class IdentityApiEndpointRouteBuilderExtensions
     return TypedResults.Content(telegramLink);
 });
 
+        routeGroup.MapPost("/login", async Task<Results<Ok<AccessTokenResponse>, EmptyHttpResult, ProblemHttpResult>> ([FromBody] MyLoginRequest login, [FromQuery] bool? useCookies, [FromQuery] bool? useSessionCookies, [FromServices] IServiceProvider sp) =>
+        {
+            var signInManager = sp.GetRequiredService<SignInManager<TUser>>();
+            var userManager = sp.GetRequiredService<UserManager<TUser>>();
+
+            var useCookieScheme = (useCookies == true) || (useSessionCookies == true);
+            var isPersistent = (useCookies == true) && (useSessionCookies != true);
+            signInManager.AuthenticationScheme = useCookieScheme ? IdentityConstants.ApplicationScheme : IdentityConstants.BearerScheme;
+
+            var user = await userManager.FindByEmailAsync(login.Email);
+
+            if (user == null)
+            {
+                return TypedResults.Problem("User not found.", statusCode: StatusCodes.Status401Unauthorized);
+            }
+
+            var result = await signInManager.PasswordSignInAsync(user, login.Password, isPersistent, lockoutOnFailure: true);
+
+            if (!result.Succeeded)
+            {
+                return TypedResults.Problem(result.ToString(), statusCode: StatusCodes.Status401Unauthorized);
+            }
+
+            return TypedResults.Empty;
+        });
+
 
         routeGroup.MapPost(
             "/refresh",
