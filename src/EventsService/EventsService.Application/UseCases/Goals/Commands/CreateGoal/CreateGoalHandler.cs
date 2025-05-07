@@ -26,15 +26,20 @@ public class CreateGoalHandler : IRequestHandler<CreateGoalCommand, GoalDto>
         var goal = this._mapper.Map<Goal>(request.Dto);
 
         goal.Id = Guid.NewGuid();
-        if (!goal.ParticipantIds.Contains(request.Dto.Author))
+
+        var authorId = request.Dto.Author;
+        var isAuthorParticipant = goal.ParticipantIds.Contains(authorId);
+
+        if (!isAuthorParticipant)
         {
-            goal.ParticipantIds.Add(request.Dto.Author);
+            goal.ParticipantIds.Add(authorId);
         }
 
         await this._goalRepository.CreateAsync(goal, cancellationToken);
-        if (request.Dto.ParticipantIds?.Count > 0)
+        var participants = request.Dto.ParticipantIds;
+        if (participants.Count > 0)
         {
-            foreach (var participantId in request.Dto.ParticipantIds)
+            foreach (var participantId in participants)
             {
                 var notification = new GoalRequestNotification
                 {

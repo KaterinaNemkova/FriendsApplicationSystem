@@ -125,6 +125,7 @@ public static class Extensions
                 config =>
                     config.Queues != null &&
                     !string.IsNullOrEmpty(config.Queues.MeetingRequest),
+                
                 "Queue names must be configured in RabbitMQ options.")
             .ValidateOnStart();
 
