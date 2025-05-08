@@ -3,7 +3,6 @@ namespace UserService.Api.Controllers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using UserService.Application.DTOs;
-using UserService.Application.UseCases.Profiles.Commands.CreateProfile;
 using UserService.Application.UseCases.Profiles.Commands.DeleteImage;
 using UserService.Application.UseCases.Profiles.Commands.EstablishStatus;
 using UserService.Application.UseCases.Profiles.Commands.UploadImage;
@@ -21,14 +20,6 @@ public class ProfileController : ControllerBase
     public ProfileController(IMediator mediator)
     {
         _mediator = mediator;
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> CreateProfile([FromBody] CreateProfileCommand command, CancellationToken token)
-    {
-        var profile = await _mediator.Send(command, token);
-
-        return Ok(profile);
     }
 
     [HttpGet("profile/{profileId:guid}")]
