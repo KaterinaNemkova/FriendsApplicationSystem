@@ -31,14 +31,14 @@ public class RabbitMQService : IMessageService, IAsyncDisposable
                 Password = _options.Password,
             };
 
-            this._logger.LogInformation("RabbitMQ Options: Host={Host}, Port={Port}, User={User}", _options.HostName, _options.Port, _options.UserName);
+            _logger.LogInformation("RabbitMQ Options: Host={Host}, Port={Port}, User={User}", _options.HostName, _options.Port, _options.UserName);
 
-            this._connection = _factory.CreateConnectionAsync().Result;
-            this._channel = this._connection.CreateChannelAsync().Result;
+            _connection = _factory.CreateConnectionAsync().Result;
+            _channel = _connection.CreateChannelAsync().Result;
         }
         catch (Exception ex)
         {
-            this._logger.LogError(ex, "An error occurred while establishing the RabbitMQ connection.");
+            _logger.LogError(ex, "An error occurred while establishing the RabbitMQ connection.");
             throw;
         }
     }
@@ -51,7 +51,7 @@ public class RabbitMQService : IMessageService, IAsyncDisposable
 
     public async Task PublishGoalRequest(GoalRequestNotification notification)
     {
-        var queueName = this._options.Queues.GoalRequest;
+        var queueName = _options.Queues.GoalRequest;
         await PublishRequest(queueName, notification);
     }
 
@@ -60,18 +60,18 @@ public class RabbitMQService : IMessageService, IAsyncDisposable
         var json = JsonSerializer.Serialize(notification);
         var body = Encoding.UTF8.GetBytes(json);
 
-        await this._channel.QueueDeclareAsync(
+        await _channel.QueueDeclareAsync(
             queue: queueName,
             durable: true,
             exclusive: false,
             autoDelete: false);
 
-        await this._channel.BasicPublishAsync(
+        await _channel.BasicPublishAsync(
             exchange: string.Empty,
             routingKey: queueName,
             body: body);
 
-        this._logger.LogInformation($"[RabbitMQ] Message sent to queue '{queueName}': {json}");
+        _logger.LogInformation($"[RabbitMQ] Message sent to queue '{queueName}': {json}");
     }
 
     public async ValueTask DisposeAsync()
@@ -79,10 +79,9 @@ public class RabbitMQService : IMessageService, IAsyncDisposable
         if (_connection is { IsOpen: true })
         {
             await _channel.CloseAsync();
-            this._channel.Dispose();
+            _channel.Dispose();
             await _connection.CloseAsync();
-            this._connection.Dispose();
-            GC.SuppressFinalize(this);
+            _connection.Dispose();
         }
     }
 }
