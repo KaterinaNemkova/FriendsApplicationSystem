@@ -3,7 +3,7 @@ namespace EventsService.Application.UseCases.Meetings.Commands.UpdateMeeting;
 using AutoMapper;
 using EventsService.Application.Common.Extensions;
 using EventsService.Application.DTOs.Meetings;
-using EventsService.Domain.Contracts;
+using EventsService.Application.Contracts;
 using EventsService.Domain.Entities;
 using MediatR;
 

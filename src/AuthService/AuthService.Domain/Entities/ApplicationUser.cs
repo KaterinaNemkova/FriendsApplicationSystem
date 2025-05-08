@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Identity;
 namespace AuthService.Domain.Entities;
 
-public class ApplicationUser:IdentityUser
+using Microsoft.AspNetCore.Identity;
+
+public class ApplicationUser : IdentityUser
 {
-    
+    public long? TelegramId { get; set; }
 }

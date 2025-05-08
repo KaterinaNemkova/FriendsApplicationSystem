@@ -1,37 +1,58 @@
-using MediatR;
-using UserService.Application.Common.Exceptions;
-using UserService.Domain.Contracts;
-using UserService.Domain.Entities;
-using UserService.Domain.Enums;
+
 
 namespace UserService.Application.UseCases.Friends.Commands.AddFriend;
 
-public class AddFriendHandler:IRequestHandler<AddFriendCommand,Friendship>
+using AutoMapper;
+using MediatR;
+using UserService.Application.Common.Exceptions;
+using UserService.Application.Contracts;
+using UserService.Application.DTOs.Friendships;
+using UserService.Application.DTOs.Notifications;
+using UserService.Domain.Entities;
+using UserService.Domain.Enums;
+
+public class AddFriendHandler : IRequestHandler<AddFriendCommand, FriendshipDto>
 {
     private readonly IFriendshipRepository _friendshipRepository;
     private readonly IProfileRepository _profileRepository;
+    private readonly IMessageService _messageService;
+    private readonly IMapper _mapper;
 
-    public AddFriendHandler(IFriendshipRepository friendshipRepository, IProfileRepository profileRepository)
+    public AddFriendHandler(
+        IFriendshipRepository friendshipRepository,
+        IProfileRepository profileRepository,
+        IMessageService messageService,
+        IMapper mapper)
     {
-        _friendshipRepository = friendshipRepository;
-        _profileRepository = profileRepository;
+        this._friendshipRepository = friendshipRepository;
+        this._profileRepository = profileRepository;
+        this._messageService = messageService;
+        this._mapper = mapper;
     }
-        
-    public async Task<Friendship> Handle(AddFriendCommand request, CancellationToken token)
+
+    public async Task<FriendshipDto> Handle(AddFriendCommand request, CancellationToken token)
     {
-        var exist = await _friendshipRepository.FriendshipExistsByIdsAsync(request.ProfileId, request.FriendId, token);
-        if(exist != null)
+        var exist = await this._friendshipRepository.FriendshipExistsByIdsAsync(
+            request.ProfileId,
+            request.FriendId,
+            token);
+
+        if (exist != null && exist.RequestStatus == RequestStatus.Accepted)
+        {
             throw new InvalidOperationException("You are already friends");
-        
-        var profile = await _profileRepository.GetByIdAsync(request.ProfileId, token);
-        var friend=await _profileRepository.GetByIdAsync(request.FriendId, token);
-        
-        if(profile == null)
-            throw new EntityNotFoundException(nameof(profile), request.ProfileId);
-        
-        if(friend == null)
-            throw new EntityNotFoundException(nameof(friend), request.FriendId);
-        
+        }
+
+        if (exist != null && exist.RequestStatus == RequestStatus.Pending)
+        {
+            throw new InvalidOperationException("You have already sent a request to friends of this person, wait for the answer");
+        }
+
+        var profile = await this._profileRepository.GetByIdAsync(request.ProfileId, token)
+            ?? throw new EntityNotFoundException(nameof(Domain.Entities.Profile), request.ProfileId);
+
+        var friend = await this._profileRepository.GetByIdAsync(request.FriendId, token)
+            ?? throw new EntityNotFoundException(nameof(Domain.Entities.Profile), request.FriendId);
+
         var friendship = new Friendship
         {
             Id = Guid.NewGuid(),
@@ -40,11 +61,21 @@ public class AddFriendHandler:IRequestHandler<AddFriendCommand,Friendship>
             FriendProfileId = request.FriendId,
             FriendProfile = friend,
             BeginningOfInterrelations = DateOnly.FromDateTime(DateTime.UtcNow),
-            RelationStatus = RelationStatus.Friend
+            RelationStatus = RelationStatus.Friend,
+            RequestStatus = RequestStatus.Pending,
         };
-        
-       await _friendshipRepository.AddFriendAsync(friendship, token);
-       
-       return friendship;
+
+        await this._friendshipRepository.AddFriendAsync(friendship, token);
+
+        var notificationDto = new FriendRequestNotification
+        {
+            SenderUserId = profile.UserId,
+            ReceiverUserId = friend.UserId,
+            Message = $"{friend.Name}, you have a new friend request, look at application",
+        };
+
+        await this._messageService.PublishFriendRequest(notificationDto);
+
+        return this._mapper.Map<FriendshipDto>(friendship);
     }
 }

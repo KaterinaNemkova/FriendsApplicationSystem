@@ -1,17 +1,34 @@
+using NotificationService.Infrastructure.Extensions;
+using NotificationService.Infrastructure.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
 
+if (File.Exists(envPath))
+{
+    DotNetEnv.Env.Load(envPath);
+}
+
+builder.Services.AddDb(builder.Configuration);
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+
+builder.Services.ConfigureAuthGrpcClient(builder.Configuration);
+builder.Services.ConfigureUserGrpcClient(builder.Configuration);
+
+builder.Services.ConfigureTelegramBot(builder.Configuration);
+
+builder.Services.ConfigureRabbitMQ(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+var telegramBotService = app.Services.GetRequiredService<TelegramBotService>();
+telegramBotService.Start();
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

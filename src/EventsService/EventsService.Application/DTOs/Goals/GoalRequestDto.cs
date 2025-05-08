@@ -11,4 +11,6 @@ public class GoalRequestDto
     public DateTime TargetDate { get; set; }
 
     public List<string> Actions { get; set; }
+
+    public Guid Author { get; set; }
 }

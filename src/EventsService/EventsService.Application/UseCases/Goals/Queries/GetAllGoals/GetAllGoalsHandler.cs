@@ -2,8 +2,8 @@ namespace EventsService.Application.UseCases.Goals.Queries.GetAllGoals;
 
 using AutoMapper;
 using EventsService.Application.Common.Extensions;
+using EventsService.Application.Contracts;
 using EventsService.Application.DTOs.Goals;
-using EventsService.Domain.Contracts;
 using MediatR;
 
 public class GetAllGoalsHandler : IRequestHandler<GetAllGoalsQuery, List<GoalDto>>

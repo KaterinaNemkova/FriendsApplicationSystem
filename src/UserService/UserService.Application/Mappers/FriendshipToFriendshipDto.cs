@@ -1,13 +1,13 @@
-using UserService.Application.DTOs;
+namespace UserService.Application.Mappers;
+
+using UserService.Application.DTOs.Friendships;
 using UserService.Domain.Entities;
 using Profile = AutoMapper.Profile;
 
-namespace UserService.Application.Mappers;
-
-public class FriendshipToFriendshipDto:Profile
+public class FriendshipToFriendshipDto : Profile
 {
     public FriendshipToFriendshipDto()
     {
-        CreateMap<Friendship, FriendshipDto>().ReverseMap();
+        this.CreateMap<Friendship, FriendshipDto>().ReverseMap();
     }
 }

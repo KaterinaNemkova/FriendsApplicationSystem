@@ -2,8 +2,8 @@ namespace EventsService.Application.UseCases.Meetings.Queries.GetAllMyFutureMeet
 
 using AutoMapper;
 using EventsService.Application.Common.Extensions;
+using EventsService.Application.Contracts;
 using EventsService.Application.DTOs.Meetings;
-using EventsService.Domain.Contracts;
 using MediatR;
 
 public class GetAllMyFutureMeetingsHandler : IRequestHandler<GetAllMyFutureMeetingsQuery, List<MeetingDto>>

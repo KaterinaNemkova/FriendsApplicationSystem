@@ -1,6 +1,6 @@
 namespace EventsService.Infrastructure.Repositories;
 
-using EventsService.Domain.Contracts;
+using EventsService.Application.Contracts;
 using EventsService.Domain.Entities;
 using MongoDB.Driver;
 

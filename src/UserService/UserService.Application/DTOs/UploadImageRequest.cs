@@ -1,8 +1,8 @@
+namespace UserService.Application.DTOs;
+
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 using Swashbuckle.AspNetCore.Annotations;
-
-namespace UserService.Application.DTOs;
 
 public class UploadImageRequest
 {

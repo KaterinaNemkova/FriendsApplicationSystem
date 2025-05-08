@@ -1,13 +1,11 @@
 namespace EventsService.Infrastructure;
 
-using System.Reflection;
-using EventsService.Application.Mappers;
+using EventsService.Application.Contracts;
 using EventsService.Application.Mappers.Dates;
 using EventsService.Application.Mappers.Goals;
 using EventsService.Application.Mappers.Meetings;
 using EventsService.Application.UseCases.Dates.Commands.CreateDate;
 using EventsService.Application.Validators;
-using EventsService.Domain.Contracts;
 using EventsService.Domain.Entities;
 using EventsService.Infrastructure.Repositories;
 using FluentValidation;

@@ -1,14 +1,12 @@
-using AutoMapper;
-using UserService.Application.DTOs;
-
-
 namespace UserService.Application.Mappers;
+
+using AutoMapper;
+using UserService.Application.DTOs.Profiles;
 
 public class ProfileToProfileDto:Profile
 {
     public ProfileToProfileDto()
     {
-        CreateMap<Domain.Entities.Profile, ProfileDto>();
-
+        this.CreateMap<Domain.Entities.Profile, ProfileDto>();
     }
 }

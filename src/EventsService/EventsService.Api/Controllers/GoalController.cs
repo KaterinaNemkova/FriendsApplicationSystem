@@ -1,3 +1,5 @@
+using EventsService.Application.UseCases.Goals.Commands.RejectGoal;
+
 namespace EventsService.Api.Controllers;
 
 using EventsService.Application.DTOs.Goals;
@@ -64,5 +66,17 @@ public class GoalController : ControllerBase
         var result = await this._mediator.Send(new GetAllMyGoalsQuery(id), cancellationToken);
 
         return this.Ok(result);
+    }
+
+    [HttpPost("reject/{goalId:guid}/{profileId:guid}")]
+
+    public async Task<IActionResult> RejectGoal(
+        [FromRoute] Guid goalId,
+        [FromRoute] Guid profileId,
+        CancellationToken cancellationToken)
+    {
+        await this._mediator.Send(new RejectGoalCommand(goalId, profileId), cancellationToken);
+
+        return this.Ok();
     }
 }

@@ -1,6 +1,9 @@
 namespace EventsService.Infrastructure.Extensions;
 
+using EventsService.Application.Contracts;
 using EventsService.Domain.Entities;
+using EventsService.Infrastructure.Options;
+using EventsService.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
@@ -39,6 +42,18 @@ public static class Extensions
         if (!BsonClassMap.IsClassMapRegistered(typeof(Meeting)))
         {
             BsonClassMap.RegisterClassMap<Meeting>(
+                cm =>
+                {
+                    cm.AutoMap();
+
+                    cm.MapMember(c => c.Author)
+                        .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
+                });
+        }
+
+        if (!BsonClassMap.IsClassMapRegistered(typeof(Goal)))
+        {
+            BsonClassMap.RegisterClassMap<Goal>(
                 cm =>
                 {
                     cm.AutoMap();
@@ -88,5 +103,32 @@ public static class Extensions
         });
 
         return services;
+    }
+
+    public static void ConfigureRabbitMQ(this IServiceCollection services, IConfiguration configuration)
+    {
+        var messageBrokerSection = configuration.GetSection("MessageBroker");
+
+        messageBrokerSection["HostName"] =
+            Environment.GetEnvironmentVariable("RABBITMQ_HOSTNAME") ?? messageBrokerSection["HostName"];
+        messageBrokerSection["Username"] =
+            Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER") ?? messageBrokerSection["Username"];
+        messageBrokerSection["Password"] =
+            Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS") ?? messageBrokerSection["Password"];
+        messageBrokerSection["Port"] =
+            Environment.GetEnvironmentVariable("RABBITMQ_PORT") ?? messageBrokerSection["Port"];
+
+        services.AddOptions<RabbitMQOptions>()
+            .Bind(messageBrokerSection)
+            .ValidateDataAnnotations()
+            .Validate(
+                config =>
+                    config.Queues != null &&
+                    !string.IsNullOrEmpty(config.Queues.MeetingRequest),
+                
+                "Queue names must be configured in RabbitMQ options.")
+            .ValidateOnStart();
+
+        services.AddSingleton<IMessageService, RabbitMQService>();
     }
 }

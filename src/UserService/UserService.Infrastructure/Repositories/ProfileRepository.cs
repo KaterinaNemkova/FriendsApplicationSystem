@@ -1,12 +1,11 @@
-using System.Linq.Expressions;
+namespace UserService.Infrastructure.Repositories;
+
 using MongoDB.Driver;
-using UserService.Domain.Contracts;
+using UserService.Application.Contracts;
 using UserService.Domain.Entities;
 using UserService.Domain.Enums;
 
-namespace UserService.Infrastructure.Repositories;
-
-public class ProfileRepository:IProfileRepository
+public class ProfileRepository : IProfileRepository
 {
     private readonly IMongoCollection<Profile> _profilesCollection;
 
@@ -22,22 +21,22 @@ public class ProfileRepository:IProfileRepository
 
     public async Task<Profile> GetByIdAsync(Guid id, CancellationToken token)
     {
-        return await _profilesCollection.Find(p => p.Id == id).FirstOrDefaultAsync(token);
+        return await this._profilesCollection.Find(p => p.Id == id).FirstOrDefaultAsync(token);
     }
 
     public async Task<List<Profile>> GetAllAsync(CancellationToken token)
     {
-        return await _profilesCollection
+        return await this._profilesCollection
             .Find(_ => true)
             .ToListAsync(token);
     }
 
-    public async Task EstablishStatus(Guid Id, ActivityStatus status, CancellationToken token)
+    public async Task EstablishStatus(Guid id, ActivityStatus status, CancellationToken token)
     {
-        var filter = Builders<Profile>.Filter.Eq(p => p.Id, Id);
+        var filter = Builders<Profile>.Filter.Eq(p => p.Id, id);
         var update = Builders<Profile>.Update.Set(p => p.ActivityStatus, status);
 
-        await _profilesCollection.UpdateOneAsync(filter, update, cancellationToken: token);
+        await this._profilesCollection.UpdateOneAsync(filter, update, cancellationToken: token);
     }
 
     public async Task UpdatePhotoAsync(Guid profileId, Photo photo, CancellationToken token)
@@ -45,7 +44,7 @@ public class ProfileRepository:IProfileRepository
         var filter = Builders<Profile>.Filter.Eq(p => p.Id, profileId);
         var update = Builders<Profile>.Update.Set(p => p.Photo, photo);
 
-        await _profilesCollection.UpdateOneAsync(filter, update);
+        await this._profilesCollection.UpdateOneAsync(filter, update);
     }
 
     public async Task DeletePhotoAsync(Guid profileId, CancellationToken token)
@@ -53,7 +52,7 @@ public class ProfileRepository:IProfileRepository
         var filter = Builders<Profile>.Filter.Eq(p => p.Id, profileId);
         var update = Builders<Profile>.Update.Unset(p => p.Photo);
 
-        await _profilesCollection.UpdateOneAsync(filter, update, cancellationToken: token);
+        await this._profilesCollection.UpdateOneAsync(filter, update, cancellationToken: token);
     }
 }
 

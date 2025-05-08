@@ -7,9 +7,12 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
+using UserService.Application.Contracts;
 using UserService.Domain.Entities;
 using UserService.Domain.Enums;
 using UserService.Infrastructure.Helpers;
+using UserService.Infrastructure.Options;
+using UserService.Infrastructure.Services;
 
 public static class Extensions
 {
@@ -25,6 +28,12 @@ public static class Extensions
                     .SetSerializer(new EnumSerializer<ActivityStatus>(BsonType.String));
                 cm.MapMember(c => c.Id)
                     .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
+                cm.MapMember(c => c.UserId)
+                    .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
+                cm.MapMember(c => c.FriendIds)
+                    .SetSerializer(
+                        new EnumerableInterfaceImplementerSerializer<List<Guid>>(
+                            new GuidSerializer(GuidRepresentation.Standard)));
             });
         }
 
@@ -34,8 +43,16 @@ public static class Extensions
                 cm =>
             {
                 cm.AutoMap();
+                cm.MapMember(c => c.Id)
+                    .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
+                cm.MapMember(c => c.ProfileId)
+                    .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
+                cm.MapMember(c => c.FriendProfileId)
+                    .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
                 cm.MapMember(c => c.RelationStatus)
                     .SetSerializer(new EnumSerializer<RelationStatus>(BsonType.String));
+                cm.MapMember(c => c.RequestStatus)
+                    .SetSerializer(new EnumSerializer<RequestStatus>(BsonType.String));
             });
         }
     }
@@ -84,5 +101,30 @@ public static class Extensions
         return services;
     }
 
+    public static void ConfigureRabbitMQ(this IServiceCollection services, IConfiguration configuration)
+    {
+        var messageBrokerSection = configuration.GetSection("MessageBroker");
 
+        messageBrokerSection["HostName"] =
+            Environment.GetEnvironmentVariable("RABBITMQ_HOSTNAME") ?? messageBrokerSection["HostName"];
+        messageBrokerSection["Username"] =
+            Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER") ?? messageBrokerSection["Username"];
+        messageBrokerSection["Password"] =
+            Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS") ?? messageBrokerSection["Password"];
+        messageBrokerSection["Port"] =
+            Environment.GetEnvironmentVariable("RABBITMQ_PORT") ?? messageBrokerSection["Port"];
+
+        services.AddOptions<RabbitMQOptions>()
+            .Bind(messageBrokerSection)
+            .ValidateDataAnnotations()
+            .Validate(
+                config =>
+                    config.Queues != null &&
+                    !string.IsNullOrEmpty(config.Queues.ProfileCreated) &&
+                    !string.IsNullOrEmpty(config.Queues.FriendRequest),
+                "Both 'ProfileCreated' and 'FriendRequest' queue names must be configured in RabbitMQ options.")
+            .ValidateOnStart();
+
+        services.AddSingleton<IMessageService, RabbitMQService>();
+    }
 }
