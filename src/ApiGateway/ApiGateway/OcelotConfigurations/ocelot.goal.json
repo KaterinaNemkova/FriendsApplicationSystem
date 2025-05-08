@@ -1,0 +1,86 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5100"
+  },
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "api/goals",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 5076
+        }
+      ],
+      "UpstreamPathTemplate": "/goals",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "api/goals/{goalId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 5076
+        }
+      ],
+      "UpstreamPathTemplate": "/goals/{goalId}",
+      "UpstreamHttpMethod": [
+        "DELETE"
+      ],
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "api/goals/{goalId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 5076
+        }
+      ],
+      "UpstreamPathTemplate": "/goals/{goalId}",
+      "UpstreamHttpMethod": [
+        "PUT"
+      ],
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "api/goals",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 5076
+        }
+      ],
+      "UpstreamPathTemplate": "/goals",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "api/goals/my-goals/{profileId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 5076
+        }
+      ],
+      "UpstreamPathTemplate": "/goals/my-goals/{profileId}}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "SwaggerKey": "Events"
+    }
+  ]
+}

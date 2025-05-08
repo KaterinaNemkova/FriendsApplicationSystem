@@ -1,0 +1,86 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5100"
+  },
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "api/dates",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 5076
+        }
+      ],
+      "UpstreamPathTemplate": "/dates",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "api/dates/{dateId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 5076
+        }
+      ],
+      "UpstreamPathTemplate": "/dates/{dateId}",
+      "UpstreamHttpMethod": [
+        "DELETE"
+      ],
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "api/dates/{dateId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 5076
+        }
+      ],
+      "UpstreamPathTemplate": "/dates/{dateId}",
+      "UpstreamHttpMethod": [
+        "PUT"
+      ],
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "api/dates",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 5076
+        }
+      ],
+      "UpstreamPathTemplate": "/dates",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "api/dates/my-dates/{profileId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 5076
+        }
+      ],
+      "UpstreamPathTemplate": "/dates/my-dates/{profileId}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "SwaggerKey": "Events"
+    }
+  ]
+}

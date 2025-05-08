@@ -1,0 +1,104 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5100"
+  },
+  "Routes": [
+    {
+      "DownstreamPathTemplate" : "api/profiles",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate" : "/profiles",
+      "UpstreamHttpMethod": [ "POST" ],
+      "SwaggerKey": "Profile"
+    },
+
+    {
+      "DownstreamPathTemplate" : "api/profiles/profile/{profileId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate" : "/profiles/profile/{profileId}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "Profile"
+    },
+
+    {
+      "DownstreamPathTemplate" : "api/profiles/photo/{profileId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate" : "/profiles/photo/{profileId}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "Profile"
+    },
+
+    {
+      "DownstreamPathTemplate" : "api/profiles",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate" : "/profiles",
+      "UpstreamHttpMethod": [ "GET" ],
+      "SwaggerKey": "Profile"
+    },
+
+    {
+      "DownstreamPathTemplate" : "api/profiles/photo/{profileId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate" : "/profiles/photo/{profileId}",
+      "UpstreamHttpMethod": [ "POST" ],
+      "SwaggerKey": "Profile"
+    },
+
+    {
+      "DownstreamPathTemplate" : "api/profiles/photo/{profileId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate" : "/profiles/photo/{profileId}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "SwaggerKey": "Profile"
+    },
+
+    {
+      "DownstreamPathTemplate" : "api/profiles/status/{profileId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate" : "/profiles/status/{profileId}",
+      "UpstreamHttpMethod": [ "POST" ],
+      "SwaggerKey": "Profile"
+    }
+  ]
+}

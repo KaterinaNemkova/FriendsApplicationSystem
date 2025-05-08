@@ -1,0 +1,150 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5100"
+  },
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "auth/register",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "authservice_api",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate": "/register",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "SwaggerKey": "Auth"
+    },
+
+    {
+      "DownstreamPathTemplate": "auth/login",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "authservice_api",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate": "/login",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "SwaggerKey": "Auth"
+    },
+
+    {
+      "DownstreamPathTemplate": "auth/refresh",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "authservice_api",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate": "/refresh",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "SwaggerKey": "Auth"
+    },
+
+    {
+      "DownstreamPathTemplate": "auth/confirmEmail",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "authservice_api",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate": "/confirmEmail",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "SwaggerKey": "Auth"
+    },
+
+    {
+      "DownstreamPathTemplate": "auth/resendConfirmationEmail",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "authservice_api",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate": "/resendConfirmationEmail",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "SwaggerKey": "Auth"
+    },
+
+    {
+      "DownstreamPathTemplate": "auth/forgotPassword",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "authservice_api",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate": "/forgotPassword",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "SwaggerKey": "Auth"
+    },
+
+    {
+      "DownstreamPathTemplate": "auth/resetPassword",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "authservice_api",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate": "/resetPassword",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "SwaggerKey": "Auth"
+    },
+
+    {
+      "DownstreamPathTemplate": "auth/manage/info",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "authservice_api",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate": "/manage/info",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "SwaggerKey": "Auth"
+    },
+
+    {
+      "DownstreamPathTemplate": "auth/manage/info",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "authservice_api",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate": "/manage/info",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "SwaggerKey": "Auth"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "SwaggerEndPoints": [
+    {
+      "Key": "Auth",
+      "Config": [
+        {
+          "Name": "Auth Api",
+          "Version": "v1",
+          "Url": "http://authservice_api:5001/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "Profile",
+      "Config": [
+        {
+          "Name": "User Api",
+          "Version": "v1",
+          "Url": "http://userservice_api:5185/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "Events",
+      "Config": [
+        {
+          "Name": "Events Api",
+          "Version": "v1",
+          "Url": "http://eventsservice_api:5076/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ]
+}

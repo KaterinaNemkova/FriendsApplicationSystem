@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.BearerToken;
+
 namespace AuthService.Infrastructure.Extensions;
 
 using AuthService.Domain.Entities;
@@ -34,19 +36,26 @@ public static class Extensions
         context.Database.Migrate();
     }
 
-    public static IServiceCollection AddPresentation(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddPresentation(this IServiceCollection services)
     {
         services.AddEndpointsApiExplorer();
 
         services.AddSwaggerGen();
 
-        services.AddAuthentication();
+        services.AddAuthentication().AddJwtBearer();
 
         services.AddAuthorization();
 
         services.AddIdentityApiEndpoints<ApplicationUser>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<FriendsAppDbContext>();
+
+        services.Configure<BearerTokenOptions>(options =>
+        {
+            options.BearerTokenExpiration = TimeSpan.FromMinutes(30);
+            options.RefreshTokenExpiration = TimeSpan.FromDays(7);
+        });
+
 
         services.Configure<IdentityOptions>(
             options =>

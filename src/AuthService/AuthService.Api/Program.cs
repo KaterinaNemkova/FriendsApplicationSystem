@@ -15,7 +15,7 @@ if (File.Exists(envPath))
 
 builder.Services.AddData(builder.Configuration);
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-builder.Services.AddPresentation(builder.Configuration);
+builder.Services.AddPresentation();
 
 builder.Services.AddEmailService(builder.Configuration);
 builder.Services.ConfigureUserGrpcClient(builder.Configuration);

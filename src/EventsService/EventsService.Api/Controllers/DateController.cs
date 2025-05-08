@@ -30,21 +30,21 @@ public class DateController : ControllerBase
         return this.Ok(result);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteDate([FromRoute] Guid id, CancellationToken cancellationToken)
+    [HttpDelete("{dateId:guid}")]
+    public async Task<IActionResult> DeleteDate([FromRoute] Guid dateId, CancellationToken cancellationToken)
     {
-        await this._mediator.Send(new DeleteDateCommand(id), cancellationToken);
+        await this._mediator.Send(new DeleteDateCommand(dateId), cancellationToken);
 
         return this.Ok();
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPut("{dateId:guid}")]
     public async Task<IActionResult> UpdateDate(
-        [FromRoute] Guid id,
+        [FromRoute] Guid dateId,
         [FromBody] DateRequestDto dateRequestDto,
         CancellationToken cancellationToken)
     {
-        var date = await this._mediator.Send(new UpdateDateCommand(id, dateRequestDto), cancellationToken);
+        var date = await this._mediator.Send(new UpdateDateCommand(dateId, dateRequestDto), cancellationToken);
         return this.Ok(date);
     }
 
@@ -55,7 +55,7 @@ public class DateController : ControllerBase
         return this.Ok(dates);
     }
 
-    [HttpGet("my/{id:guid}")]
+    [HttpGet("my-dates/{profileId:guid}")]
     public async Task<IActionResult> GetAllMyDates([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var dates = await this._mediator.Send(new GetAllMyDatesQuery(id), cancellationToken);

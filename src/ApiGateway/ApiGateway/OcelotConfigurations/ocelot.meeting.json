@@ -1,0 +1,118 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5100"
+  },
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "api/meetings",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 5076
+        }
+      ],
+      "UpstreamPathTemplate": "/meetings",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "api/meetings/{meetingId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 5076
+        }
+      ],
+      "UpstreamPathTemplate": "/meetings/{meetingId}",
+      "UpstreamHttpMethod": [
+        "DELETE"
+      ],
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "api/meetings/{meetingId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 5076
+        }
+      ],
+      "UpstreamPathTemplate": "/meetings/{meetingId}",
+      "UpstreamHttpMethod": [
+        "PUT"
+      ],
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "api/meetings",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 5076
+        }
+      ],
+      "UpstreamPathTemplate": "/meetings",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "api/meetings/my-meetings/{profileId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 5076
+        }
+      ],
+      "UpstreamPathTemplate": "/meetings/my-meetings/{profileId}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "api/meetings/my-future/{profileId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 5076
+        }
+      ],
+      "UpstreamPathTemplate": "/meetings/my-future/{profileId}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "api/meetings/my-past/{profileId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 5076
+        }
+      ],
+      "UpstreamPathTemplate": "/meetings/my-past/{profileId}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "SwaggerKey": "Events"
+    }
+  ]
+}
