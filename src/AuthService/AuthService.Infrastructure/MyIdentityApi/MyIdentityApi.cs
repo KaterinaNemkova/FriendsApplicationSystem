@@ -44,7 +44,9 @@ public static class IdentityApiEndpointRouteBuilderExtensions
         HttpContext context,
         [FromServices] UserManager<TUser> userManager,
         [FromServices] IUserStore<TUser> userStore,
-        [FromServices] UserService.GrpcServer.UserProfileService.UserProfileServiceClient userProfileClient) =>
+        [FromServices] RoleManager<IdentityRole> roleManager,
+        [FromServices] UserService.GrpcServer.UserProfileService.UserProfileServiceClient userProfileClient,
+        FriendsAppDbContext dbContext) =>
 {
     if (!userManager.SupportsUserEmail)
     {
@@ -92,6 +94,18 @@ public static class IdentityApiEndpointRouteBuilderExtensions
         _emailConfirmations.TryRemove(email, out _);
         return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)));
     }
+    
+    // Назначаем роль и сохраняем
+    var createdUser = await userManager.FindByNameAsync(userName);
+    
+    var roleResult = await userManager.AddToRoleAsync(createdUser, "User");
+
+    if (!roleResult.Succeeded)
+    {
+        await userManager.DeleteAsync(createdUser);
+        return CreateValidationProblem(roleResult);
+    }
+
 
     var request = new UserService.GrpcServer.CreateProfileRequest
     {
@@ -103,7 +117,9 @@ public static class IdentityApiEndpointRouteBuilderExtensions
     return TypedResults.Content(telegramLink);
 });
 
-        routeGroup.MapPost("/login", async Task<Results<Ok<AccessTokenResponse>, EmptyHttpResult, ProblemHttpResult>> ([FromBody] MyLoginRequest login, [FromQuery] bool? useCookies, [FromQuery] bool? useSessionCookies, [FromServices] IServiceProvider sp) =>
+        routeGroup.MapPost(
+            "/login",
+            async Task<Results<Ok<AccessTokenResponse>, EmptyHttpResult, ProblemHttpResult>> ([FromBody] MyLoginRequest login, [FromQuery] bool? useCookies, [FromQuery] bool? useSessionCookies, [FromServices] IServiceProvider sp) =>
         {
             var signInManager = sp.GetRequiredService<SignInManager<TUser>>();
             var userManager = sp.GetRequiredService<UserManager<TUser>>();
@@ -113,6 +129,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             signInManager.AuthenticationScheme = useCookieScheme ? IdentityConstants.ApplicationScheme : IdentityConstants.BearerScheme;
 
             var user = await userManager.FindByEmailAsync(login.Email);
+            var roles = await userManager.GetRolesAsync(user); // ["User", ...]
 
             if (user == null)
             {

@@ -4,6 +4,7 @@ using EventsService.Application.Contracts;
 using EventsService.Domain.Entities;
 using EventsService.Infrastructure.Options;
 using EventsService.Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Bson;
@@ -93,8 +94,18 @@ public static class Extensions
     public static IServiceCollection AddRepresentation(this IServiceCollection services)
     {
         services.AddControllers();
+        
+        services.AddAuthentication().AddJwtBearer();
+
+        services.AddAuthorization();
 
         services.AddEndpointsApiExplorer();
+        
+        services.Configure<BearerTokenOptions>(options =>
+        {
+            options.BearerTokenExpiration = TimeSpan.FromMinutes(30);
+            options.RefreshTokenExpiration = TimeSpan.FromDays(7);
+        });
 
         services.AddSwaggerGen(
             c =>
@@ -125,7 +136,6 @@ public static class Extensions
                 config =>
                     config.Queues != null &&
                     !string.IsNullOrEmpty(config.Queues.MeetingRequest),
-                
                 "Queue names must be configured in RabbitMQ options.")
             .ValidateOnStart();
 

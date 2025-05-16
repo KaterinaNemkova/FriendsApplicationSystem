@@ -180,6 +180,19 @@ services:
       timeout: 5s
       retries: 20
       start_period: 10s
+  
+#  api_gateway:
+#    env_file:
+#      - .env
+#    environment:
+#      - ASPNETCORE_ENVIRONMENT=Development
+#    container_name: apigateway
+#    ports:
+#      - ${APIGATEWAY_PORT}:${APIGATEWAY_PORT}
+#    build:
+#      context: .
+#      dockerfile: ./src/ApiGateway/ApiGateway/Dockerfile
+
 
 
 

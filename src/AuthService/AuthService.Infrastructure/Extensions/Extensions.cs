@@ -55,7 +55,8 @@ public static class Extensions
             options.BearerTokenExpiration = TimeSpan.FromMinutes(30);
             options.RefreshTokenExpiration = TimeSpan.FromDays(7);
         });
-
+        
+        
 
         services.Configure<IdentityOptions>(
             options =>

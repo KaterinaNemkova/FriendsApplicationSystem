@@ -3,6 +3,7 @@ using AuthService.Domain.Entities;
 using AuthService.Infrastructure.Extensions;
 using AuthService.Infrastructure.MyIdentityApi;
 using AuthService.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,5 +32,19 @@ if (app.Environment.IsDevelopment())
 
 app.MapGet("/", () => Results.Redirect("/swagger"));
 app.MapMyIdentityApi<ApplicationUser>();
-
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    
+    // Создаём роли, если их нет
+    if (!await roleManager.RoleExistsAsync("User"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("User"));
+    }
+    
+    if (!await roleManager.RoleExistsAsync("Admin"))
+    {
+        await roleManager.CreateAsync(new IdentityRole("Admin"));
+    }
+}
 app.Run();

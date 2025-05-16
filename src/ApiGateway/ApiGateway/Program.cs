@@ -7,18 +7,36 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddOcelotWithSwaggerSupport((options) =>
 {
-    options.Folder = "OcelotConfiguration";
+    options.Folder = "OcelotConfigurations";
     options.FileOfSwaggerEndPoints = "ocelot.swagger";
 });
-builder.Services.AddAppAuthentication();
+builder.Services.AddAppAuthentication(builder.Configuration);
 builder.Services.AddOcelot();
 builder.Services.AddSwaggerForOcelot(builder.Configuration);
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "FriendshipGateway API", Version = "v1" });
+    
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Title = "FriendsApp Gateway API",
-        Version = "v1",
+        Description = "JWT Authorization header using the Bearer scheme",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer"
+    });
+    
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
     });
 });
 var app = builder.Build();
