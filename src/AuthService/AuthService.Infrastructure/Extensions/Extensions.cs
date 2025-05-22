@@ -1,10 +1,14 @@
-using Microsoft.AspNetCore.Authentication.BearerToken;
+using AuthService.Infrastructure.HangfireJobs;
 
 namespace AuthService.Infrastructure.Extensions;
 
+using AuthService.Domain.Contracts;
 using AuthService.Domain.Entities;
 using AuthService.Infrastructure.Options;
+using AuthService.Infrastructure.Repositories;
 using AuthService.Infrastructure.Services;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -15,15 +19,29 @@ using Microsoft.Extensions.DependencyInjection;
 public static class Extensions
 {
     public static IServiceCollection AddData(
-        this IServiceCollection services,
-        ConfigurationManager builderConfiguration)
+        this IServiceCollection services)
     {
         var envConnectionString = Environment.GetEnvironmentVariable("POSTGRES_DB_CONNECTION_STRING");
+        var hangfireConnectionString = Environment.GetEnvironmentVariable("HANGFIRE_CONNECTION");
         services.AddDbContext<FriendsAppDbContext>(
             options =>
         {
             options.UseNpgsql(envConnectionString);
         });
+
+        services.AddHangfire(
+            globalConfiguration =>
+                globalConfiguration.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+                    .UseSimpleAssemblyNameTypeSerializer()
+                    .UseRecommendedSerializerSettings()
+                    .UsePostgreSqlStorage(
+                        hangfireConnectionString,
+                        new PostgreSqlStorageOptions
+                        {
+                            PrepareSchemaIfNecessary = true,
+                        }));
+        services.AddScoped<IAuthRepository, AuthRepository>();
+        services.AddScoped<IDeleteUncorfimedUserService, DeleteUnconfirmedUserJobService>();
         return services;
     }
 
@@ -42,21 +60,13 @@ public static class Extensions
 
         services.AddSwaggerGen();
 
-        services.AddAuthentication().AddJwtBearer();
+        services.AddAuthentication();
 
         services.AddAuthorization();
 
         services.AddIdentityApiEndpoints<ApplicationUser>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<FriendsAppDbContext>();
-
-        services.Configure<BearerTokenOptions>(options =>
-        {
-            options.BearerTokenExpiration = TimeSpan.FromMinutes(30);
-            options.RefreshTokenExpiration = TimeSpan.FromDays(7);
-        });
-        
-        
 
         services.Configure<IdentityOptions>(
             options =>
@@ -66,6 +76,7 @@ public static class Extensions
             options.User.AllowedUserNameCharacters =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
         });
+        services.AddHangfireServer();
         return services;
     }
 
@@ -107,5 +118,4 @@ public static class Extensions
 
         return services;
     }
-
 }

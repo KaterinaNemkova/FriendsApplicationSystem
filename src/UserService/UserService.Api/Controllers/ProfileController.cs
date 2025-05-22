@@ -1,3 +1,5 @@
+using UserService.Application.UseCases.Profiles.Commands.DeleteProfile;
+
 namespace UserService.Api.Controllers;
 
 using MediatR;
@@ -67,6 +69,15 @@ public class ProfileController : ControllerBase
     public async Task<IActionResult> EstablishStatus([FromRoute] Guid profileId, [FromQuery] ActivityStatus activityStatus,CancellationToken token)
     {
         await _mediator.Send(new EstablishStatusCommand(profileId, activityStatus), token);
+        return Ok();
+    }
+
+    [HttpDelete("profile/{profileId:guid}")]
+
+    public async Task<IActionResult> DeleteProfile([FromRoute] Guid profileId, CancellationToken token)
+    {
+        await _mediator.Send(new DeleteProfileCommand(profileId), token);
+
         return Ok();
     }
 }

@@ -19,6 +19,11 @@ public class ProfileRepository : IProfileRepository
         await this._profilesCollection.InsertOneAsync(profile, token);
     }
 
+    public async Task DeleteAsync(Guid profileId, CancellationToken token)
+    {
+        await this._profilesCollection.DeleteOneAsync(p => p.Id == profileId, token);
+    }
+
     public async Task<Profile> GetByIdAsync(Guid id, CancellationToken token)
     {
         return await this._profilesCollection.Find(p => p.Id == id).FirstOrDefaultAsync(token);

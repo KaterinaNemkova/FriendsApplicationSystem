@@ -55,6 +55,9 @@ public class RabbitMQConsumer : IMessageConsumer, IAsyncDisposable
             case "GoalRequest":
                 queueName = this._options.Queues.GoalRequest;
                 break;
+            case "DateRequest":
+                queueName = this._options.Queues.DateRequest;
+                break;
             default:
                 this._logger.LogError($"Queue key '{queueKey}' is not supported");
                 return;

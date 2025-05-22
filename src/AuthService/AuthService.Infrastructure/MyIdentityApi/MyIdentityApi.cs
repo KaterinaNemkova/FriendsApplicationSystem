@@ -1,3 +1,7 @@
+using AuthService.Domain.Contracts;
+using Hangfire;
+using Microsoft.Extensions.Logging;
+
 namespace AuthService.Infrastructure.MyIdentityApi;
 
 using System.Collections.Concurrent;
@@ -40,82 +44,94 @@ public static class IdentityApiEndpointRouteBuilderExtensions
         routeGroup.MapPost(
     "/register",
     async Task<Results<ContentHttpResult, ValidationProblem>> (
-        [FromBody] MyRegisterRequest registration,
-        HttpContext context,
-        [FromServices] UserManager<TUser> userManager,
-        [FromServices] IUserStore<TUser> userStore,
-        [FromServices] RoleManager<IdentityRole> roleManager,
-        [FromServices] UserService.GrpcServer.UserProfileService.UserProfileServiceClient userProfileClient,
-        FriendsAppDbContext dbContext) =>
-{
-    if (!userManager.SupportsUserEmail)
-    {
-        throw new NotSupportedException($"{nameof(MapMyIdentityApi)} requires a user store with email support.");
-    }
+                [FromBody] MyRegisterRequest registration,
+                HttpContext context,
+                [FromServices] UserManager<TUser> userManager,
+                [FromServices] IUserStore<TUser> userStore,
+                [FromServices] RoleManager<IdentityRole> roleManager,
+                [FromServices] UserService.GrpcServer.UserProfileService.UserProfileServiceClient userProfileClient,
+                [FromServices] IBackgroundJobClient backgroundJobClient,
+                [FromServices] IDeleteUncorfimedUserService deleteUncorfimedUserService) =>
+        {
+        if (!userManager.SupportsUserEmail)
+        {
+            throw new NotSupportedException($"{nameof(MapMyIdentityApi)} requires a user store with email support.");
+        }
 
-    var emailStore = (IUserEmailStore<TUser>)userStore;
-    var email = registration.Email;
-    var userName = registration.UserName;
+        var emailStore = (IUserEmailStore<TUser>)userStore;
+        var email = registration.Email;
+        var userName = registration.UserName;
 
-    if (string.IsNullOrEmpty(email) || !_emailAddressAttribute.IsValid(email))
-    {
-        return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)));
-    }
+        if (string.IsNullOrEmpty(email) || !_emailAddressAttribute.IsValid(email))
+        {
+            return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)));
+        }
 
-    if (string.IsNullOrEmpty(userName))
-    {
-        return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidUserName(userName)));
-    }
+        if (string.IsNullOrEmpty(userName))
+        {
+            return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidUserName(userName)));
+        }
 
-    var user = new TUser();
-    await userStore.SetUserNameAsync(user, userName, CancellationToken.None);
-    await emailStore.SetEmailAsync(user, email, CancellationToken.None);
+        var user = new TUser();
+        await userStore.SetUserNameAsync(user, userName, CancellationToken.None);
+        await emailStore.SetEmailAsync(user, email, CancellationToken.None);
 
-    var result = await userManager.CreateAsync(user, registration.Password);
-    if (!result.Succeeded)
-    {
-        return CreateValidationProblem(result);
-    }
+        var result = await userManager.CreateAsync(user, registration.Password);
+        if (!result.Succeeded)
+        {
+            return CreateValidationProblem(result);
+        }
 
-    var userId = await userManager.GetUserIdAsync(user);
-    var botUsername = "FriendsNotificationBot";
-    var telegramLink = $"https://t.me/{botUsername}?start={userId}";
+        var userId = await userManager.GetUserIdAsync(user);
 
-    var confirmationTask = new TaskCompletionSource<bool>();
-    _emailConfirmations[email] = confirmationTask;
+        backgroundJobClient.Schedule(() => deleteUncorfimedUserService.DeleteUnconfirmedUserAsync(userId), TimeSpan.FromMinutes(5));
 
-    await SendConfirmationEmailAsync(user, userManager, context, email);
+        await SendConfirmationEmailAsync(user, userManager, context, email);
 
-    var isConfirmed = await Task.WhenAny(confirmationTask.Task, Task.Delay(TimeSpan.FromMinutes(15))) == confirmationTask.Task;
+        return TypedResults.Content("Пожалуйста, подтвердите ваш email для завершения регистрации");
+        });
 
-    if (!isConfirmed)
-    {
-        await userManager.DeleteAsync(user);
-        _emailConfirmations.TryRemove(email, out _);
-        return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email)));
-    }
-    
-    // Назначаем роль и сохраняем
-    var createdUser = await userManager.FindByNameAsync(userName);
-    
-    var roleResult = await userManager.AddToRoleAsync(createdUser, "User");
+        routeGroup.MapGet(
+            "/getTelegramReference",
+            async Task<Results<ContentHttpResult, ValidationProblem>> (
+                string userId,
+                [FromServices] UserManager<TUser> userManager,
+                [FromServices] IUserStore<TUser> userStore,
+                [FromServices] UserService.GrpcServer.UserProfileService.UserProfileServiceClient userProfileClient) =>
+            {
+                var user = await userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return TypedResults.ValidationProblem(
+                        new Dictionary<string, string[]>
+                        {
+                            { "error", new[] { "Пользователь не найден" } },
+                        });
+                }
 
-    if (!roleResult.Succeeded)
-    {
-        await userManager.DeleteAsync(createdUser);
-        return CreateValidationProblem(roleResult);
-    }
+                var isEmailConfirmed = userManager.IsEmailConfirmedAsync(user).Result;
+                if (!isEmailConfirmed)
+                {
+                    return TypedResults.ValidationProblem(
+                        new Dictionary<string, string[]>
+                    {
+                        { "error", new[] { "Почта не подтверждена! Подтвердите почту или ваш аккаунт будет удален" } },
+                    });
+                }
 
+                var botUsername = "FriendsNotificationBot";
+                var telegramLink = $"https://t.me/{botUsername}?start={userId}";
+                var userName = await userStore.GetUserNameAsync(user, CancellationToken.None);
+                var request = new UserService.GrpcServer.CreateProfileRequest
+                {
+                    UserId = userId,
+                    UserName = userName,
+                };
 
-    var request = new UserService.GrpcServer.CreateProfileRequest
-    {
-        UserId = userId,
-        UserName = userName,
-    };
+                var response = await userProfileClient.CreateProfileAsync(request);
+                return TypedResults.Content(telegramLink);
+            });
 
-    var response = await userProfileClient.CreateProfileAsync(request);
-    return TypedResults.Content(telegramLink);
-});
 
         routeGroup.MapPost(
             "/login",
@@ -129,7 +145,6 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             signInManager.AuthenticationScheme = useCookieScheme ? IdentityConstants.ApplicationScheme : IdentityConstants.BearerScheme;
 
             var user = await userManager.FindByEmailAsync(login.Email);
-            var roles = await userManager.GetRolesAsync(user); // ["User", ...]
 
             if (user == null)
             {
@@ -219,8 +234,9 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             endpointBuilder.Metadata.Add(new EndpointNameMetadata(confirmEmailEndpointName));
         });
 
-        routeGroup.MapPost("/resendConfirmationEmail", async Task<Ok>
-            ([FromBody] ResendConfirmationEmailRequest resendRequest, HttpContext context, [FromServices] IServiceProvider sp) =>
+        routeGroup.MapPost(
+            "/resendConfirmationEmail",
+            async Task<Ok> ([FromBody] ResendConfirmationEmailRequest resendRequest, HttpContext context, [FromServices] IServiceProvider sp) =>
         {
             var userManager = sp.GetRequiredService<UserManager<TUser>>();
             if (await userManager.FindByEmailAsync(resendRequest.Email) is not { } user)
@@ -232,8 +248,9 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             return TypedResults.Ok();
         });
 
-        routeGroup.MapPost("/forgotPassword", async Task<Results<Ok, ValidationProblem>>
-            ([FromBody] ForgotPasswordRequest resetRequest, [FromServices] IServiceProvider sp) =>
+        routeGroup.MapPost(
+            "/forgotPassword",
+            async Task<Results<Ok, ValidationProblem>> ([FromBody] ForgotPasswordRequest resetRequest, [FromServices] IServiceProvider sp) =>
         {
             var userManager = sp.GetRequiredService<UserManager<TUser>>();
             var user = await userManager.FindByEmailAsync(resetRequest.Email);
@@ -249,8 +266,9 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             return TypedResults.Ok();
         });
 
-        routeGroup.MapPost("/resetPassword", async Task<Results<Ok, ValidationProblem>>
-            ([FromBody] ResetPasswordRequest resetRequest, [FromServices] IServiceProvider sp) =>
+        routeGroup.MapPost(
+            "/resetPassword",
+            async Task<Results<Ok, ValidationProblem>> ([FromBody] ResetPasswordRequest resetRequest, [FromServices] IServiceProvider sp) =>
         {
             var userManager = sp.GetRequiredService<UserManager<TUser>>();
 
@@ -282,8 +300,9 @@ public static class IdentityApiEndpointRouteBuilderExtensions
 
         var accountGroup = routeGroup.MapGroup("/manage").RequireAuthorization();
 
-        accountGroup.MapGet("/info", async Task<Results<Ok<InfoResponse>, ValidationProblem, NotFound>>
-            (ClaimsPrincipal claimsPrincipal, [FromServices] IServiceProvider sp) =>
+        accountGroup.MapGet(
+            "/info",
+            async Task<Results<Ok<InfoResponse>, ValidationProblem, NotFound>> (ClaimsPrincipal claimsPrincipal, [FromServices] IServiceProvider sp) =>
         {
             var userManager = sp.GetRequiredService<UserManager<TUser>>();
             if (await userManager.GetUserAsync(claimsPrincipal) is not { } user)
@@ -294,8 +313,9 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             return TypedResults.Ok(await CreateInfoResponseAsync(user, userManager));
         });
 
-        accountGroup.MapPost("/info", async Task<Results<Ok<InfoResponse>, ValidationProblem, NotFound>>
-            (ClaimsPrincipal claimsPrincipal, [FromBody] InfoRequest infoRequest, HttpContext context, [FromServices] IServiceProvider sp) =>
+        accountGroup.MapPost(
+            "/info",
+            async Task<Results<Ok<InfoResponse>, ValidationProblem, NotFound>> (ClaimsPrincipal claimsPrincipal, [FromBody] InfoRequest infoRequest, HttpContext context, [FromServices] IServiceProvider sp) =>
         {
             var userManager = sp.GetRequiredService<UserManager<TUser>>();
             if (await userManager.GetUserAsync(claimsPrincipal) is not { } user)
@@ -312,7 +332,8 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             {
                 if (string.IsNullOrEmpty(infoRequest.OldPassword))
                 {
-                    return CreateValidationProblem("OldPasswordRequired",
+                    return CreateValidationProblem(
+                        "OldPasswordRequired",
                         "The old password is required to set a new password. If the old password is forgotten, use /resetPassword.");
                 }
 
@@ -360,21 +381,26 @@ public static class IdentityApiEndpointRouteBuilderExtensions
                 routeValues.Add("changedEmail", email);
             }
 
-            var confirmEmailUrl = linkGenerator.GetUriByName(context, confirmEmailEndpointName, routeValues)
-                                  ?? throw new NotSupportedException($"Could not find endpoint named '{confirmEmailEndpointName}'.");
+            var confirmEmailUrl = linkGenerator.GetUriByName(
+                context,
+                confirmEmailEndpointName,
+                routeValues,
+                scheme: "http",
+                host: new HostString("localhost:5100"));
 
             await emailSender.SendConfirmationLinkAsync(user, email, HtmlEncoder.Default.Encode(confirmEmailUrl));
         }
-        
 
         return new IdentityEndpointsConventionBuilder(routeGroup);
     }
 
+    
     private static ValidationProblem CreateValidationProblem(string errorCode, string errorDescription) =>
-        TypedResults.ValidationProblem(new Dictionary<string, string[]> {
-            { errorCode, [errorDescription] }
+        TypedResults.ValidationProblem(new Dictionary<string, string[]>
+        {
+            { errorCode, [errorDescription] },
         });
-
+    
     private static ValidationProblem CreateValidationProblem(IdentityResult result)
     {
         Debug.Assert(!result.Succeeded);
@@ -410,11 +436,13 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             IsEmailConfirmed = await userManager.IsEmailConfirmedAsync(user),
         };
     }
+
     private sealed class IdentityEndpointsConventionBuilder(RouteGroupBuilder inner) : IEndpointConventionBuilder
     {
         private IEndpointConventionBuilder InnerAsConventionBuilder => inner;
 
         public void Add(Action<EndpointBuilder> convention) => InnerAsConventionBuilder.Add(convention);
+
         public void Finally(Action<EndpointBuilder> finallyConvention) => InnerAsConventionBuilder.Finally(finallyConvention);
     }
 

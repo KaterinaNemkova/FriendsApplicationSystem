@@ -4,12 +4,12 @@
   },
   "Routes": [
     {
-      "DownstreamPathTemplate": "api/goals",
+      "DownstreamPathTemplate": "/api/goals",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "eventsservice_api",
-          "Port": 5076
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/goals",
@@ -20,12 +20,12 @@
     },
 
     {
-      "DownstreamPathTemplate": "api/goals/{goalId}",
+      "DownstreamPathTemplate": "/api/goals/{goalId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "eventsservice_api",
-          "Port": 5076
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/goals/{goalId}",
@@ -36,12 +36,12 @@
     },
 
     {
-      "DownstreamPathTemplate": "api/goals/{goalId}",
+      "DownstreamPathTemplate": "/api/goals/{goalId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "eventsservice_api",
-          "Port": 5076
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/goals/{goalId}",
@@ -52,12 +52,12 @@
     },
 
     {
-      "DownstreamPathTemplate": "api/goals",
+      "DownstreamPathTemplate": "/api/goals",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "eventsservice_api",
-          "Port": 5076
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/goals",
@@ -68,12 +68,12 @@
     },
 
     {
-      "DownstreamPathTemplate": "api/goals/my-goals/{profileId}",
+      "DownstreamPathTemplate": "/api/goals/my-goals/{profileId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "eventsservice_api",
-          "Port": 5076
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/goals/my-goals/{profileId}}",
@@ -81,6 +81,23 @@
         "GET"
       ],
       "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/goals/done/{goalId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/goals/done/{goalId}",
+      "UpstreamHttpMethod": [
+        "PUT"
+      ],
+      "SwaggerKey": "Events"
     }
+    
   ]
 }

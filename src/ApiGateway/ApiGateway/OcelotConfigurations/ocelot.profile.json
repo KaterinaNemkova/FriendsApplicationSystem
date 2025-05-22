@@ -4,12 +4,12 @@
   },
   "Routes": [
     {
-      "DownstreamPathTemplate" : "api/profiles",
+      "DownstreamPathTemplate" : "/api/profiles",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "userservice_api",
-          "Port": 5001
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate" : "/profiles",
@@ -18,12 +18,12 @@
     },
 
     {
-      "DownstreamPathTemplate" : "api/profiles/profile/{profileId}",
+      "DownstreamPathTemplate" : "/api/profiles/profile/{profileId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "userservice_api",
-          "Port": 5001
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate" : "/profiles/profile/{profileId}",
@@ -32,12 +32,12 @@
     },
 
     {
-      "DownstreamPathTemplate" : "api/profiles/photo/{profileId}",
+      "DownstreamPathTemplate" : "/api/profiles/photo/{profileId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "userservice_api",
-          "Port": 5001
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate" : "/profiles/photo/{profileId}",
@@ -46,12 +46,12 @@
     },
 
     {
-      "DownstreamPathTemplate" : "api/profiles",
+      "DownstreamPathTemplate" : "/api/profiles",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "userservice_api",
-          "Port": 5001
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate" : "/profiles",
@@ -60,12 +60,12 @@
     },
 
     {
-      "DownstreamPathTemplate" : "api/profiles/photo/{profileId}",
+      "DownstreamPathTemplate" : "/api/profiles/photo/{profileId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "userservice_api",
-          "Port": 5001
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate" : "/profiles/photo/{profileId}",
@@ -74,12 +74,12 @@
     },
 
     {
-      "DownstreamPathTemplate" : "api/profiles/photo/{profileId}",
+      "DownstreamPathTemplate" : "/api/profiles/photo/{profileId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "userservice_api",
-          "Port": 5001
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate" : "/profiles/photo/{profileId}",
@@ -88,16 +88,30 @@
     },
 
     {
-      "DownstreamPathTemplate" : "api/profiles/status/{profileId}",
+      "DownstreamPathTemplate" : "/api/profiles/status/{profileId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "userservice_api",
-          "Port": 5001
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate" : "/profiles/status/{profileId}",
       "UpstreamHttpMethod": [ "POST" ],
+      "SwaggerKey": "Profile"
+    },
+    
+    {
+      "DownstreamPathTemplate" : "/api/profiles/profile/{profileId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate" : "/profiles/profile/{profileId}",
+      "UpstreamHttpMethod": [ "DELETE" ],
       "SwaggerKey": "Profile"
     }
   ]

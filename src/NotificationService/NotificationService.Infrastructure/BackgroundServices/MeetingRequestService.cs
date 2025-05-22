@@ -35,7 +35,7 @@ public class MeetingRequestService : BackgroundService
             queueKey: "MeetingRequest",
             handleMessage: async (json) =>
             {
-                var notification = JsonSerializer.Deserialize<MeetingRequestNotification>(json);
+                var notification = JsonSerializer.Deserialize<EventsRequestNotification>(json);
 
                 if (notification != null)
                 {

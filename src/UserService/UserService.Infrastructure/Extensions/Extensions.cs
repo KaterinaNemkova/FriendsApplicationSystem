@@ -127,4 +127,27 @@ public static class Extensions
 
         services.AddSingleton<IMessageService, RabbitMQService>();
     }
+    
+    public static IServiceCollection ConfigureAuthGrpcClient(this IServiceCollection services, IConfiguration configuration)
+    {
+        configuration["AuthGrpcUrl:GrpcUrl"] = Environment.GetEnvironmentVariable("AUTH_GRPC_URL");
+
+        var address = configuration["AuthGrpcUrl:GrpcUrl"]
+                      ?? throw new InvalidOperationException("AuthGrpcUrl:GrpcUrl is not configured!");
+
+        AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
+        services.AddGrpcClient<AuthService.GrpcServer.AuthService.AuthServiceClient>(
+                options =>
+                {
+                    options.Address = new Uri(address);
+                })
+            .ConfigurePrimaryHttpMessageHandler(
+                () => new SocketsHttpHandler
+                {
+                    AllowAutoRedirect = true,
+                });
+
+        return services;
+    }
 }

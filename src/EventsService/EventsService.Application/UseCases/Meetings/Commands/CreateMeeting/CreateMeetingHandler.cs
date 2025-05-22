@@ -24,18 +24,12 @@ public class CreateMeetingHandler : IRequestHandler<CreateMeetingCommand, Meetin
     {
         var meeting = this._mapper.Map<Meeting>(request.Dto);
         meeting.Id = Guid.NewGuid();
-        if (!meeting.ParticipantIds.Contains(request.Dto.Author))
-        {
-            meeting.ParticipantIds.Add(request.Dto.Author);
-        }
-
-        await this._meetingRepository.CreateAsync(meeting, cancellationToken);
 
         if (request.Dto.ParticipantIds?.Count > 0)
         {
             foreach (var participantId in request.Dto.ParticipantIds)
             {
-                var notificationDto = new MeetingRequestNotification
+                var notificationDto = new RequestNotification
                 {
                     Message = $"You have been invited to the meeting: {request.Dto.Title}. ",
                     ReceiverId = participantId,
@@ -44,6 +38,13 @@ public class CreateMeetingHandler : IRequestHandler<CreateMeetingCommand, Meetin
                 await this._messageService.PublishMeetingRequest(notificationDto);
             }
         }
+
+        if (!meeting.ParticipantIds.Contains(request.Dto.Author))
+        {
+            meeting.ParticipantIds.Add(request.Dto.Author);
+        }
+
+        await this._meetingRepository.CreateAsync(meeting, cancellationToken);
 
         return this._mapper.Map<MeetingDto>(meeting);
     }

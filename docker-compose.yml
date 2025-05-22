@@ -12,6 +12,7 @@ services:
         - ASPNETCORE_ENVIRONMENT=Development
         - DB_CONNECTION_STRING=${POSTGRES_DB_CONNECTION_STRING}
         - USER_GRPC_URL=${USER_GRPC_URL}
+        - HANGFIRE_CONNECTION=${HANGFIRE_CONNECTION}
       depends_on:
         postgre_db:
           condition: service_started
@@ -31,6 +32,7 @@ services:
       - CLOUD_API_KEY=${CLOUD_API_KEY}
       - CLOUD_SECRET_API_KEY=${CLOUD_SECRET_API_KEY}
       - DB_CONNECTION_STRING=${MONGO_DB_CONNECTION_STRING}
+      - AUTH_GRPC_URL=${AUTH_GRPC_URL}
     depends_on:
       mongo_db:
         condition: service_healthy
@@ -47,6 +49,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - DB_CONNECTION_STRING=${MONGO_DB2_CONNECTION_STRING}
+      - HANGFIRE_CONNECTION=${HANGFIRE2_CONNECTION}
     depends_on:
       mongo_db:
         condition: service_healthy
@@ -139,7 +142,6 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - db_data:/var/lib/postgresql/data
     container_name: postgresql_db_container
@@ -181,20 +183,18 @@ services:
       retries: 20
       start_period: 10s
   
-#  api_gateway:
-#    env_file:
-#      - .env
-#    environment:
-#      - ASPNETCORE_ENVIRONMENT=Development
-#    container_name: apigateway
-#    ports:
-#      - ${APIGATEWAY_PORT}:${APIGATEWAY_PORT}
-#    build:
-#      context: .
-#      dockerfile: ./src/ApiGateway/ApiGateway/Dockerfile
-
-
-
+  api_gateway:
+    env_file: 
+      - .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    container_name: apigateway
+    ports:
+      - "5100:8080"
+    build:
+      context: .
+      dockerfile: ./src/ApiGateway/ApiGateway/Dockerfile
+      
 
 volumes:
   mongo_data:

@@ -7,6 +7,7 @@ using EventsService.Application.Mappers.Meetings;
 using EventsService.Application.UseCases.Dates.Commands.CreateDate;
 using EventsService.Application.Validators;
 using EventsService.Domain.Entities;
+using EventsService.Infrastructure.BackgroundJobs;
 using EventsService.Infrastructure.Repositories;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -22,6 +23,10 @@ public static class DependencyInjection
         services.AddScoped<IMeetingRepository, MeetingRepository>();
         services.AddScoped<IDateRepository, DateRepository>();
         services.AddScoped<IGoalRepository, GoalRepository>();
+        services.AddScoped<IDateNotificationJobService, DateNotificationJobService>();
+        services.AddScoped<IMeetingNotificationJobService, MeetingNotificationJobService>();
+        services.AddScoped<IGoalNotificationJobService, GoalNotificationJobService>();
+        services.AddScoped<IDeleteAchievedGoalJobService, DeleteAchievedGoalJobService>();
 
         services.AddAutoMapper(typeof(DateMapper));
         services.AddAutoMapper(typeof(GoalMapper));

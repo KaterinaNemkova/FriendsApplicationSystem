@@ -1,3 +1,5 @@
+using EventsService.Application.UseCases.Goals.Commands.AchieveGoal;
+
 namespace EventsService.Api.Controllers;
 
 using EventsService.Application.DTOs.Goals;
@@ -62,6 +64,15 @@ public class GoalController : ControllerBase
     public async Task<IActionResult> GetMyGoals([FromRoute] Guid profileId, CancellationToken cancellationToken)
     {
         var result = await this._mediator.Send(new GetAllMyGoalsQuery(profileId), cancellationToken);
+
+        return this.Ok(result);
+    }
+
+    [HttpPut("done/{goalId:guid}")]
+
+    public async Task<IActionResult> AchieveGoal([FromRoute] Guid goalId, CancellationToken cancellationToken)
+    {
+        var result = await this._mediator.Send(new AchieveGoalCommand(goalId), cancellationToken);
 
         return this.Ok(result);
     }

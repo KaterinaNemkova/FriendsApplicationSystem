@@ -8,9 +8,11 @@ public class GoalRequestDto
 
     public List<Guid> ParticipantIds { get; set; }
 
-    public DateTime TargetDate { get; set; }
+    public DateTimeOffset TargetDate { get; set; }
 
     public List<string> Actions { get; set; }
 
     public Guid Author { get; set; }
+
+    //public bool IsAchieved { get; set; } = false; чтобы нельзя было создать достигнутую цель
 }

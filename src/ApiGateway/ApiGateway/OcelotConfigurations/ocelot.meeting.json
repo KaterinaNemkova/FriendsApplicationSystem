@@ -4,12 +4,12 @@
   },
   "Routes": [
     {
-      "DownstreamPathTemplate": "api/meetings",
+      "DownstreamPathTemplate": "/api/meetings",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "eventsservice_api",
-          "Port": 5076
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/meetings",
@@ -20,12 +20,12 @@
     },
 
     {
-      "DownstreamPathTemplate": "api/meetings/{meetingId}",
+      "DownstreamPathTemplate": "/api/meetings/{meetingId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "eventsservice_api",
-          "Port": 5076
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/meetings/{meetingId}",
@@ -36,12 +36,12 @@
     },
 
     {
-      "DownstreamPathTemplate": "api/meetings/{meetingId}",
+      "DownstreamPathTemplate": "/api/meetings/{meetingId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "eventsservice_api",
-          "Port": 5076
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/meetings/{meetingId}",
@@ -52,12 +52,12 @@
     },
 
     {
-      "DownstreamPathTemplate": "api/meetings",
+      "DownstreamPathTemplate": "/api/meetings",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "eventsservice_api",
-          "Port": 5076
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/meetings",
@@ -68,12 +68,12 @@
     },
 
     {
-      "DownstreamPathTemplate": "api/meetings/my-meetings/{profileId}",
+      "DownstreamPathTemplate": "/api/meetings/my-meetings/{profileId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "eventsservice_api",
-          "Port": 5076
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/meetings/my-meetings/{profileId}",
@@ -84,12 +84,12 @@
     },
 
     {
-      "DownstreamPathTemplate": "api/meetings/my-future/{profileId}",
+      "DownstreamPathTemplate": "/api/meetings/my-future/{profileId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "eventsservice_api",
-          "Port": 5076
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/meetings/my-future/{profileId}",
@@ -100,12 +100,12 @@
     },
 
     {
-      "DownstreamPathTemplate": "api/meetings/my-past/{profileId}",
+      "DownstreamPathTemplate": "/api/meetings/my-past/{profileId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "eventsservice_api",
-          "Port": 5076
+          "Port": 8080
         }
       ],
       "UpstreamPathTemplate": "/meetings/my-past/{profileId}",

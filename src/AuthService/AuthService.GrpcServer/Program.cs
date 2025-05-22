@@ -3,6 +3,7 @@ using AuthService.Domain.Entities;
 using AuthService.GrpcServer.Services;
 using AuthService.Infrastructure;
 using AuthService.Infrastructure.Extensions;
+using AuthService.Infrastructure.HangfireJobs;
 using AuthService.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 
@@ -21,9 +22,10 @@ builder.WebHost.ConfigureKestrel(options =>
         listenOptions.Protocols = HttpProtocols.Http2;
     });
 });
-builder.Services.AddData(builder.Configuration);
+builder.Services.AddData();
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IDeleteUncorfimedUserService, DeleteUnconfirmedUserJobService>();
 builder.Services.AddIdentityCore<ApplicationUser>()
     .AddEntityFrameworkStores<FriendsAppDbContext>();
 builder.Services.AddGrpc();

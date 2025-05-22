@@ -38,7 +38,7 @@ public class DateController : ControllerBase
         return this.Ok();
     }
 
-    [HttpPut("{dateId:guid}")]
+    [HttpPut("{dateId:guid}/changes")]
     public async Task<IActionResult> UpdateDate(
         [FromRoute] Guid dateId,
         [FromBody] DateRequestDto dateRequestDto,

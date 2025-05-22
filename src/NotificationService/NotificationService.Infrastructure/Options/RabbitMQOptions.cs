@@ -22,4 +22,6 @@ public class RabbitMQQueues
     public string MeetingRequest { get; set; }
 
     public string GoalRequest { get; set; }
+
+    public string DateRequest { get; set; }
 }

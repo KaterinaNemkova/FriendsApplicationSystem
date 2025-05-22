@@ -4,83 +4,111 @@
   },
   "Routes": [
     {
-      "DownstreamPathTemplate": "api/dates",
+      "DownstreamPathTemplate": "/api/friendship",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "eventsservice_api",
-          "Port": 5076
+          "Host": "userservice_api",
+          "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/dates",
+      "UpstreamPathTemplate": "/friendship",
       "UpstreamHttpMethod": [
         "POST"
       ],
-      "SwaggerKey": "Events"
+      "SwaggerKey": "Profile"
     },
-
     {
-      "DownstreamPathTemplate": "api/dates/{dateId}",
+      "DownstreamPathTemplate": "/api/friendship/{profileId}/{friendId}/reject",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "eventsservice_api",
-          "Port": 5076
+          "Host": "userservice_api",
+          "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/dates/{dateId}",
+      "UpstreamPathTemplate": "/friendship/{profileId}/{friendId}/reject",
       "UpstreamHttpMethod": [
         "DELETE"
       ],
-      "SwaggerKey": "Events"
+      "SwaggerKey": "Profile"
     },
 
     {
-      "DownstreamPathTemplate": "api/dates/{dateId}",
+      "DownstreamPathTemplate": "/api/friendship/{profileId}/{friendId}/accept",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "eventsservice_api",
-          "Port": 5076
+          "Host": "userservice_api",
+          "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/dates/{dateId}",
+      "UpstreamPathTemplate": "/friendship/{profileId}/{friendId}/accept",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "SwaggerKey": "Profile"
+    },
+    
+    {
+      "DownstreamPathTemplate": "/api/friendship/status/{friendshipId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/friendship/status/{friendshipId}",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "SwaggerKey": "Profile"
+    },
+    {
+      "DownstreamPathTemplate": "/api/friendship",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/friendship",
+      "UpstreamHttpMethod": [
+        "DELETE"
+      ],
+      "SwaggerKey": "Profile"
+    },
+    {
+      "DownstreamPathTemplate": "/api/friendship/start-date/{friendshipId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/friendship/start-date/{friendshipId}",
       "UpstreamHttpMethod": [
         "PUT"
       ],
-      "SwaggerKey": "Events"
+      "SwaggerKey": "Profile"
     },
-
     {
-      "DownstreamPathTemplate": "api/dates",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "eventsservice_api",
-          "Port": 5076
-        }
-      ],
-      "UpstreamPathTemplate": "/dates",
+      "UpstreamPathTemplate": "/friendship/my-friends/{profileId}",
       "UpstreamHttpMethod": [
         "GET"
       ],
-      "SwaggerKey": "Events"
-    },
-
-    {
-      "DownstreamPathTemplate": "api/dates/my-dates/{profileId}",
+      "DownstreamPathTemplate": "/api/friendship/my-friends/{profileId}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "eventsservice_api",
-          "Port": 5076
+          "Host": "userservice_api",
+          "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/dates/my-dates/{profileId}",
-      "UpstreamHttpMethod": [
-        "GET"
-      ],
-      "SwaggerKey": "Events"
+      "SwaggerKey": "Profile"
     }
   ]
 }

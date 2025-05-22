@@ -7,6 +7,8 @@ public interface IProfileRepository
 {
     Task CreateAsync(Profile profile, CancellationToken token);
 
+    Task DeleteAsync(Guid profileId, CancellationToken token);
+
     Task<Profile> GetByIdAsync(Guid id, CancellationToken token);
 
     Task<List<Profile>> GetAllAsync(CancellationToken token);

@@ -1,9 +1,16 @@
+using EventsService.Infrastructure.BackgroundJobs;
+using Microsoft.AspNetCore.Builder;
+
 namespace EventsService.Infrastructure.Extensions;
 
 using EventsService.Application.Contracts;
 using EventsService.Domain.Entities;
 using EventsService.Infrastructure.Options;
 using EventsService.Infrastructure.Services;
+using Hangfire;
+using Hangfire.Mongo;
+using Hangfire.Mongo.Migration.Strategies;
+using Hangfire.Mongo.Migration.Strategies.Backup;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -68,14 +75,36 @@ public static class Extensions
     public static IServiceCollection AddDb(this IServiceCollection services, IConfiguration configuration)
     {
         configuration["ConnectionStrings:MongoDb"] = Environment.GetEnvironmentVariable("MONGO_DB2_CONNECTION_STRING") ?? string.Empty;
+        var hangfireConnectionString = Environment.GetEnvironmentVariable("HANGFIRE2_CONNECTION");
         services.AddSingleton<IMongoClient>(
             new MongoClient(configuration.GetConnectionString("MongoDb")));
+        services.AddHangfire(config =>
+        {
+            config.UseMongoStorage(
+                hangfireConnectionString,
+                "HangfireDatabase",
+                new MongoStorageOptions
+                {
+                    CheckQueuedJobsStrategy = CheckQueuedJobsStrategy.TailNotificationsCollection,
+                    MigrationOptions = new MongoMigrationOptions
+                    {
+                        MigrationStrategy = new MigrateMongoMigrationStrategy(),
+                        BackupStrategy = new CollectionMongoBackupStrategy(),
+                    },
+                    Prefix = "hangfire",
+                    CheckConnection = true,
+                });
+        });
+
+        services.AddHangfireServer();
+
         services.AddSingleton<IMongoDatabase>(
             sp =>
         {
             var client = sp.GetRequiredService<IMongoClient>();
             return client.GetDatabase("EventsDatabase");
         });
+
         services.AddScoped(
             sp =>
             sp.GetRequiredService<IMongoDatabase>().GetCollection<Date>("Dates"));
@@ -94,18 +123,14 @@ public static class Extensions
     public static IServiceCollection AddRepresentation(this IServiceCollection services)
     {
         services.AddControllers();
-        
-        services.AddAuthentication().AddJwtBearer();
+
+        services.AddHangfireServer();
+
+        services.AddAuthentication();
 
         services.AddAuthorization();
 
         services.AddEndpointsApiExplorer();
-        
-        services.Configure<BearerTokenOptions>(options =>
-        {
-            options.BearerTokenExpiration = TimeSpan.FromMinutes(30);
-            options.RefreshTokenExpiration = TimeSpan.FromDays(7);
-        });
 
         services.AddSwaggerGen(
             c =>
@@ -140,5 +165,28 @@ public static class Extensions
             .ValidateOnStart();
 
         services.AddSingleton<IMessageService, RabbitMQService>();
+    }
+
+    public static void RunJobs(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var recurringJobManager = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+
+        recurringJobManager.AddOrUpdate<IDateNotificationJobService>(
+            "check-important-dates",
+            x => x.CheckImportantDates(),
+            Cron.Daily);
+        recurringJobManager.AddOrUpdate<IMeetingNotificationJobService>(
+            "check-future-meetings",
+            x => x.CheckFutureMeetings(),
+            Cron.Daily);
+        recurringJobManager.AddOrUpdate<IGoalNotificationJobService>(
+            "check-future-goals",
+            x => x.CheckFutureGoals(),
+            Cron.Monthly);
+        recurringJobManager.AddOrUpdate<IDeleteAchievedGoalJobService>(
+            "delete-achieved-goals",
+            s => s.DeleteAchievedGoalsAsync(),
+            Cron.Daily);
     }
 }
