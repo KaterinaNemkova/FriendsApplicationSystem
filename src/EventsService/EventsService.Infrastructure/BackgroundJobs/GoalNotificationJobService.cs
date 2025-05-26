@@ -25,27 +25,26 @@ public class GoalNotificationJobService : IGoalNotificationJobService
                 d => d.TargetDate >= today && d.TargetDate <= oneYearLater)
             .ToListAsync();
 
+        const string reminderTemplate = "You have {0} left before the goal's target day";
+
         foreach (var goal in upcomingGoals)
         {
-            var timeLeft = goal.TargetDate - today;
-            var totalMonthsLeft = ((goal.TargetDate.Year - today.Year) * 12) +
-                goal.TargetDate.Month - today.Month;
+            var daysLeft = (goal.TargetDate - today).Days;
 
-            if (timeLeft.Days == 30 * 6)
+            string message = daysLeft switch
+                             {
+                                 14 => string.Format(reminderTemplate, "2 weeks"),
+                                 7 => string.Format(reminderTemplate, "1 week"),
+                                 1 => string.Format(reminderTemplate, "1 day"),
+                                 0 => string.Format(reminderTemplate, "0 days"),
+                                 _ => null,
+                             }
+
+                             ?? string.Empty;
+
+            if (message != null)
             {
-                await SendReminder(goal, $"До цели осталось 6 месяцев");
-            }
-            else if (timeLeft.Days == 30 * 3)
-            {
-                await SendReminder(goal, $"До цели осталось 3 месяца");
-            }
-            else if (totalMonthsLeft == 1)
-            {
-                await SendReminder(goal, $"До цели остался 1 месяц");
-            }
-            else if (timeLeft.Days == 0)
-            {
-                await SendReminder(goal, $"Сегодня день достижения цели!");
+                await SendReminder(goal, message);
             }
         }
     }
@@ -58,7 +57,7 @@ public class GoalNotificationJobService : IGoalNotificationJobService
             {
                 var notificationDto = new RequestNotification
                 {
-                    Message = $"Напоминание: {message} - {goal.Title}",
+                    Message = $"Notification: {message} - {goal.Title}",
                     ReceiverId = participantId,
                 };
 

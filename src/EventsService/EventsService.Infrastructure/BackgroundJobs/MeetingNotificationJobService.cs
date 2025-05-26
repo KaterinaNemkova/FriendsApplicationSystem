@@ -1,4 +1,3 @@
-
 namespace EventsService.Infrastructure.BackgroundJobs;
 
 using EventsService.Application.Contracts;
@@ -22,30 +21,30 @@ public class MeetingNotificationJobService : IMeetingNotificationJobService
         var today = DateTime.UtcNow;
 
         var upcomingMeetings = await _meetingsCollection.Find(
-                d =>
-                d.TimeOfMeet >= today &&
-                d.TimeOfMeet <= today.AddDays(14))
+                d => d.TimeOfMeet >= today &&
+                     d.TimeOfMeet <= today.AddDays(14))
             .ToListAsync();
+
+        const string reminderTemplate = "You have {0} left before the meeting";
 
         foreach (var meeting in upcomingMeetings)
         {
-            var daysLeft = meeting.TimeOfMeet - today;
+            var daysLeft = (meeting.TimeOfMeet - today).Days;
 
-            if (daysLeft.Days == 14)
+            string message = daysLeft switch
             {
-                await SendReminder(meeting, "до встречи осталось 2 недели");
+                14 => string.Format(reminderTemplate, "2 weeks"),
+                7 => string.Format(reminderTemplate, "1 week"),
+                1 => string.Format(reminderTemplate, "1 day"),
+                0 => string.Format(reminderTemplate, "0 days"),
+                _ => null,
             }
-            else if (daysLeft.Days == 7)
+
+            ?? string.Empty;
+
+            if (message != null)
             {
-                await SendReminder(meeting, "до встречи осталась 1 неделя");
-            }
-            else if (daysLeft.Days == 1)
-            {
-                await SendReminder(meeting, "завтра у вас назначена встреча!");
-            }
-            else if (daysLeft.Days == 0)
-            {
-                await SendReminder(meeting, "сегодня у вас назначена встреча!");
+                await SendReminder(meeting, message);
             }
         }
     }
@@ -58,7 +57,7 @@ public class MeetingNotificationJobService : IMeetingNotificationJobService
             {
                 var notificationDto = new RequestNotification
                 {
-                    Message = $"Напоминание: {meeting.Title} - {message}",
+                    Message = $"Notification: {meeting.Title} - {message}",
                     ReceiverId = participantId,
                 };
 

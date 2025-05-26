@@ -36,16 +36,16 @@ public class DateNotificationJobService : IDateNotificationJobService
                 switch (daysLeft)
                 {
                     case 14:
-                        await SendReminder(date, $"До {date.Title} осталось 2 недели ({dateThisYear:dd.MM.yyyy})");
+                        await SendReminder(date, $"Before {date.Title} left 2 weeks ({dateThisYear:dd.MM.yyyy})");
                         break;
                     case 7:
-                        await SendReminder(date, $"До {date.Title} осталась неделя ({dateThisYear:dd.MM.yyyy})");
+                        await SendReminder(date, $"Before {date.Title} left 1 week ({dateThisYear:dd.MM.yyyy})");
                         break;
                     case 1:
-                        await SendReminder(date, $"Завтра {date.Title}!");
+                        await SendReminder(date, $"Tomorrow {date.Title}!");
                         break;
                     case 0:
-                        await SendReminder(date, $"Сегодня {date.Title}!");
+                        await SendReminder(date, $"Today {date.Title}!");
                         break;
                 }
             }
@@ -59,7 +59,7 @@ public class DateNotificationJobService : IDateNotificationJobService
             {
                 var notificationDto = new RequestNotification
                 {
-                    Message = $"Напоминание: {message}",
+                    Message = $"Notification: {message}",
                     ReceiverId = participantId,
                 };
 
