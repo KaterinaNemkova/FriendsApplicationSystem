@@ -1,6 +1,6 @@
 namespace NotificationService.Application.DTOs;
 
-public class GoalRequestNotification
+public class EventsRequestNotification
 {
     public Guid ReceiverId { get; set; }
 

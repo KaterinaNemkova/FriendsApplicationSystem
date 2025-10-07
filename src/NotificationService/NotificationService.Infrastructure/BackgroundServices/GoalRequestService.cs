@@ -35,7 +35,7 @@ public class GoalRequestService : BackgroundService
             queueKey: "GoalRequest",
             handleMessage: async (json) =>
             {
-                var notification = JsonSerializer.Deserialize<GoalRequestNotification>(json);
+                var notification = JsonSerializer.Deserialize<EventsRequestNotification>(json);
 
                 if (notification != null)
                 {

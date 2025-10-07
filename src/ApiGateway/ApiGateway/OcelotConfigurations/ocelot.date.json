@@ -1,0 +1,100 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5100"
+  },
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/dates",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/dates",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Admin"
+      },
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/dates/new",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/dates/new",
+      "UpstreamHttpMethod": [ "POST"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/dates/{dateId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/dates/{dateId}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/dates/{dateId}/changes",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/dates/{dateId}/changes",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "Events"
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/dates/my-dates/{profileId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "eventsservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/dates/my-dates/{profileId}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "Events"
+    }
+    
+  ]
+}

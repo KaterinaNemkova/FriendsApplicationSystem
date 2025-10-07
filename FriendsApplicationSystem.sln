@@ -53,6 +53,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthService.GrpcServer", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserService.GrpcServer", "src\UserService\UserService.GrpcServer\UserService.GrpcServer.csproj", "{4E2F84AF-AB15-40D6-9384-D2217D9D29E5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiGateway", "src\ApiGateway\ApiGateway\ApiGateway.csproj", "{050E5C17-898D-437D-B1E5-66478C5B2AC2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,7 @@ Global
 		{24C2E629-1D4B-43B4-8CC3-2D697D3FE5FA} = {1668EE37-A1F0-41C5-A876-F522266379FC}
 		{6AFD5C8A-4B83-486E-BE13-40CEF59A0A2D} = {9F7EF7B7-5B6D-4962-B3CA-BEEA988530B4}
 		{4E2F84AF-AB15-40D6-9384-D2217D9D29E5} = {1668EE37-A1F0-41C5-A876-F522266379FC}
+		{050E5C17-898D-437D-B1E5-66478C5B2AC2} = {508BF913-D70B-4B64-B4E2-1262C485AD36}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{3F22F5DA-3B13-4369-844F-47C18223B5B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -155,5 +158,9 @@ Global
 		{4E2F84AF-AB15-40D6-9384-D2217D9D29E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E2F84AF-AB15-40D6-9384-D2217D9D29E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E2F84AF-AB15-40D6-9384-D2217D9D29E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{050E5C17-898D-437D-B1E5-66478C5B2AC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{050E5C17-898D-437D-B1E5-66478C5B2AC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{050E5C17-898D-437D-B1E5-66478C5B2AC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{050E5C17-898D-437D-B1E5-66478C5B2AC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

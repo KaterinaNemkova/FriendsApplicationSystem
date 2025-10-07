@@ -93,6 +93,7 @@ public static class Extensions
         services.AddHostedService<ProfileCreatedService>();
         services.AddHostedService<MeetingRequestService>();
         services.AddHostedService<GoalRequestService>();
+        services.AddHostedService<DateRequestService>();
     }
 
     public static IServiceCollection ConfigureTelegramBot(this IServiceCollection services, IConfiguration configuration)

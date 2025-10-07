@@ -8,7 +8,7 @@ public class GoalRequestDto
 
     public List<Guid> ParticipantIds { get; set; }
 
-    public DateTime TargetDate { get; set; }
+    public DateTimeOffset TargetDate { get; set; }
 
     public List<string> Actions { get; set; }
 

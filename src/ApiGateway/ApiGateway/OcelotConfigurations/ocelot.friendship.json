@@ -1,0 +1,140 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5100"
+  },
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/friendship",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/friendship",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "Profile"
+    },
+    {
+      "DownstreamPathTemplate": "/api/friendship/{profileId}/{friendId}/reject",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/friendship/{profileId}/{friendId}/reject",
+      "UpstreamHttpMethod": ["DELETE"],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "Profile"
+    },
+
+    {
+      "DownstreamPathTemplate": "/api/friendship/{profileId}/{friendId}/accept",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/friendship/{profileId}/{friendId}/accept",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "Profile"
+    },
+    
+    {
+      "DownstreamPathTemplate": "/api/friendship/status/{friendshipId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/friendship/status/{friendshipId}",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "Profile"
+    },
+    {
+      "DownstreamPathTemplate": "/api/friendship",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/friendship",
+      "UpstreamHttpMethod": [
+        "DELETE"
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "Profile"
+    },
+    {
+      "DownstreamPathTemplate": "/api/friendship/start-date/{friendshipId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/api/friendship/start-date/{friendshipId}",
+      "UpstreamHttpMethod": [
+        "PUT"
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "Profile"
+    },
+    {
+      "UpstreamPathTemplate": "/friendship/my-friends/{profileId}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "DownstreamPathTemplate": "/api/friendship/my-friends/{profileId}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "userservice_api",
+          "Port": 8080
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "SwaggerKey": "Profile"
+    }
+  ]
+}

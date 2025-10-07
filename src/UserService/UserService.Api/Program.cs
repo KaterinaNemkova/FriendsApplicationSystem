@@ -20,6 +20,8 @@ builder.Services.AddDependencies();
 
 builder.Services.ConfigureRabbitMQ(builder.Configuration);
 
+builder.Services.ConfigureAuthGrpcClient(builder.Configuration);
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

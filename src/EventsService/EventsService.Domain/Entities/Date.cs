@@ -2,5 +2,7 @@ namespace EventsService.Domain.Entities;
 
 public class Date : Event
 {
-    public DateOnly ImportantDate { get; set; }
+    public int Day { get; set; }
+
+    public int Month { get; set; }
 }

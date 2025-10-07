@@ -14,8 +14,10 @@ public class DateValidator : AbstractValidator<DateRequestDto>
         this.RuleFor(m => m.Description)
             .NotEmpty().WithMessage("Description is required.")
             .MaximumLength(ValidationConstants.MaxDescriptionLength).WithMessage($"Description must be less {ValidationConstants.MaxDescriptionLength} characters.");
-        this.RuleFor(m => m.ImportantDate)
-            .NotEmpty().WithMessage("ImportantDate is required.");
+        this.RuleFor(m => m.Day)
+            .NotEmpty().WithMessage("Day for date is required.");
+        this.RuleFor(m => m.Month)
+            .NotEmpty().WithMessage("Month for date is required.");
         this.RuleFor(m => m.ParticipantIds)
             .NotEmpty().WithMessage("At least one participant");
     }

@@ -43,15 +43,21 @@ public class RabbitMQService : IMessageService, IAsyncDisposable
         }
     }
 
-    public async Task PublishMeetingRequest(MeetingRequestNotification notification)
+    public async Task PublishMeetingRequest(RequestNotification notification)
     {
         var queueName = this._options.Queues.MeetingRequest;
         await PublishRequest(queueName, notification);
     }
 
-    public async Task PublishGoalRequest(GoalRequestNotification notification)
+    public async Task PublishGoalRequest(RequestNotification notification)
     {
         var queueName = _options.Queues.GoalRequest;
+        await PublishRequest(queueName, notification);
+    }
+
+    public async Task PublishDateRequest(RequestNotification notification)
+    {
+        var queueName = _options.Queues.DateRequest;
         await PublishRequest(queueName, notification);
     }
 

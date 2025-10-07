@@ -1,8 +1,11 @@
 namespace UserService.Infrastructure.Extensions;
 
+using System.Text;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
@@ -86,6 +89,8 @@ public static class Extensions
     {
         services.AddEndpointsApiExplorer();
 
+        services.AddHttpContextAccessor();
+
         services.AddSwaggerGen(
             c =>
         {
@@ -98,6 +103,25 @@ public static class Extensions
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                var securityKey = Environment.GetEnvironmentVariable("JWT_SECURITY_KEY");
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(securityKey)),
+                    ValidateIssuer = true,
+                    ValidIssuer = "authservice_api",
+                    ValidateAudience = true,
+                    ValidAudience = "microservices",
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                };
+            });
+
         return services;
     }
 
@@ -126,5 +150,28 @@ public static class Extensions
             .ValidateOnStart();
 
         services.AddSingleton<IMessageService, RabbitMQService>();
+    }
+
+    public static IServiceCollection ConfigureAuthGrpcClient(this IServiceCollection services, IConfiguration configuration)
+    {
+        configuration["AuthGrpcUrl:GrpcUrl"] = Environment.GetEnvironmentVariable("AUTH_GRPC_URL");
+
+        var address = configuration["AuthGrpcUrl:GrpcUrl"]
+                      ?? throw new InvalidOperationException("AuthGrpcUrl:GrpcUrl is not configured!");
+
+        AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
+        services.AddGrpcClient<AuthService.GrpcServer.AuthService.AuthServiceClient>(
+                options =>
+                {
+                    options.Address = new Uri(address);
+                })
+            .ConfigurePrimaryHttpMessageHandler(
+                () => new SocketsHttpHandler
+                {
+                    AllowAutoRedirect = true,
+                });
+
+        return services;
     }
 }

@@ -1,4 +1,5 @@
-using EventsService.Application.UseCases.Goals.Commands.RejectGoal;
+using EventsService.Application.UseCases.Goals.Commands.AchieveGoal;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EventsService.Api.Controllers;
 
@@ -33,21 +34,21 @@ public class GoalController : ControllerBase
         return this.Ok(result);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteGoal([FromRoute] Guid id, CancellationToken cancellationToken)
+    [HttpDelete("{goalId:guid}")]
+    public async Task<IActionResult> DeleteGoal([FromRoute] Guid goalId, CancellationToken cancellationToken)
     {
-        await this._mediator.Send(new DeleteGoalCommand(id), cancellationToken);
+        await this._mediator.Send(new DeleteGoalCommand(goalId), cancellationToken);
 
         return this.Ok();
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{goalId:guid}")]
     public async Task<IActionResult> UpdateGoal(
-        [FromRoute] Guid id,
+        [FromRoute] Guid goalId,
         [FromBody] GoalRequestDto dateRequestDto,
         CancellationToken cancellationToken)
     {
-        var result = await this._mediator.Send(new UpdateGoalCommand(id, dateRequestDto), cancellationToken);
+        var result = await this._mediator.Send(new UpdateGoalCommand(goalId, dateRequestDto), cancellationToken);
 
         return this.Ok(result);
     }
@@ -60,23 +61,20 @@ public class GoalController : ControllerBase
         return this.Ok(result);
     }
 
-    [HttpGet("my/{id}")]
-    public async Task<IActionResult> GetMyGoals([FromRoute] Guid id, CancellationToken cancellationToken)
+    [HttpGet("my-goals/{profileId:guid}")]
+    public async Task<IActionResult> GetMyGoals([FromRoute] Guid profileId, CancellationToken cancellationToken)
     {
-        var result = await this._mediator.Send(new GetAllMyGoalsQuery(id), cancellationToken);
+        var result = await this._mediator.Send(new GetAllMyGoalsQuery(profileId), cancellationToken);
 
         return this.Ok(result);
     }
 
-    [HttpPost("reject/{goalId:guid}/{profileId:guid}")]
+    [HttpPut("done/{goalId:guid}")]
 
-    public async Task<IActionResult> RejectGoal(
-        [FromRoute] Guid goalId,
-        [FromRoute] Guid profileId,
-        CancellationToken cancellationToken)
+    public async Task<IActionResult> AchieveGoal([FromRoute] Guid goalId, CancellationToken cancellationToken)
     {
-        await this._mediator.Send(new RejectGoalCommand(goalId, profileId), cancellationToken);
+        var result = await this._mediator.Send(new AchieveGoalCommand(goalId), cancellationToken);
 
-        return this.Ok();
+        return this.Ok(result);
     }
 }

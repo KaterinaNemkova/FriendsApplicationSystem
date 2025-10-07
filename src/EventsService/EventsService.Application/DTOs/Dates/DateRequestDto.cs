@@ -1,12 +1,10 @@
-// <copyright file="UpdateDateDto.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
 namespace EventsService.Application.DTOs;
 
 public class DateRequestDto
 {
-    public DateOnly ImportantDate { get; set; }
+    public int Day { get; set; }
+
+    public int Month { get; set; }
 
     public string Title { get; set; }
 

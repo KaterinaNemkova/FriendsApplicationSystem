@@ -1,3 +1,6 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+
 namespace EventsService.Api.Controllers;
 
 using EventsService.Application.DTOs;
@@ -14,13 +17,15 @@ using Microsoft.AspNetCore.Mvc;
 public class DateController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public DateController(IMediator mediator)
+    public DateController(IMediator mediator, IHttpContextAccessor httpContextAccessor)
     {
         this._mediator = mediator;
+        this._httpContextAccessor = httpContextAccessor;
     }
 
-    [HttpPost]
+    [HttpPost("/new")]
     public async Task<IActionResult> CreateDate(
         [FromBody] DateRequestDto dto,
         CancellationToken cancellationToken)
@@ -30,21 +35,21 @@ public class DateController : ControllerBase
         return this.Ok(result);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteDate([FromRoute] Guid id, CancellationToken cancellationToken)
+    [HttpDelete("{dateId:guid}")]
+    public async Task<IActionResult> DeleteDate([FromRoute] Guid dateId, CancellationToken cancellationToken)
     {
-        await this._mediator.Send(new DeleteDateCommand(id), cancellationToken);
+        await this._mediator.Send(new DeleteDateCommand(dateId), cancellationToken);
 
         return this.Ok();
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPut("{dateId:guid}/changes")]
     public async Task<IActionResult> UpdateDate(
-        [FromRoute] Guid id,
+        [FromRoute] Guid dateId,
         [FromBody] DateRequestDto dateRequestDto,
         CancellationToken cancellationToken)
     {
-        var date = await this._mediator.Send(new UpdateDateCommand(id, dateRequestDto), cancellationToken);
+        var date = await this._mediator.Send(new UpdateDateCommand(dateId, dateRequestDto), cancellationToken);
         return this.Ok(date);
     }
 
@@ -55,7 +60,7 @@ public class DateController : ControllerBase
         return this.Ok(dates);
     }
 
-    [HttpGet("my/{id:guid}")]
+    [HttpGet("my-dates/{profileId:guid}")]
     public async Task<IActionResult> GetAllMyDates([FromRoute] Guid id, CancellationToken cancellationToken)
     {
         var dates = await this._mediator.Send(new GetAllMyDatesQuery(id), cancellationToken);

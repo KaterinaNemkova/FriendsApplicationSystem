@@ -1,0 +1,67 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5100"
+  },
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/account/register",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "authservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/register",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "SwaggerKey": "Auth"
+    },
+    {
+      "DownstreamPathTemplate": "/api/account/login",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "authservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/login",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "SwaggerKey": "Auth"
+    },
+    {
+      "DownstreamPathTemplate": "/api/account/confirm-email/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "authservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/confirm-email/{everything}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "SwaggerKey": "Auth"
+    },
+    {
+      "DownstreamPathTemplate": "/api/account/validate-token/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "authservice_api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/validate-token/{everything}",
+      "UpstreamHttpMethod": [
+        "POST"
+      ],
+      "SwaggerKey": "Auth"
+    }
+  ]
+}

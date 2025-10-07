@@ -6,5 +6,5 @@ public class Meeting : Event
 
     public Guid Author { get; set; }
 
-    public DateTime TimeOfMeet { get; set; }
+    public DateTimeOffset TimeOfMeet { get; set; }
 }
