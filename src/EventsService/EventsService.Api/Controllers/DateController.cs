@@ -1,3 +1,6 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+
 namespace EventsService.Api.Controllers;
 
 using EventsService.Application.DTOs;
@@ -14,13 +17,15 @@ using Microsoft.AspNetCore.Mvc;
 public class DateController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public DateController(IMediator mediator)
+    public DateController(IMediator mediator, IHttpContextAccessor httpContextAccessor)
     {
         this._mediator = mediator;
+        this._httpContextAccessor = httpContextAccessor;
     }
 
-    [HttpPost]
+    [HttpPost("/new")]
     public async Task<IActionResult> CreateDate(
         [FromBody] DateRequestDto dto,
         CancellationToken cancellationToken)

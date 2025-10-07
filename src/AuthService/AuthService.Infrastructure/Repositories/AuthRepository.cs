@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore;
 
 public class AuthRepository : IAuthRepository
 {
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly UserManager<AppUser> _userManager;
     private readonly FriendsAppDbContext _dbContext;
 
-    public AuthRepository(UserManager<ApplicationUser> userManager, FriendsAppDbContext dbContext)
+    public AuthRepository(UserManager<AppUser> userManager, FriendsAppDbContext dbContext)
     {
         _userManager = userManager;
         _dbContext = dbContext;

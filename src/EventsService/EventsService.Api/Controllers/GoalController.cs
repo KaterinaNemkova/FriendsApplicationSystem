@@ -1,4 +1,5 @@
 using EventsService.Application.UseCases.Goals.Commands.AchieveGoal;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EventsService.Api.Controllers;
 

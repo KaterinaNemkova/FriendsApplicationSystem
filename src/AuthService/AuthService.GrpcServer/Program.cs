@@ -5,10 +5,15 @@ using AuthService.Infrastructure;
 using AuthService.Infrastructure.Extensions;
 using AuthService.Infrastructure.HangfireJobs;
 using AuthService.Infrastructure.Repositories;
+using AuthService.Infrastructure.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.DataProtection;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDataProtection();
 var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
 
 if (File.Exists(envPath))
@@ -22,12 +27,14 @@ builder.WebHost.ConfigureKestrel(options =>
         listenOptions.Protocols = HttpProtocols.Http2;
     });
 });
-builder.Services.AddData();
+builder.Services.AddData(builder.Configuration);
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IDeleteUncorfimedUserService, DeleteUnconfirmedUserJobService>();
-builder.Services.AddIdentityCore<ApplicationUser>()
-    .AddEntityFrameworkStores<FriendsAppDbContext>();
+builder.Services.AddScoped<TokenService>();
+builder.Services.AddIdentityCore<AppUser>()
+    .AddEntityFrameworkStores<FriendsAppDbContext>()
+    .AddDefaultTokenProviders();
 builder.Services.AddGrpc();
 
 var app = builder.Build();

@@ -31,7 +31,7 @@ public class CreateMeetingHandler : IRequestHandler<CreateMeetingCommand, Meetin
             {
                 var notificationDto = new RequestNotification
                 {
-                    Message = $"You have been invited to the meeting: {request.Dto.Title}. ",
+                    Message = $"You have been invited to the meeting: {request.Dto.Title} time: {request.Dto.TimeOfMeet} place: {request.Dto.Address}. ",
                     ReceiverId = participantId,
                 };
 

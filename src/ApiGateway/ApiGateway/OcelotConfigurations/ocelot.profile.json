@@ -13,7 +13,14 @@
         }
       ],
       "UpstreamPathTemplate" : "/profiles",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamHttpMethod": [ "POST", "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "RouteClaimsRequirement": {
+        "Role": "Admin"
+      },
       "SwaggerKey": "Profile"
     },
 
@@ -28,6 +35,10 @@
       ],
       "UpstreamPathTemplate" : "/profiles/profile/{profileId}",
       "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
       "SwaggerKey": "Profile"
     },
 
@@ -42,20 +53,10 @@
       ],
       "UpstreamPathTemplate" : "/profiles/photo/{profileId}",
       "UpstreamHttpMethod": [ "GET" ],
-      "SwaggerKey": "Profile"
-    },
-
-    {
-      "DownstreamPathTemplate" : "/api/profiles",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "userservice_api",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate" : "/profiles",
-      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
       "SwaggerKey": "Profile"
     },
 
@@ -70,6 +71,10 @@
       ],
       "UpstreamPathTemplate" : "/profiles/photo/{profileId}",
       "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
       "SwaggerKey": "Profile"
     },
 
@@ -84,6 +89,10 @@
       ],
       "UpstreamPathTemplate" : "/profiles/photo/{profileId}",
       "UpstreamHttpMethod": [ "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
       "SwaggerKey": "Profile"
     },
 
@@ -98,6 +107,10 @@
       ],
       "UpstreamPathTemplate" : "/profiles/status/{profileId}",
       "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
       "SwaggerKey": "Profile"
     },
     
@@ -112,6 +125,10 @@
       ],
       "UpstreamPathTemplate" : "/profiles/profile/{profileId}",
       "UpstreamHttpMethod": [ "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
       "SwaggerKey": "Profile"
     }
   ]

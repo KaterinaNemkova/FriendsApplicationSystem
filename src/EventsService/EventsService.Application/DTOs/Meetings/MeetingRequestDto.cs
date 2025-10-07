@@ -12,5 +12,5 @@ public class MeetingRequestDto
 
     public Guid Author { get; set; }
 
-    public DateTime TimeOfMeet { get; set; }
+    public DateTimeOffset TimeOfMeet { get; set; }
 }

@@ -1,4 +1,7 @@
+using System.Text;
 using AuthService.Infrastructure.HangfireJobs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AuthService.Infrastructure.Extensions;
 
@@ -19,9 +22,15 @@ using Microsoft.Extensions.DependencyInjection;
 public static class Extensions
 {
     public static IServiceCollection AddData(
-        this IServiceCollection services)
+        this IServiceCollection services, IConfiguration configuration)
     {
+
         var envConnectionString = Environment.GetEnvironmentVariable("POSTGRES_DB_CONNECTION_STRING");
+        if (string.IsNullOrEmpty(envConnectionString))
+        {
+            throw new InvalidOperationException("POSTGRES_DB_CONNECTION_STRING environment variable is not set");
+        }
+
         var hangfireConnectionString = Environment.GetEnvironmentVariable("HANGFIRE_CONNECTION");
         services.AddDbContext<FriendsAppDbContext>(
             options =>
@@ -42,41 +51,43 @@ public static class Extensions
                         }));
         services.AddScoped<IAuthRepository, AuthRepository>();
         services.AddScoped<IDeleteUncorfimedUserService, DeleteUnconfirmedUserJobService>();
+        services.AddScoped<TokenService>();
         return services;
     }
 
-    public static void ApplyMigrations(this IApplicationBuilder app)
-    {
-        using IServiceScope scope = app.ApplicationServices.CreateScope();
-
-        using FriendsAppDbContext context = scope.ServiceProvider.GetRequiredService<FriendsAppDbContext>();
-
-        context.Database.Migrate();
-    }
-
-    public static IServiceCollection AddPresentation(this IServiceCollection services)
+    public static IServiceCollection AddPresentation(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddEndpointsApiExplorer();
 
         services.AddSwaggerGen();
 
-        services.AddAuthentication();
-
-        services.AddAuthorization();
-
-        services.AddIdentityApiEndpoints<ApplicationUser>()
+        services.AddIdentityCore<AppUser>()
             .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<FriendsAppDbContext>();
+            .AddEntityFrameworkStores<FriendsAppDbContext>()
+            .AddDefaultTokenProviders();
 
-        services.Configure<IdentityOptions>(
-            options =>
+        services.AddAuthentication(opt =>
         {
-            options.User.RequireUniqueEmail = true;
-            options.SignIn.RequireConfirmedEmail = true;
-            options.User.AllowedUserNameCharacters =
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+            opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.SaveToken = true;
+            options.RequireHttpsMetadata = false;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("JWTSettings:SecurityKey").Value!)),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+            };
         });
+        services.AddAuthorizationBuilder()
+            .AddPolicy("Admin", policy => policy.RequireRole("Admin"))
+            .AddPolicy("User", policy => policy.RequireRole("User"));
         services.AddHangfireServer();
+
         return services;
     }
 
@@ -98,10 +109,8 @@ public static class Extensions
 
     public static IServiceCollection ConfigureUserGrpcClient(this IServiceCollection services, IConfiguration configuration)
     {
-        configuration["UserGrpcUrl:GrpcUrl"] = Environment.GetEnvironmentVariable("USER_GRPC_URL");
-
-        var address = configuration["UserGrpcUrl:GrpcUrl"]
-                      ?? throw new InvalidOperationException("UserGrpcUrl:GrpcUrl is not configured!");
+        var address = Environment.GetEnvironmentVariable("USER_GRPC_URL")
+                      ?? configuration["UserGrpcUrl:GrpcUrl"];
 
         AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 

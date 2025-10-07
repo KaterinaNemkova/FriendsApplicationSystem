@@ -1,9 +1,10 @@
-
+using ApiGateway.AuthenticationExtension;
 using MMLib.SwaggerForOcelot.DependencyInjection;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -14,6 +15,9 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddAppAuthentication(builder.Configuration);
 
 builder.Configuration.AddOcelotWithSwaggerSupport((options) =>
 {
@@ -21,20 +25,30 @@ builder.Configuration.AddOcelotWithSwaggerSupport((options) =>
     options.FileOfSwaggerEndPoints = "ocelot.swagger";
 });
 
-builder.Services.AddOcelot();
+builder.Services.AddTransient<CookieToHeaderHandler>();
+
+builder.Services.AddOcelot().AddDelegatingHandler<CookieToHeaderHandler>();
+
 builder.Services.AddSwaggerForOcelot(builder.Configuration);
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
+
 app.UseCors("AllowAll");
 
-app.UseSwaggerForOcelotUI(options =>
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseSwaggerForOcelotUI(opt =>
 {
-    options.PathToSwaggerGenerator = "/swagger/docs";
+    opt.PathToSwaggerGenerator = "/swagger/docs";
 });
 
 await app.UseOcelot();
-app.UseHttpsRedirection();
-app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();
+

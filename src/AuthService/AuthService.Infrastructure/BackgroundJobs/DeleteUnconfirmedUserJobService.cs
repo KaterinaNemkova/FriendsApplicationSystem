@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Identity;
 
 public class DeleteUnconfirmedUserJobService : IDeleteUncorfimedUserService
 {
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly UserManager<AppUser> _userManager;
 
-    public DeleteUnconfirmedUserJobService(UserManager<ApplicationUser> userManager)
+    public DeleteUnconfirmedUserJobService(UserManager<AppUser> userManager)
     {
         _userManager = userManager;
     }

@@ -9,9 +9,9 @@ namespace AuthService.GrpcServer.Services;
 public class AuthServiceImpl : AuthService.AuthServiceBase
 {
     private readonly IAuthRepository _authRepository;
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly UserManager<AppUser> _userManager;
 
-    public AuthServiceImpl(IAuthRepository authRepository, UserManager<ApplicationUser> userManager)
+    public AuthServiceImpl(IAuthRepository authRepository, UserManager<AppUser> userManager)
     {
         _authRepository = authRepository;
         _userManager = userManager;

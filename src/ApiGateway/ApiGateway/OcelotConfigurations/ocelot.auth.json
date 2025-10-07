@@ -4,7 +4,7 @@
   },
   "Routes": [
     {
-      "DownstreamPathTemplate": "/register",
+      "DownstreamPathTemplate": "/api/account/register",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -19,23 +19,7 @@
       "SwaggerKey": "Auth"
     },
     {
-      "DownstreamPathTemplate": "/getTelegramReference",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "authservice_api",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/getTelegramReference",
-      "UpstreamHttpMethod": [
-        "GET"
-      ],
-      "SwaggerKey": "Auth"
-    },
-
-    {
-      "DownstreamPathTemplate": "/login",
+      "DownstreamPathTemplate": "/api/account/login",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -49,9 +33,8 @@
       ],
       "SwaggerKey": "Auth"
     },
-
     {
-      "DownstreamPathTemplate": "/refresh",
+      "DownstreamPathTemplate": "/api/account/confirm-email/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -59,31 +42,14 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/refresh",
-      "UpstreamHttpMethod": [
-        "POST"
-      ],
-      "SwaggerKey": "Auth"
-    },
-
-    {
-      "DownstreamPathTemplate": "/confirmEmail",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "authservice_api",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/confirmEmail",
+      "UpstreamPathTemplate": "/confirm-email/{everything}",
       "UpstreamHttpMethod": [
         "GET"
       ],
       "SwaggerKey": "Auth"
     },
-
     {
-      "DownstreamPathTemplate": "/resendConfirmationEmail",
+      "DownstreamPathTemplate": "/api/account/validate-token/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -91,71 +57,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/resendConfirmationEmail",
-      "UpstreamHttpMethod": [
-        "POST"
-      ],
-      "SwaggerKey": "Auth"
-    },
-
-    {
-      "DownstreamPathTemplate": "/forgotPassword",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "authservice_api",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/forgotPassword",
-      "UpstreamHttpMethod": [
-        "POST"
-      ],
-      "SwaggerKey": "Auth"
-    },
-
-    {
-      "DownstreamPathTemplate": "/resetPassword",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "authservice_api",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/resetPassword",
-      "UpstreamHttpMethod": [
-        "POST"
-      ],
-      "SwaggerKey": "Auth"
-    },
-
-    {
-      "DownstreamPathTemplate": "/manage/info",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "authservice_api",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/manage/info",
-      "UpstreamHttpMethod": [
-        "GET"
-      ],
-      "SwaggerKey": "Auth"
-    },
-
-    {
-      "DownstreamPathTemplate": "/manage/info",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "authservice_api",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/manage/info",
+      "UpstreamPathTemplate": "/validate-token/{everything}",
       "UpstreamHttpMethod": [
         "POST"
       ],

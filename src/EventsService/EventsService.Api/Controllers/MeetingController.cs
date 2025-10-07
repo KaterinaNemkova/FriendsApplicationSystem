@@ -24,8 +24,6 @@ public class MeetingController : ControllerBase
     {
         this._mediator = mediator;
     }
-        
-    
 
     [HttpPost]
     public async Task<IActionResult> CreateMeeting(

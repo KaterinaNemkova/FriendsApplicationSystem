@@ -13,6 +13,4 @@ public class GoalRequestDto
     public List<string> Actions { get; set; }
 
     public Guid Author { get; set; }
-
-    //public bool IsAchieved { get; set; } = false; чтобы нельзя было создать достигнутую цель
 }

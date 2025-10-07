@@ -1,8 +1,11 @@
 namespace UserService.Infrastructure.Extensions;
 
+using System.Text;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
@@ -86,6 +89,8 @@ public static class Extensions
     {
         services.AddEndpointsApiExplorer();
 
+        services.AddHttpContextAccessor();
+
         services.AddSwaggerGen(
             c =>
         {
@@ -98,6 +103,25 @@ public static class Extensions
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                var securityKey = Environment.GetEnvironmentVariable("JWT_SECURITY_KEY");
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(securityKey)),
+                    ValidateIssuer = true,
+                    ValidIssuer = "authservice_api",
+                    ValidateAudience = true,
+                    ValidAudience = "microservices",
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                };
+            });
+
         return services;
     }
 
@@ -127,7 +151,7 @@ public static class Extensions
 
         services.AddSingleton<IMessageService, RabbitMQService>();
     }
-    
+
     public static IServiceCollection ConfigureAuthGrpcClient(this IServiceCollection services, IConfiguration configuration)
     {
         configuration["AuthGrpcUrl:GrpcUrl"] = Environment.GetEnvironmentVariable("AUTH_GRPC_URL");

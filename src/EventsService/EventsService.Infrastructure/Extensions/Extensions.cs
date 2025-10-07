@@ -1,5 +1,8 @@
+using System.Text;
 using EventsService.Infrastructure.BackgroundJobs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EventsService.Infrastructure.Extensions;
 
@@ -124,9 +127,27 @@ public static class Extensions
     {
         services.AddControllers();
 
+        services.AddHttpContextAccessor();
+
         services.AddHangfireServer();
 
-        services.AddAuthentication();
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                var securityKey = Environment.GetEnvironmentVariable("JWT_SECURITY_KEY");
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(securityKey)),
+                    ValidateIssuer = true,
+                    ValidIssuer = "authservice_api",
+                    ValidateAudience = true,
+                    ValidAudience = "microservices",
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                };
+            });
 
         services.AddAuthorization();
 
