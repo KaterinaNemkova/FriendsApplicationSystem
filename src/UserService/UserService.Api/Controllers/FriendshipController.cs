@@ -47,7 +47,7 @@ public class FriendshipController(IMediator mediator) : ControllerBase
         return this.Ok(friendship);
     }
 
-    [HttpDelete]
+    [HttpDelete("remove")]
     public async Task<IActionResult> DeleteFriend([FromQuery] DeleteFriendCommand command, CancellationToken token)
     {
         await mediator.Send(command, token);

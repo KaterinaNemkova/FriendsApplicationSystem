@@ -26,7 +26,7 @@ public class TokenService
         _userManager = userManager;
     }
 
-    public async Task<string> GenerateAccessToken(string userId, string userName)
+    public async Task<string> GenerateAccessToken(string userId, string userName, string profileId)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(this._securityKey);
@@ -42,16 +42,16 @@ public class TokenService
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, userId),
-            new Claim(ClaimTypes.Name, userName),
             new Claim(JwtRegisteredClaimNames.Sub, userId),
+            new Claim(ClaimTypes.Name, userName),
             new Claim(JwtRegisteredClaimNames.UniqueName, userName),
+            new Claim("profile_id", profileId),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
 
         foreach (var role in roles)
         {
             claims.Add(new Claim(ClaimTypes.Role, role));
-            //claims.Add(new Claim("role", role)); // для Ocelot
             claims.Add(new Claim("Role", role));
         }
 

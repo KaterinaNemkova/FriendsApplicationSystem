@@ -26,7 +26,6 @@ public static class AccountEndpoint
             [FromServices] IDeleteUncorfimedUserService deleteUncorfimedUserService,
             [FromServices] UserManager<AppUser> userManager,
             [FromServices] IEmailSender emailSender,
-            [FromServices] UserService.GrpcServer.UserProfileService.UserProfileServiceClient userProfileClient,
             [FromBody] RegisterDto dto) =>
         {
             var userFromDb = await userManager.FindByEmailAsync(dto.Email);
@@ -125,7 +124,8 @@ public static class AccountEndpoint
             HttpContext context,
             [FromServices] UserManager<AppUser> userManager,
             [FromServices] TokenService tokenservice,
-            [FromBody] LoginDto dto) =>
+            [FromBody] LoginDto dto,
+            [FromServices] UserService.GrpcServer.UserProfileService.UserProfileServiceClient userProfileClient) =>
         {
             var user = await userManager.FindByEmailAsync(dto.Email);
             if (user is null)
@@ -145,8 +145,13 @@ public static class AccountEndpoint
                 return Results.BadRequest(Response<string>.Failure("Invalid password"));
             }
 
+            var request = new UserService.GrpcServer.GetProfileIdRequest()
+            {
+                UserId = user.Id,
+            };
             var roles = await userManager.GetRolesAsync(user);
-            var token = await tokenservice.GenerateAccessToken(user.Id, user.UserName!);
+            var response = await userProfileClient.GetProfileIdByUserIdAsync(request);
+            var token = await tokenservice.GenerateAccessToken(user.Id, user.UserName!, response.ProfileId);
 
             context.Response.Cookies.Append(
                 "accessToken",

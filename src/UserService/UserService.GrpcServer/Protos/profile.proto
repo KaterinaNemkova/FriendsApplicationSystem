@@ -5,6 +5,7 @@ option csharp_namespace = "UserService.GrpcServer";
 service UserProfileService {
   rpc CreateProfile (CreateProfileRequest) returns (CreateProfileResponse);
   rpc GetUserId (GetUserIdRequest) returns (GetUserIdResponse);
+  rpc GetProfileIdByUserId (GetProfileIdRequest) returns (GetProfileIdResponse);
 }
 
 message CreateProfileRequest {
@@ -22,4 +23,12 @@ message GetUserIdRequest {
 
 message GetUserIdResponse {
   string user_id = 1;
+}
+
+message GetProfileIdRequest{
+  string userId = 1;
+}
+
+message GetProfileIdResponse{
+  string profileId = 1;
 }

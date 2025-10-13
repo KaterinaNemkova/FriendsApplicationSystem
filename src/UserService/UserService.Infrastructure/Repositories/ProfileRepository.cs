@@ -59,5 +59,10 @@ public class ProfileRepository : IProfileRepository
 
         await this._profilesCollection.UpdateOneAsync(filter, update, cancellationToken: token);
     }
+
+    public async Task<Profile> GetProfileByUserId(Guid userId, CancellationToken token)
+    {
+        return await this._profilesCollection.Find(p => p.UserId == userId).FirstOrDefaultAsync(token);
+    }
 }
 

@@ -58,6 +58,19 @@ public static class Extensions
                     .SetSerializer(new EnumSerializer<RequestStatus>(BsonType.String));
             });
         }
+
+        if (!BsonClassMap.IsClassMapRegistered(typeof(Photo)))
+        {
+            BsonClassMap.RegisterClassMap<Photo>(
+                cm =>
+                {
+                    cm.AutoMap();
+                    cm.MapMember(c => c.Id)
+                        .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
+                    cm.MapMember(c => c.ProfileId)
+                        .SetSerializer(new GuidSerializer(GuidRepresentation.Standard));
+                });
+        }
     }
 
     public static IServiceCollection AddDb(this IServiceCollection services, IConfiguration configuration)

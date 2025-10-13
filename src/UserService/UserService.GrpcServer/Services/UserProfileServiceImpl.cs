@@ -10,11 +10,13 @@ public class UserProfileServiceImpl : UserProfileService.UserProfileServiceBase
 {
     private readonly IProfileRepository _profileRepository;
     private readonly IMessageService _messageService;
+    private readonly ILogger<UserProfileServiceImpl> _logger;
 
-    public UserProfileServiceImpl(IProfileRepository profileRepository, IMessageService messageService)
+    public UserProfileServiceImpl(IProfileRepository profileRepository, IMessageService messageService, ILogger<UserProfileServiceImpl> logger)
     {
         _profileRepository = profileRepository;
         _messageService = messageService;
+        _logger = logger;
     }
 
     public override async Task<CreateProfileResponse> CreateProfile(CreateProfileRequest request, ServerCallContext context)
@@ -47,6 +49,23 @@ public class UserProfileServiceImpl : UserProfileService.UserProfileServiceBase
         return new GetUserIdResponse
         {
             UserId = profile.UserId.ToString()
+        };
+    }
+    
+    public override async Task<GetProfileIdResponse> GetProfileIdByUserId(GetProfileIdRequest request, ServerCallContext context)
+    {
+        var profile = await _profileRepository.GetProfileByUserId(Guid.Parse(request.UserId), CancellationToken.None);
+                
+        if (profile == null)
+        {
+            _logger.LogWarning("Profile not found for user {UserId}", request.UserId);
+            throw new RpcException(
+                new Status(StatusCode.NotFound, $"Profile not found for user {request.UserId}"));
+        }
+
+        return new GetProfileIdResponse 
+        { 
+            ProfileId = profile.Id.ToString() 
         };
     }
     

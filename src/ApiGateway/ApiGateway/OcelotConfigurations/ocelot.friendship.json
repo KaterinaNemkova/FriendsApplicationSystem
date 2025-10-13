@@ -80,7 +80,7 @@
       "SwaggerKey": "Profile"
     },
     {
-      "DownstreamPathTemplate": "/api/friendship",
+      "DownstreamPathTemplate": "/api/friendship/remove",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -88,7 +88,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/api/friendship",
+      "UpstreamPathTemplate": "/api/friendship/remove",
       "UpstreamHttpMethod": [
         "DELETE"
       ],

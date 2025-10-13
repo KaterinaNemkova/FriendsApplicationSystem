@@ -36,4 +36,5 @@ public class AuthServiceImpl : AuthService.AuthServiceBase
         var isDeleted = await _userManager.DeleteAsync(user);
         return new DeleteUserResponse { Success = isDeleted.Succeeded };
     }
+    
 }

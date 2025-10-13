@@ -18,5 +18,7 @@ public interface IProfileRepository
     Task UpdatePhotoAsync(Guid profileId, Photo photo, CancellationToken token);
 
     Task DeletePhotoAsync(Guid profileId, CancellationToken token);
+    
+    Task<Profile> GetProfileByUserId(Guid userId, CancellationToken token);
 
 }

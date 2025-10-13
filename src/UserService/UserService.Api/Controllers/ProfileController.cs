@@ -1,3 +1,6 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using UserService.Application.Common.Exceptions;
 using UserService.Application.UseCases.Profiles.Commands.DeleteProfile;
 
 namespace UserService.Api.Controllers;
@@ -18,16 +21,19 @@ using UserService.Domain.Enums;
 public class ProfileController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public ProfileController(IMediator mediator)
+    public ProfileController(IMediator mediator, IHttpContextAccessor httpContextAccessor)
     {
         _mediator = mediator;
+        _httpContextAccessor = httpContextAccessor;
     }
+    
+    [HttpGet("profile")]
 
-    [HttpGet("profile/{profileId:guid}")]
-
-    public async Task<IActionResult> GetProfileById([FromRoute] Guid profileId, CancellationToken token)
+    public async Task<IActionResult> GetProfileById(CancellationToken token)
     {
+        var profileId = GetProfileId();
         var profile = await _mediator.Send(new GetProfileByIdQuery(profileId), token);
 
         return Ok(profile);
@@ -79,5 +85,24 @@ public class ProfileController : ControllerBase
         await _mediator.Send(new DeleteProfileCommand(profileId), token);
 
         return Ok();
+    }
+
+    private Guid GetProfileId()
+    {
+        var token = _httpContextAccessor.HttpContext?.Request.Cookies["accessToken"];
+        if (string.IsNullOrEmpty(token))
+            throw new UnauthorizedException("Unauthorized.", "Token not found in cookies.");
+
+        token = token.Replace("Bearer ", "");
+
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+
+        var profileIdValue = jwtToken.Claims.First(c => c.Type == "profile_id").Value;
+
+        if (!Guid.TryParse(profileIdValue, out var profileId))
+            throw new UnauthorizedException("Unauthorized.", "Invalid Profile ID format.");
+
+        return profileId;
     }
 }
