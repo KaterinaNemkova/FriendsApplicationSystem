@@ -79,7 +79,7 @@
     },
 
     {
-      "DownstreamPathTemplate": "/api/dates/my-dates/{profileId}",
+      "DownstreamPathTemplate": "/api/dates/my-dates",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -87,7 +87,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/dates/my-dates/{profileId}",
+      "UpstreamPathTemplate": "/dates/my-dates",
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",

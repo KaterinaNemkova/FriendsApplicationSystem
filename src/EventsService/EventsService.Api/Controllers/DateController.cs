@@ -1,4 +1,6 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using EventsService.Application.Common.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 
 namespace EventsService.Api.Controllers;
@@ -60,11 +62,31 @@ public class DateController : ControllerBase
         return this.Ok(dates);
     }
 
-    [HttpGet("my-dates/{profileId:guid}")]
-    public async Task<IActionResult> GetAllMyDates([FromRoute] Guid id, CancellationToken cancellationToken)
+    [HttpGet("my-dates")]
+    public async Task<IActionResult> GetAllMyDates(CancellationToken cancellationToken)
     {
-        var dates = await this._mediator.Send(new GetAllMyDatesQuery(id), cancellationToken);
+        var profileId = GetProfileId();
+        var dates = await this._mediator.Send(new GetAllMyDatesQuery(profileId), cancellationToken);
         return this.Ok(dates);
+    }
+    
+    private Guid GetProfileId()
+    {
+        var token = _httpContextAccessor.HttpContext?.Request.Cookies["accessToken"];
+        if (string.IsNullOrEmpty(token))
+            throw new UnauthorizedException("Unauthorized.", "Token not found in cookies.");
+
+        token = token.Replace("Bearer ", "");
+
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+
+        var profileIdValue = jwtToken.Claims.First(c => c.Type == "profile_id").Value;
+
+        if (!Guid.TryParse(profileIdValue, out var profileId))
+            throw new UnauthorizedException("Unauthorized.", "Invalid Profile ID format.");
+
+        return profileId;
     }
 
 }

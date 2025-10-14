@@ -21,8 +21,13 @@ public class GetPhotoByIdHandler:IRequestHandler<GetPhotoByIdQuery, string>
         var profile = await _profileRepository.GetByIdAsync(request.Id, cancellationToken)
             ?? throw new EntityNotFoundException(nameof(Profile), request.Id);
 
-        var url = await _photoService.GetPhoto(profile.Photo.PublicId);
+        if (profile.Photo == null || string.IsNullOrEmpty(profile.Photo.PublicId))
+        {
+            throw new PhotoNotFoundException(request.Id);
+        }
 
-        return url;
+        var url = await _photoService.GetPhoto(profile.Photo.PublicId);
+    
+        return url ?? throw new EntityNotFoundException("Photo", profile.Photo.PublicId);
     }
 }

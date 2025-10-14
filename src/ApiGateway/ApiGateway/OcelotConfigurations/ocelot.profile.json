@@ -25,7 +25,7 @@
     },
 
     {
-      "DownstreamPathTemplate" : "/api/profiles/profile",
+      "DownstreamPathTemplate" : "/api/profiles/my-profile",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -33,7 +33,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate" : "/profiles/profile",
+      "UpstreamPathTemplate" : "/profiles/my-profile",
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
@@ -43,7 +43,7 @@
     },
 
     {
-      "DownstreamPathTemplate" : "/api/profiles/photo/{profileId}",
+      "DownstreamPathTemplate" : "/api/profiles/photo",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -51,7 +51,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate" : "/profiles/photo/{profileId}",
+      "UpstreamPathTemplate" : "/profiles/photo",
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
@@ -61,7 +61,7 @@
     },
 
     {
-      "DownstreamPathTemplate" : "/api/profiles/photo/{profileId}",
+      "DownstreamPathTemplate" : "/api/profiles/photo",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -69,7 +69,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate" : "/profiles/photo/{profileId}",
+      "UpstreamPathTemplate" : "/profiles/photo",
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
@@ -79,7 +79,7 @@
     },
 
     {
-      "DownstreamPathTemplate" : "/api/profiles/photo/{profileId}",
+      "DownstreamPathTemplate" : "/api/profiles/photo",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -87,7 +87,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate" : "/profiles/photo/{profileId}",
+      "UpstreamPathTemplate" : "/profiles/photo",
       "UpstreamHttpMethod": [ "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
@@ -97,7 +97,7 @@
     },
 
     {
-      "DownstreamPathTemplate" : "/api/profiles/status/{profileId}",
+      "DownstreamPathTemplate" : "/api/profiles/status",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -105,7 +105,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate" : "/profiles/status/{profileId}",
+      "UpstreamPathTemplate" : "/profiles/status",
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
@@ -115,7 +115,7 @@
     },
     
     {
-      "DownstreamPathTemplate" : "/api/profiles/profile/{profileId}",
+      "DownstreamPathTemplate" : "/api/profiles/profile",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -123,7 +123,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate" : "/profiles/profile/{profileId}",
+      "UpstreamPathTemplate" : "/profiles/profile",
       "UpstreamHttpMethod": [ "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",

@@ -87,7 +87,7 @@
     },
 
     {
-      "DownstreamPathTemplate": "/api/meetings/my-meetings/{profileId}",
+      "DownstreamPathTemplate": "/api/meetings/my-meetings",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -95,7 +95,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/meetings/my-meetings/{profileId}",
+      "UpstreamPathTemplate": "/meetings/my-meetings",
       "UpstreamHttpMethod": [
         "GET"
       ],
@@ -107,7 +107,7 @@
     },
 
     {
-      "DownstreamPathTemplate": "/api/meetings/my-future/{profileId}",
+      "DownstreamPathTemplate": "/api/meetings/my-future",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -115,7 +115,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/meetings/my-future/{profileId}",
+      "UpstreamPathTemplate": "/meetings/my-future",
       "UpstreamHttpMethod": [
         "GET"
       ],
@@ -127,7 +127,7 @@
     },
 
     {
-      "DownstreamPathTemplate": "/api/meetings/my-past/{profileId}",
+      "DownstreamPathTemplate": "/api/meetings/my-past",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -135,7 +135,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/meetings/my-past/{profileId}",
+      "UpstreamPathTemplate": "/meetings/my-past",
       "UpstreamHttpMethod": [
         "GET"
       ],

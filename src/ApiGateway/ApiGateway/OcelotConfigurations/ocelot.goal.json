@@ -87,7 +87,7 @@
     },
 
     {
-      "DownstreamPathTemplate": "/api/goals/my-goals/{profileId}",
+      "DownstreamPathTemplate": "/api/goals/my-goals",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -95,7 +95,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/goals/my-goals/{profileId}}",
+      "UpstreamPathTemplate": "/goals/my-goals",
       "UpstreamHttpMethod": [
         "GET"
       ],

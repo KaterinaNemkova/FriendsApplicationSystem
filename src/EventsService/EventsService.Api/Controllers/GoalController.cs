@@ -1,5 +1,8 @@
+using System.IdentityModel.Tokens.Jwt;
+using EventsService.Application.Common.Exceptions;
 using EventsService.Application.UseCases.Goals.Commands.AchieveGoal;
 using Microsoft.AspNetCore.Authorization;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace EventsService.Api.Controllers;
 
@@ -18,10 +21,12 @@ using Microsoft.AspNetCore.Mvc;
 public class GoalController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public GoalController(IMediator mediator)
+    public GoalController(IMediator mediator, IHttpContextAccessor httpContextAccessor)
     {
         this._mediator = mediator;
+        this._httpContextAccessor = httpContextAccessor;
     }
 
     [HttpPost]
@@ -61,14 +66,16 @@ public class GoalController : ControllerBase
         return this.Ok(result);
     }
 
-    [HttpGet("my-goals/{profileId:guid}")]
-    public async Task<IActionResult> GetMyGoals([FromRoute] Guid profileId, CancellationToken cancellationToken)
+    [HttpGet("my-goals")]
+    public async Task<IActionResult> GetMyGoals(CancellationToken cancellationToken)
     {
+        var profileId = GetProfileId();
         var result = await this._mediator.Send(new GetAllMyGoalsQuery(profileId), cancellationToken);
 
         return this.Ok(result);
     }
 
+    [SwaggerOperation(Summary = "Make done")]
     [HttpPut("done/{goalId:guid}")]
 
     public async Task<IActionResult> AchieveGoal([FromRoute] Guid goalId, CancellationToken cancellationToken)
@@ -76,5 +83,24 @@ public class GoalController : ControllerBase
         var result = await this._mediator.Send(new AchieveGoalCommand(goalId), cancellationToken);
 
         return this.Ok(result);
+    }
+    
+    private Guid GetProfileId()
+    {
+        var token = _httpContextAccessor.HttpContext?.Request.Cookies["accessToken"];
+        if (string.IsNullOrEmpty(token))
+            throw new UnauthorizedException("Unauthorized.", "Token not found in cookies.");
+
+        token = token.Replace("Bearer ", "");
+
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+
+        var profileIdValue = jwtToken.Claims.First(c => c.Type == "profile_id").Value;
+
+        if (!Guid.TryParse(profileIdValue, out var profileId))
+            throw new UnauthorizedException("Unauthorized.", "Invalid Profile ID format.");
+
+        return profileId;
     }
 }

@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Swashbuckle.AspNetCore.Annotations;
 using UserService.Application.Common.Exceptions;
 using UserService.Application.UseCases.Profiles.Commands.DeleteProfile;
 
@@ -29,7 +30,8 @@ public class ProfileController : ControllerBase
         _httpContextAccessor = httpContextAccessor;
     }
     
-    [HttpGet("profile")]
+    [SwaggerOperation(Summary = "Get my profile")]
+    [HttpGet("my-profile")]
 
     public async Task<IActionResult> GetProfileById(CancellationToken token)
     {
@@ -39,6 +41,7 @@ public class ProfileController : ControllerBase
         return Ok(profile);
     }
 
+    [SwaggerOperation(Summary = "Get profiles by filter")]
     [HttpGet]
     public async Task<IActionResult> GetProfilesByFilter([FromQuery] GetAllByFilterQuery query, CancellationToken token)
     {
@@ -47,41 +50,51 @@ public class ProfileController : ControllerBase
         return Ok(profiles);
     }
 
-    [HttpGet("photo/{profileId:guid}")]
-    public async Task<IActionResult> GetProfilePhoto([FromRoute] Guid profileId, CancellationToken token)
+    [SwaggerOperation(Summary = "Get profile's photo")]
+    [HttpGet("photo")]
+    public async Task<IActionResult> GetProfilePhoto(CancellationToken token)
     {
+        var profileId = GetProfileId();
         var url = await _mediator.Send(new GetPhotoByIdQuery(profileId), token);
 
         return Ok(url);
     }
 
-    [HttpPost("photo/{profileId:guid}")]
+    [SwaggerOperation(Summary = "Add profile's photo")]
+    [HttpPost("photo")]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> UploadProfilePhoto([FromRoute] Guid profileId, [FromForm] UploadImageRequest request,CancellationToken token)
+    public async Task<IActionResult> UploadProfilePhoto([FromForm] UploadImageRequest request,CancellationToken token)
     {
+        var profileId = GetProfileId();
         var result = await _mediator.Send(new UploadImageCommand(profileId, request.File), token);
 
         return Ok(result);
     }
 
-    [HttpDelete("photo/{profileId:guid}")]
-    public async Task<IActionResult> DeletePhoto([FromRoute] Guid profileId, CancellationToken token)
+    [SwaggerOperation(Summary = "Delete profile's photo")]
+    [HttpDelete("photo")]
+    public async Task<IActionResult> DeletePhoto(CancellationToken token)
     {
+        var profileId = GetProfileId();
         var result = await _mediator.Send(new DeleteImageCommand(profileId), token);
         return Ok(result);
     }
 
-    [HttpPost("status/{profileId:guid}")]
-    public async Task<IActionResult> EstablishStatus([FromRoute] Guid profileId, [FromQuery] ActivityStatus activityStatus,CancellationToken token)
+    [SwaggerOperation(Summary = "Change profile's status")]
+    [HttpPost("status")]
+    public async Task<IActionResult> EstablishStatus([FromQuery] ActivityStatus activityStatus, CancellationToken token)
     {
+        var profileId = GetProfileId();
         await _mediator.Send(new EstablishStatusCommand(profileId, activityStatus), token);
         return Ok();
     }
+    
+    [SwaggerOperation(Summary = "Delete profile")]
+    [HttpDelete("profile")]
 
-    [HttpDelete("profile/{profileId:guid}")]
-
-    public async Task<IActionResult> DeleteProfile([FromRoute] Guid profileId, CancellationToken token)
+    public async Task<IActionResult> DeleteProfile(CancellationToken token)
     {
+        var profileId = GetProfileId();
         await _mediator.Send(new DeleteProfileCommand(profileId), token);
 
         return Ok();
