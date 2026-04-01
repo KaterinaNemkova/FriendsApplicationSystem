@@ -12,7 +12,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate" : "/profiles",
+      "UpstreamPathTemplate" : "/api/profiles",
       "UpstreamHttpMethod": [ "POST", "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
@@ -33,7 +33,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate" : "/profiles/my-profile",
+      "UpstreamPathTemplate" : "/api/profiles/my-profile",
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
@@ -51,7 +51,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate" : "/profiles/photo",
+      "UpstreamPathTemplate" : "/api/profiles/photo",
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
@@ -69,7 +69,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate" : "/profiles/photo",
+      "UpstreamPathTemplate" : "/api/profiles/photo",
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
@@ -87,7 +87,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate" : "/profiles/photo",
+      "UpstreamPathTemplate" : "/api/profiles/photo",
       "UpstreamHttpMethod": [ "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
@@ -105,7 +105,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate" : "/profiles/status",
+      "UpstreamPathTemplate" : "/api/profiles/status",
       "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
@@ -123,7 +123,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate" : "/profiles/profile",
+      "UpstreamPathTemplate" : "/api/profiles/profile",
       "UpstreamHttpMethod": [ "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",

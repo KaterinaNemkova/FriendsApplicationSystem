@@ -1,67 +1,39 @@
 {
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:5100"
+    "BaseUrl": null
   },
   "Routes": [
     {
-      "DownstreamPathTemplate": "/api/account/register",
+      "DownstreamPathTemplate": "/api/account/confirm-email",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "authservice_api",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/register",
-      "UpstreamHttpMethod": [
-        "POST"
-      ],
-      "SwaggerKey": "Auth"
+      "DownstreamHostAndPorts": [{ "Host": "authservice_api", "Port": 8080 }],
+      "UpstreamPathTemplate": "/api/account/confirm-email",
+      "UpstreamHttpMethod": [ "GET", "OPTIONS" ],
+      "Priority": 10
     },
     {
       "DownstreamPathTemplate": "/api/account/login",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "authservice_api",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/login",
-      "UpstreamHttpMethod": [
-        "POST"
-      ],
-      "SwaggerKey": "Auth"
+      "DownstreamHostAndPorts": [{ "Host": "authservice_api", "Port": 8080 }],
+      "UpstreamPathTemplate": "/api/account/login",
+      "UpstreamHttpMethod": [ "POST", "OPTIONS" ],
+      "Priority": 10
     },
     {
-      "DownstreamPathTemplate": "/api/account/confirm-email/{everything}",
+      "DownstreamPathTemplate": "/api/account/register",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "authservice_api",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/confirm-email/{everything}",
-      "UpstreamHttpMethod": [
-        "GET"
-      ],
-      "SwaggerKey": "Auth"
+      "DownstreamHostAndPorts": [{ "Host": "authservice_api", "Port": 8080 }],
+      "UpstreamPathTemplate": "/api/account/register",
+      "UpstreamHttpMethod": [ "POST", "OPTIONS" ],
+      "Priority": 10
     },
     {
-      "DownstreamPathTemplate": "/api/account/validate-token/{everything}",
+      "DownstreamPathTemplate": "/api/account/refresh",
       "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "authservice_api",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/validate-token/{everything}",
-      "UpstreamHttpMethod": [
-        "POST"
-      ],
-      "SwaggerKey": "Auth"
+      "DownstreamHostAndPorts": [{ "Host": "authservice_api", "Port": 8080 }],
+      "UpstreamPathTemplate": "/api/account/refresh",
+      "UpstreamHttpMethod": [ "POST", "OPTIONS" ],
+      "Priority": 10
     }
   ]
 }

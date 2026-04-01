@@ -3,6 +3,8 @@ using Swashbuckle.AspNetCore.Annotations;
 using UserService.Application.Common.Exceptions;
 using UserService.Application.UseCases.Friends.Commands.AcceptFriendRequest;
 using UserService.Application.UseCases.Friends.Commands.RejectFriendRequest;
+using UserService.Application.UseCases.Friends.Queries.GetAllMyFriendsRequests;
+using UserService.Application.UseCases.Friends.Queries.GetFriendshipByFriendId;
 
 namespace UserService.Api.Controllers;
 
@@ -77,7 +79,7 @@ public class FriendshipController : ControllerBase
     }
 
     [SwaggerOperation(Summary = "Change friendship's start date")]
-    [HttpPut("start-date/{friendshipId:Guid}")]
+    [HttpPut("start-date/{friendshipId}")]
     public async Task<IActionResult> ChangeStartDate([FromRoute] Guid friendshipId, [FromBody] DateOnly startDate, CancellationToken token)
     {
         var friendship = await _mediator.Send(new ChangeDateCommand(friendshipId, startDate), token);
@@ -94,7 +96,29 @@ public class FriendshipController : ControllerBase
 
         return Ok(friends);
     }
+
+    [SwaggerOperation(Summary = "Get my friend's requests")]
+    [HttpGet("my-requests")]
+    public async Task<IActionResult> GetAllMyFriendsRequests(CancellationToken token)
+    {
+        var profileId = GetProfileId();
+        var friends = await _mediator.Send(new GetAllMyFriendsRequestsQuery(profileId), token);
+
+        return Ok(friends);
+    }
     
+    [SwaggerOperation(Summary = "Get friendship by friend profile ID")]
+    [HttpGet("by-friend/{friendId}")]
+    public async Task<IActionResult> GetFriendshipByFriendId([FromRoute] Guid friendId, CancellationToken token)
+    {
+
+        var profileId = GetProfileId();
+    
+        var friendship = await _mediator.Send(new GetFriendshipByFriendIdQuery(profileId, friendId), token);
+    
+        return Ok(friendship);
+    }
+
     private Guid GetProfileId()
     {
         var token = _httpContextAccessor.HttpContext?.Request.Cookies["accessToken"];

@@ -12,14 +12,10 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/meetings",
+      "UpstreamPathTemplate": "/api/meetings",
       "UpstreamHttpMethod": [
         "POST"
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "SwaggerKey": "Events"
     },
 
@@ -32,14 +28,10 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/meetings/{meetingId}",
+      "UpstreamPathTemplate": "/api/meetings/{meetingId}",
       "UpstreamHttpMethod": [
         "DELETE"
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "SwaggerKey": "Events"
     },
 
@@ -52,14 +44,10 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/meetings/{meetingId}",
+      "UpstreamPathTemplate": "/api/meetings/{meetingId}",
       "UpstreamHttpMethod": [
         "PUT"
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "SwaggerKey": "Events"
     },
 
@@ -72,14 +60,10 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/meetings",
+      "UpstreamPathTemplate": "/api/meetings",
       "UpstreamHttpMethod": [
         "GET"
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "RouteClaimsRequirement": {
         "Role": "Admin"
       },
@@ -95,14 +79,10 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/meetings/my-meetings",
+      "UpstreamPathTemplate": "/api/meetings/my-meetings",
       "UpstreamHttpMethod": [
         "GET"
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "SwaggerKey": "Events"
     },
 
@@ -115,14 +95,10 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/meetings/my-future",
+      "UpstreamPathTemplate": "/api/meetings/my-future",
       "UpstreamHttpMethod": [
         "GET"
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "SwaggerKey": "Events"
     },
 
@@ -135,14 +111,10 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/meetings/my-past",
+      "UpstreamPathTemplate": "/api/meetings/my-past",
       "UpstreamHttpMethod": [
         "GET"
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "SwaggerKey": "Events"
     }
   ]

@@ -1,6 +1,7 @@
 using NotificationService.Infrastructure.Extensions;
 using NotificationService.Infrastructure.Services;
 
+AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 var builder = WebApplication.CreateBuilder(args);
 
 var envPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");

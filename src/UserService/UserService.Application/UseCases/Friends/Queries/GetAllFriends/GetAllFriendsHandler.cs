@@ -24,8 +24,25 @@ public class GetAllFriendsHandler : IRequestHandler<GetAllFriendsQuery, List<Pro
         var profile = await this._profileRepository.GetByIdAsync(request.ProfileId, token)
             ?? throw new EntityNotFoundException(nameof(Profile), request.ProfileId);
 
-        var profiles = await this._friendshipRepository.GetAllFriendsAsync(profile.Id, token);
+        var friends = await _friendshipRepository.GetAllFriendsAsync(profile.Id, token);
 
-        return this._mapper.Map<List<ProfileDto>>(profiles);
+        var result = new List<ProfileDto>();
+
+        foreach (var friend in friends)
+        {
+            var friendship = await _friendshipRepository.FriendshipExistsByIdsAsync(profile.Id, friend.Id, token);
+
+            var dto = _mapper.Map<ProfileDto>(friend);
+
+            if (friendship != null)
+            {
+                dto.RelationStatus = friendship.RelationStatus;
+                dto.BeginningOfInterrelations = friendship.BeginningOfInterrelations;
+            }
+
+            result.Add(dto);
+        }
+
+        return result;
     }
 }

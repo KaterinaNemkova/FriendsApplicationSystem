@@ -1,3 +1,5 @@
+using UserService.Domain.Entities;
+
 namespace UserService.Application.DTOs.Profiles;
 
 using UserService.Domain.Enums;
@@ -9,4 +11,9 @@ public class ProfileDto
     public string Name { get; set; }
 
     public ActivityStatus ActivityStatus { get; set; }
+
+    public Photo Photo { get; set; }
+    public RelationStatus? RelationStatus { get; set; }
+
+    public DateOnly? BeginningOfInterrelations { get; set; }
 }

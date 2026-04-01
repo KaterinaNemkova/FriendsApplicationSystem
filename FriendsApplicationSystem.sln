@@ -5,6 +5,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AuthService", "AuthService", "{9F7EF7B7-5B6D-4962-B3CA-BEEA988530B4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventsService", "EventsService", "{621E122D-A431-40E0-802E-3F7D24200458}"
+	ProjectSection(SolutionItems) = preProject
+		src\EventsService\collect_backend.py = src\EventsService\collect_backend.py
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserService", "UserService", "{1668EE37-A1F0-41C5-A876-F522266379FC}"
 EndProject

@@ -39,12 +39,12 @@ public class AddFriendHandler : IRequestHandler<AddFriendCommand, FriendshipDto>
 
         if (exist != null && exist.RequestStatus == RequestStatus.Accepted)
         {
-            throw new InvalidOperationException("You are already friends");
+            throw new BusinessException("You are already friends", 400);
         }
 
         if (exist != null && exist.RequestStatus == RequestStatus.Pending)
         {
-            throw new InvalidOperationException("You have already sent a request to friends of this person, wait for the answer");
+            throw new BusinessException("You have already sent a request to this person, wait for the answer", 400);
         }
 
         var profile = await this._profileRepository.GetByIdAsync(request.ProfileId, token)

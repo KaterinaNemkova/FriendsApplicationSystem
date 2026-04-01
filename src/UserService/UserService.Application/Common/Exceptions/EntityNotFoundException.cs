@@ -6,4 +6,8 @@ public class EntityNotFoundException : Exception
         : base($"Entity {name} with id {key} not found!")
     {
     }
+    public EntityNotFoundException(string name)
+        : base($"Entity {name} with  not found!")
+    {
+    }
 }

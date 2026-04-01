@@ -33,19 +33,27 @@ public class DateNotificationJobService : IDateNotificationJobService
 
                 var daysLeft = (dateThisYear - today).Days;
 
+                string eventTypePrefix = date.Type?.ToLower() switch
+                {
+                    "birthday" => "Birthday 🎉",
+                    "anniversary" => "Anniversary 🥂",
+                    "reminder" => "Reminder ⏰",
+                    _ => "Event"
+                };
+
                 switch (daysLeft)
                 {
                     case 14:
-                        await SendReminder(date, $"Before {date.Title} left 2 weeks ({dateThisYear:dd.MM.yyyy})");
+                        await SendReminder(date, $"{eventTypePrefix}: '{date.Title}' is in 2 weeks ({dateThisYear:dd.MM.yyyy})");
                         break;
                     case 7:
-                        await SendReminder(date, $"Before {date.Title} left 1 week ({dateThisYear:dd.MM.yyyy})");
+                        await SendReminder(date, $"{eventTypePrefix}: '{date.Title}' is in 1 week ({dateThisYear:dd.MM.yyyy})");
                         break;
                     case 1:
-                        await SendReminder(date, $"Tomorrow {date.Title}!");
+                        await SendReminder(date, $"{eventTypePrefix}: '{date.Title}' is Tomorrow!");
                         break;
                     case 0:
-                        await SendReminder(date, $"Today {date.Title}!");
+                        await SendReminder(date, $"{eventTypePrefix}: '{date.Title}' is Today! Don't forget!");
                         break;
                 }
             }

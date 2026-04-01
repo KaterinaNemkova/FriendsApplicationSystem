@@ -18,7 +18,7 @@ public class RejectFriendRequestHandler : IRequestHandler<RejectFriendRequestCom
         var myFriendRequests = await this._friendshipRepository.GetAllMyFriendsRequestsAsync(request.ProfileId, cancellationToken);
 
         var friendshipToReject = myFriendRequests
-                                    .FirstOrDefault(f => f.FriendProfileId == request.FriendProfileId)
+                                    .FirstOrDefault(f => f.ProfileId == request.FriendProfileId)
                                 ?? throw new KeyNotFoundException($"Запрос в друзья от пользователя {request.FriendProfileId} не найден");
         
         await this._friendshipRepository.RejectFriendRequestAsync(friendshipToReject.Id, cancellationToken);

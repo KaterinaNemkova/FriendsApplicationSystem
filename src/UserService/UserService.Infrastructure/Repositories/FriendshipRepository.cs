@@ -70,13 +70,15 @@ public class FriendshipRepository : IFriendshipRepository
     public async Task<List<Profile>> GetAllFriendsAsync(Guid profileId, CancellationToken token)
     {
         var friendships = await _friendshipCollection
-            .Find(f => f.ProfileId == profileId || f.FriendProfileId == profileId)
+            .Find(f => (f.ProfileId == profileId || f.FriendProfileId == profileId)
+                       && f.RequestStatus == RequestStatus.Accepted) // Добавляем фильтр по статусу
             .ToListAsync(token);
 
         var friendIds = friendships
             .Select(f => f.ProfileId == profileId ? f.FriendProfileId : f.ProfileId)
             .Distinct()
             .ToList();
+    
         var filter = Builders<Profile>.Filter.In(p => p.Id, friendIds);
         return await this._profilesCollection.Find(filter).ToListAsync(token);
     }
@@ -94,6 +96,24 @@ public class FriendshipRepository : IFriendshipRepository
             .ToListAsync(token);
 
         return pendingFriendships.ToList();
+    }
+    
+    public async Task<List<Guid>> GetAllMyFriendsRequestProfileIdsAsync(
+        Guid profileId,
+        CancellationToken token)
+    {
+        var filter = Builders<Friendship>.Filter.And(
+            Builders<Friendship>.Filter.Eq(f => f.RequestStatus, RequestStatus.Pending),
+            Builders<Friendship>.Filter.Eq(f => f.FriendProfileId, profileId));
+
+        var projection = Builders<Friendship>.Projection.Expression(f => f.ProfileId);
+
+        var profileIds = await this._friendshipCollection
+            .Find(filter)
+            .Project(projection)
+            .ToListAsync(token);
+
+        return profileIds;
     }
 
     public async Task<Friendship> ChangeDataOfInterrelations(

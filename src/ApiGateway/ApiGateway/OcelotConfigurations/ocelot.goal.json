@@ -12,14 +12,10 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/goals",
+      "UpstreamPathTemplate": "/api/goals",
       "UpstreamHttpMethod": [
         "POST"
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "SwaggerKey": "Events"
     },
 
@@ -32,14 +28,10 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/goals/{goalId}",
+      "UpstreamPathTemplate": "/api/goals/{goalId}",
       "UpstreamHttpMethod": [
         "DELETE"
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "SwaggerKey": "Events"
     },
 
@@ -52,14 +44,10 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/goals/{goalId}",
+      "UpstreamPathTemplate": "/api/goals/{goalId}",
       "UpstreamHttpMethod": [
         "PUT"
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "SwaggerKey": "Events"
     },
 
@@ -72,14 +60,10 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/goals",
+      "UpstreamPathTemplate": "/api/goals",
       "UpstreamHttpMethod": [
         "GET"
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "RouteClaimsRequirement": {
         "Role": "Admin"
       },
@@ -95,14 +79,10 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/goals/my-goals",
+      "UpstreamPathTemplate": "/api/goals/my-goals",
       "UpstreamHttpMethod": [
         "GET"
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "SwaggerKey": "Events"
     },
 
@@ -115,14 +95,10 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/goals/done/{goalId}",
+      "UpstreamPathTemplate": "/api/goals/done/{goalId}",
       "UpstreamHttpMethod": [
         "PUT"
       ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "SwaggerKey": "Events"
     }
     

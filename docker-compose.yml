@@ -66,7 +66,12 @@ services:
     ports:
       - "5004:8080"
     container_name: notificationservice_container
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
     environment:
+      - DOTNET_IPv6_DISABLE=1
+      - TELEGRAM_BOT=${TELEGRAM_BOT}
       - ASPNETCORE_ENVIRONMENT=Development
       - DB_CONNECTION_STRING=${MONGO_DB3_CONNECTION_STRING}
       - AUTH_GRPC_URL=${AUTH_GRPC_URL}
@@ -191,12 +196,20 @@ services:
       - .env
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_WEBROOT=wwwroot
     container_name: apigateway
     ports:
-      - "5100:8080"
+      - "80:8080"
+      - "443:443"
     build:
       context: .
       dockerfile: ./src/ApiGateway/ApiGateway/Dockerfile
+    volumes:
+      # Относительный путь: выходим из FriendsApplicationSystem, заходим в FriendsAppClient
+      - "../FriendsAppClient/client/dist/client/browser:/app/wwwroot"
+      # Путь к сертификату (относительно докер-компоуза)
+      - "./src/ApiGateway/ApiGateway/friendsapp.p12:/app/friendsapp.p12"
     depends_on:
       authservice_api:
         condition: service_started

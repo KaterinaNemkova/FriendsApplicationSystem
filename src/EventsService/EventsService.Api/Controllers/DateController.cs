@@ -27,7 +27,7 @@ public class DateController : ControllerBase
         this._httpContextAccessor = httpContextAccessor;
     }
 
-    [HttpPost("/new")]
+    [HttpPost("new")]
     public async Task<IActionResult> CreateDate(
         [FromBody] DateRequestDto dto,
         CancellationToken cancellationToken)

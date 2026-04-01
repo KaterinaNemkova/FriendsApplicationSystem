@@ -8,6 +8,10 @@ public class DateDto
 
     public int Month { get; set; }
 
+    public int? Year { get; set; } // Новое поле
+
+    public string Type { get; set; } // Новое поле
+
     public string Title { get; set; }
 
     public string Description { get; set; }

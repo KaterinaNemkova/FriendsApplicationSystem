@@ -1,6 +1,6 @@
 {
   "GlobalConfiguration": {
-    "BaseUrl": "http://localhost:5100"
+    "BaseUrl": null
   },
   "Routes": [
     {
@@ -12,12 +12,8 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/dates",
+      "UpstreamPathTemplate": "/api/dates",
       "UpstreamHttpMethod": [ "GET" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "RouteClaimsRequirement": {
         "Role": "Admin"
       },
@@ -33,12 +29,8 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/dates/new",
+      "UpstreamPathTemplate": "/api/dates/new",
       "UpstreamHttpMethod": [ "POST"],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "SwaggerKey": "Events"
     },
 
@@ -51,12 +43,8 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/dates/{dateId}",
+      "UpstreamPathTemplate": "/api/dates/{dateId}",
       "UpstreamHttpMethod": [ "DELETE" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "SwaggerKey": "Events"
     },
 
@@ -69,12 +57,8 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/dates/{dateId}/changes",
+      "UpstreamPathTemplate": "/api/dates/{dateId}/changes",
       "UpstreamHttpMethod": [ "PUT" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "SwaggerKey": "Events"
     },
 
@@ -87,12 +71,8 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/dates/my-dates",
+      "UpstreamPathTemplate": "/api/dates/my-dates",
       "UpstreamHttpMethod": [ "GET" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "AllowedScopes": []
-      },
       "SwaggerKey": "Events"
     }
     

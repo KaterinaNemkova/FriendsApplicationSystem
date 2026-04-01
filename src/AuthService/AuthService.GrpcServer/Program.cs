@@ -22,9 +22,9 @@ if (File.Exists(envPath))
 }
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(50051, listenOptions =>
+    options.ListenAnyIP(50051, o =>
     {
-        listenOptions.Protocols = HttpProtocols.Http2;
+        o.Protocols = HttpProtocols.Http2;
     });
 });
 builder.Services.AddData(builder.Configuration);

@@ -1,3 +1,4 @@
+using UserService.Api.Middlewares;
 using UserService.Infrastructure;
 using UserService.Infrastructure.Extensions;
 
@@ -33,6 +34,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.MapControllers();
 

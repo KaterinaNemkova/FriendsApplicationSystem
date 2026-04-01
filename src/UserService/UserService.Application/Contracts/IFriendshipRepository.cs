@@ -32,4 +32,8 @@ public interface IFriendshipRepository
     Task<List<Friendship>> GetAllMyFriendsRequestsAsync(
         Guid profileId,
         CancellationToken token);
+
+    Task<List<Guid>> GetAllMyFriendsRequestProfileIdsAsync(
+        Guid profileId,
+        CancellationToken token);
 }

@@ -46,24 +46,31 @@ public static class Extensions
         return services;
     }
 
-    public static IServiceCollection ConfigureAuthGrpcClient(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection ConfigureAuthGrpcClient(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        configuration["AuthGrpcUrl:GrpcUrl"] = Environment.GetEnvironmentVariable("AUTH_GRPC_URL");
+        var address = Environment.GetEnvironmentVariable("AUTH_GRPC_URL")
+                      ?? configuration["AuthGrpcUrl:GrpcUrl"];
 
-        var address = configuration["AuthGrpcUrl:GrpcUrl"]
-                      ?? throw new InvalidOperationException("AuthGrpcUrl:GrpcUrl is not configured!");
+        AppContext.SetSwitch(
+            "System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport",
+            true);
 
-        AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-
-        services.AddGrpcClient<AuthService.GrpcServer.AuthService.AuthServiceClient>(
-                options =>
-                {
-                    options.Address = new Uri(address);
-                })
-            .ConfigurePrimaryHttpMessageHandler(
-                () => new SocketsHttpHandler
+        services.AddGrpcClient<AuthService.GrpcServer.AuthService.AuthServiceClient>(options =>
             {
-                AllowAutoRedirect = true,
+                options.Address = new Uri(address);
+            })
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new SocketsHttpHandler
+                {
+                    EnableMultipleHttp2Connections = true
+                };
+            })
+            .ConfigureChannel(options =>
+            {
+                options.UnsafeUseInsecureChannelCallCredentials = true;
             });
 
         return services;
@@ -102,6 +109,7 @@ public static class Extensions
         services.AddSingleton<ITelegramBotClient>(
             new TelegramBotClient(configuration["TelegramBot:AccessToken"] ?? string.Empty));
         services.AddSingleton<TelegramBotService>();
+        //services.AddHostedService<TelegramBotService>(); 
         return services;
     }
 

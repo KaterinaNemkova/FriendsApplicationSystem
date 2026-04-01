@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuthService.Api.Endpoints;
 
@@ -53,18 +54,27 @@ public static class AccountEndpoint
             var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
 
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-
-            var baseUrl = Environment.GetEnvironmentVariable("BASE_URL") ?? "http://localhost:5100";
+            
+            var baseUrl = Environment.GetEnvironmentVariable("BASE_URL") ?? "https://192.168.0.186"; 
             var confirmationLink = $"{baseUrl}/confirm-email?userId={user.Id}&token={encodedToken}";
             var subject = "Register confirmation";
             var htmlMessage = $@"
         <h2>Welcome to our FriendsApp!</h2>
         <p>Please, confirm your registration, follow this link:</p>
         <p><a href='{confirmationLink}'>Confirm registration</a></p>
-        <p>Link valid for 5 minutes.</p>
+        <p>Link valid for 15 minutes.</p>
         <p>If you did not register, ignore this email.</p>";
 
-            await emailSender.SendEmailAsync(user.Email, subject, htmlMessage);
+            // Находим в методе /register строку:
+            try
+            {
+                await emailSender.SendEmailAsync(user.Email, subject, htmlMessage);
+            }
+            catch (Exception ex)
+            {
+                // Просто логируем ошибку, но не прерываем регистрацию
+                Console.WriteLine($"Email sending failed: {ex.Message}");
+            }
 
             var userId = await userManager.GetUserIdAsync(user);
 
@@ -152,18 +162,26 @@ public static class AccountEndpoint
             var roles = await userManager.GetRolesAsync(user);
             var response = await userProfileClient.GetProfileIdByUserIdAsync(request);
             var token = await tokenservice.GenerateAccessToken(user.Id, user.UserName!, response.ProfileId);
-
+            var refreshToken = tokenservice.GenerateRefreshToken();
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7); // Живет неделю
+            await userManager.UpdateAsync(user);
             context.Response.Cookies.Append(
                 "accessToken",
                 token,
                 new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = false,
-                    SameSite = SameSiteMode.Lax,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
                     Expires = DateTime.Now.AddMinutes(5),
                     Path = "/",
                 });
+            context.Response.Cookies.Append("refreshToken", refreshToken, new CookieOptions {
+                HttpOnly = true, Secure = true, SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddDays(7),
+                Path = "/api/account/refresh",
+            });
 
             return Results.Ok(Response<ResponseLoginDto>.Success(
                 new ResponseLoginDto(
@@ -197,7 +215,31 @@ public static class AccountEndpoint
             });
         });
 
+        group.MapPost("/refresh", async (HttpContext context, UserManager<AppUser> userManager, TokenService tokenservice, UserService.GrpcServer.UserProfileService.UserProfileServiceClient userProfileClient) => 
+        {
+            if (!context.Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
+                return Results.Unauthorized();
+
+            var user = await userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+    
+            if (user == null || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+                return Results.Unauthorized();
+
+            // Генерируем новый Access Token
+            var profileRequest = new UserService.GrpcServer.GetProfileIdRequest { UserId = user.Id };
+            var profileResponse = await userProfileClient.GetProfileIdByUserIdAsync(profileRequest);
+    
+            var newAccessToken = await tokenservice.GenerateAccessToken(user.Id, user.UserName!, profileResponse.ProfileId);
+
+            context.Response.Cookies.Append("accessToken", newAccessToken, new CookieOptions {
+                HttpOnly = true, Secure = true, SameSite = SameSiteMode.None,
+                Expires = DateTime.UtcNow.AddMinutes(5)
+            });
+
+            return Results.Ok();
+        });
         return group;
     }
+    
 
 }
